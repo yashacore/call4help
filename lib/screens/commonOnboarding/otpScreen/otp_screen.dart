@@ -1,4 +1,4 @@
-// otp_screen.dart - FIXED VERSION (No focus conflicts) with ScreenUtilInit
+// otp_screen.dart - FIXED ALIGNMENT VERSION
 import 'package:first_flutter/baseControllers/NavigationController/navigation_controller.dart';
 import 'package:first_flutter/constants/imgConstant/img_constant.dart';
 import 'package:first_flutter/constants/utils/app_text_style.dart';
@@ -21,15 +21,17 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  final List<TextEditingController> _controllers =
-  List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNodes.first.requestFocus(); // First field auto-focus
+      _focusNodes.first.requestFocus();
       context.read<OtpScreenProvider>().startTimer();
     });
   }
@@ -61,8 +63,8 @@ class _OtpScreenState extends State<OtpScreen> {
 
   Widget _buildOtpField(BuildContext context, int index) {
     return Container(
-      width: 50.w,
-      height: 56.h,
+      width: 45.w,
+      height: 48.h,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
@@ -74,6 +76,8 @@ class _OtpScreenState extends State<OtpScreen> {
           ),
         ],
       ),
+      alignment: Alignment.center,
+      // ADDED: Center align content
       child: TextField(
         controller: _controllers[index],
         focusNode: _focusNodes[index],
@@ -82,11 +86,10 @@ class _OtpScreenState extends State<OtpScreen> {
         style: AppTextStyle.robotoBold.copyWith(
           fontSize: 24.sp,
           color: Colors.black,
+          height: 1.0, // ADDED: Control line height
         ),
         maxLength: 1,
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-        ],
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: const InputDecoration(
           counterText: "",
           filled: false,
@@ -94,10 +97,10 @@ class _OtpScreenState extends State<OtpScreen> {
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
+          isDense: true, // ADDED: Makes TextField more compact
         ),
         textAlignVertical: TextAlignVertical.center,
         onChanged: (value) {
-          // Paste handling: 6-digit SMS copy-paste
           if (value.length > 1) {
             final clean = value.replaceAll(RegExp(r'[^0-9]'), '');
             if (clean.isNotEmpty) {
@@ -111,12 +114,9 @@ class _OtpScreenState extends State<OtpScreen> {
             return;
           }
 
-          // Auto-advance to next field
           if (value.isNotEmpty && index < 5) {
             _focusNodes[index + 1].requestFocus();
-          }
-          // Auto-back to previous field when cleared
-          else if (value.isEmpty && index > 0) {
+          } else if (value.isEmpty && index > 0) {
             _focusNodes[index - 1].requestFocus();
           }
 
@@ -167,12 +167,10 @@ class _OtpScreenState extends State<OtpScreen> {
 
     if (result != null && mounted) {
       if (result['needsEmailVerification'] == true) {
-        print('Email verification needed, navigating to email verification screen');
-        Navigator.pushNamed(
-          context,
-          "/EmailVerificationScreen",
-          arguments: result['userEmail'],
+        print(
+          'Email verification needed, navigating to email verification screen',
         );
+        await _setupNotificationsAndNavigate();
       } else {
         print('Email verified, requesting notification permission');
         await _setupNotificationsAndNavigate();
@@ -194,7 +192,7 @@ class _OtpScreenState extends State<OtpScreen> {
       print('=== Setting up notifications ===');
 
       final permissionGranted =
-      await NotificationService.requestNotificationPermission(context);
+          await NotificationService.requestNotificationPermission(context);
 
       if (permissionGranted) {
         print('✓ Notification permission granted');
@@ -204,8 +202,9 @@ class _OtpScreenState extends State<OtpScreen> {
         if (deviceToken != null && deviceToken.isNotEmpty) {
           print('✓ Device token obtained: ${deviceToken.substring(0, 20)}...');
 
-          final updated =
-          await provider.updateDeviceToken(deviceToken: deviceToken);
+          final updated = await provider.updateDeviceToken(
+            deviceToken: deviceToken,
+          );
 
           if (updated) {
             print('✓ Device token updated successfully');
@@ -227,7 +226,7 @@ class _OtpScreenState extends State<OtpScreen> {
       Navigator.pushNamedAndRemoveUntil(
         context,
         "/UserCustomBottomNav",
-            (route) => false,
+        (route) => false,
       );
     }
   }
@@ -259,7 +258,9 @@ class _OtpScreenState extends State<OtpScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.15.h),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.15,
+                      ),
                       Image.asset(
                         "assets/icons/app_icon_radius.png.png",
                         width: 100.w,
@@ -292,13 +293,14 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
                       SizedBox(height: 40.h),
 
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: List.generate(
-                            6,
-                                (index) => _buildOtpField(context, index),
+                      // CHANGED: Better OTP field layout with proper spacing
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          6,
+                          (index) => Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 2.w),
+                            child: _buildOtpField(context, index),
                           ),
                         ),
                       ),
@@ -354,7 +356,8 @@ class _OtpScreenState extends State<OtpScreen> {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed:
-                            (provider.isLoading || provider.isUpdatingDeviceToken)
+                                (provider.isLoading ||
+                                    provider.isUpdatingDeviceToken)
                                 ? null
                                 : _verifyOtp,
                             style: ElevatedButton.styleFrom(
@@ -366,24 +369,25 @@ class _OtpScreenState extends State<OtpScreen> {
                               ),
                               elevation: 5,
                             ),
-                            child: (provider.isLoading ||
-                                provider.isUpdatingDeviceToken)
+                            child:
+                                (provider.isLoading ||
+                                    provider.isUpdatingDeviceToken)
                                 ? SizedBox(
-                              height: 24.h,
-                              width: 24.w,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2.5,
-                              ),
-                            )
+                                    height: 24.h,
+                                    width: 24.w,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  )
                                 : Text(
-                              "Verify OTP",
-                              style: AppTextStyle.robotoMedium.copyWith(
-                                fontSize: 16.sp,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                                    "Verify OTP",
+                                    style: AppTextStyle.robotoMedium.copyWith(
+                                      fontSize: 16.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
@@ -393,7 +397,9 @@ class _OtpScreenState extends State<OtpScreen> {
                       Consumer<OtpScreenProvider>(
                         builder: (context, provider, _) => TextButton(
                           onPressed: provider.canResend
-                              ? () => provider.resendOtp(mobile: widget.phoneNumber)
+                              ? () => provider.resendOtp(
+                                  mobile: widget.phoneNumber,
+                                )
                               : null,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

@@ -14,9 +14,13 @@ class SubcategoryProvider with ChangeNotifier {
   bool _isUnchecking = false;
 
   List<Subcategory> get subcategories => _subcategories;
+
   bool get isLoading => _isLoading;
+
   String? get errorMessage => _errorMessage;
+
   int? get currentCategoryId => _currentCategoryId;
+
   bool get isUnchecking => _isUnchecking;
 
   Future<void> fetchSubcategories(int categoryId) async {
@@ -38,7 +42,7 @@ class SubcategoryProvider with ChangeNotifier {
       }
 
       final response = await http.get(
-        Uri.parse('$base_url/api/admin/getsubcategories/$categoryId'),
+        Uri.parse('$base_url/api/admin/getbyprovidersubcategories/$categoryId'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -66,6 +70,51 @@ class SubcategoryProvider with ChangeNotifier {
     }
   }
 
+  // ✅ NEW: Silent refresh without showing loading indicator
+  Future<void> fetchSubcategoriesSilent(int categoryId) async {
+    _errorMessage = null;
+    _currentCategoryId = categoryId;
+    // Don't set _isLoading = true to avoid showing circular indicator
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('provider_auth_token');
+
+      if (token == null || token.isEmpty) {
+        _errorMessage = 'Authentication token not found. Please login again.';
+        _subcategories = [];
+        notifyListeners();
+        return;
+      }
+
+      final response = await http.get(
+        Uri.parse('$base_url/api/admin/getbyprovidersubcategories/$categoryId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print('Silent refresh: ${response.body}');
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        final subcategoryResponse = SubcategoryResponse.fromJson(jsonData);
+        _subcategories = subcategoryResponse.subcategories;
+        _errorMessage = null;
+        notifyListeners(); // Update UI with new data
+      } else {
+        _errorMessage =
+        'Failed to load subcategories. Status: ${response.statusCode}';
+        _subcategories = [];
+        notifyListeners();
+      }
+    } catch (e) {
+      _errorMessage = 'Error fetching subcategories: ${e.toString()}';
+      _subcategories = [];
+      notifyListeners();
+    }
+  }
+
   Future<bool> uncheckSkill(int skillId) async {
     _isUnchecking = true;
     _errorMessage = null;
@@ -88,21 +137,22 @@ class SubcategoryProvider with ChangeNotifier {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: json.encode({
-          'is_checked': false,
-        }),
+        body: json.encode({'is_subcategory': false}),
       );
-
 
       print('Uncheck response: ${response.body}');
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         if (jsonData['success'] == true) {
-          // Refresh subcategories to get updated is_checked status
-          if (_currentCategoryId != null) {
-            await fetchSubcategories(_currentCategoryId!);
+          // Locally update is_subcategory instead of fetching again
+          final index = _subcategories.indexWhere((sub) => sub.id == skillId);
+          if (index != -1) {
+            _subcategories[index] = _subcategories[index].copyWith(
+              isSubcategory: false,  // Changed from isChecked
+            );
           }
+
           _isUnchecking = false;
           notifyListeners();
           return true;
@@ -113,7 +163,8 @@ class SubcategoryProvider with ChangeNotifier {
           return false;
         }
       } else {
-        _errorMessage = 'Failed to uncheck skill. Status: ${response.statusCode}';
+        _errorMessage =
+        'Failed to uncheck skill. Status: ${response.statusCode}';
         _isUnchecking = false;
         notifyListeners();
         return false;

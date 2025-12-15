@@ -7,7 +7,7 @@ import 'package:dart_nats/dart_nats.dart';
 
 import '../../../../NATS Service/NatsService.dart';
 
-class UserChatProvider with ChangeNotifier {
+class ProviderChatProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _error;
   String? _chatId;
@@ -16,11 +16,8 @@ class UserChatProvider with ChangeNotifier {
   final NatsService _natsService = NatsService();
 
   bool get isLoading => _isLoading;
-
   String? get error => _error;
-
   String? get chatId => _chatId;
-
   List<ChatMessage> get messages => _messages;
 
   // Fetch chat history from NATS
@@ -33,7 +30,6 @@ class UserChatProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      // Ensure NATS is connected
       if (!_natsService.isConnected) {
         print("NATS not connected, attempting to connect...");
         final connected = await _natsService.connect();
@@ -68,7 +64,6 @@ class UserChatProvider with ChangeNotifier {
       if (responseData['success'] == true && responseData['messages'] != null) {
         _messages.clear();
 
-        // Parse messages from NATS response
         List<dynamic> messagesData = responseData['messages'];
         for (var msgData in messagesData) {
           try {
@@ -109,27 +104,21 @@ class UserChatProvider with ChangeNotifier {
       print("=== Subscribing to chat messages ===");
       print("Chat ID: $chatId");
 
-      // Ensure NATS is connected
       if (!_natsService.isConnected) {
         print("NATS not connected, attempting to connect...");
         await _natsService.connect();
       }
 
-      // Subscribe to new messages for this specific chat
-      _chatSubscription = _natsService.subscribe('chat.message.$chatId', (
-        message,
-      ) {
+      _chatSubscription = _natsService.subscribe('chat.message.$chatId', (message) {
         try {
           final msgData = json.decode(message);
           print("📨 New message received: $msgData");
 
           final chatMessage = ChatMessage.fromJson(msgData);
 
-          // Check if message already exists (avoid duplicates)
           bool exists = _messages.any((m) => m.id == chatMessage.id);
           if (!exists) {
             _messages.add(chatMessage);
-            // Sort to maintain chronological order
             _messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
             notifyListeners();
             print("✅ New message added to list: ${chatMessage.id}");
@@ -148,7 +137,6 @@ class UserChatProvider with ChangeNotifier {
   }
 
   // Initiate chat with provider
-  // Initiate chat with provider
   Future<bool> initiateChat({
     required String serviceId,
     required String providerId,
@@ -164,7 +152,7 @@ class UserChatProvider with ChangeNotifier {
 
     try {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('auth_token');
+      final token = prefs.getString('provider_auth_token');
 
       if (token == null) {
         print("ERROR: Token not found!");
@@ -174,9 +162,6 @@ class UserChatProvider with ChangeNotifier {
         return false;
       }
 
-      print("Token found: ${token.substring(0, 20)}...");
-
-      // CHANGE 1: Validate inputs before API call
       if (serviceId.isEmpty || providerId.isEmpty) {
         print("ERROR: Service ID or Provider ID is empty");
         _error = 'Invalid service or provider information';
@@ -187,14 +172,14 @@ class UserChatProvider with ChangeNotifier {
 
       final requestBody = {
         'service_id': int.tryParse(serviceId) ?? serviceId,
-        'provider_id': int.tryParse(providerId) ?? providerId,
+        'user_id': int.tryParse(providerId) ?? providerId,
       };
 
-      print("Request URL: $base_url/bid/api/chat/initiate");
+      print("Request URL: $base_url/bid/api/chat/provider/initiate");
       print("Request Body: ${jsonEncode(requestBody)}");
 
       final response = await http.post(
-        Uri.parse('$base_url/bid/api/chat/initiate'),
+        Uri.parse('$base_url/bid/api/chat/provider/initiate'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -270,9 +255,7 @@ class UserChatProvider with ChangeNotifier {
           notifyListeners();
           return false;
         }
-      }
-      // CHANGE 2: Handle 500 error with retry mechanism
-      else if (response.statusCode == 500 && retryCount < 2) {
+      } else if (response.statusCode == 500 && retryCount < 2) {
         print("⚠️ Server error 500 - Retrying after 2 seconds...");
         await Future.delayed(Duration(seconds: 2));
         return await initiateChat(
@@ -280,9 +263,7 @@ class UserChatProvider with ChangeNotifier {
           providerId: providerId,
           retryCount: retryCount + 1,
         );
-      }
-      // CHANGE 3: Better error messages for different status codes
-      else {
+      } else {
         print("ERROR: API returned error status code ${response.statusCode}");
         String errorMessage;
 
@@ -330,7 +311,6 @@ class UserChatProvider with ChangeNotifier {
       print("Error: $e");
       print("Stack Trace: $stackTrace");
 
-      // CHANGE 4: Better error messages for different exceptions
       String errorMessage;
       if (e.toString().contains('timeout')) {
         errorMessage = 'Request timeout - Please check your connection';
@@ -364,7 +344,7 @@ class UserChatProvider with ChangeNotifier {
 
     try {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('auth_token');
+      final token = prefs.getString('provider_auth_token');
 
       if (token == null) {
         print("ERROR: Token not found!");
@@ -375,11 +355,11 @@ class UserChatProvider with ChangeNotifier {
 
       final requestBody = {'chat_id': _chatId, 'message': message};
 
-      print("Request URL: $base_url/bid/api/chat/send-message");
+      print("Request URL: $base_url/bid/api/chat/provider/send-message");
       print("Request Body: ${jsonEncode(requestBody)}");
 
       final response = await http.post(
-        Uri.parse('$base_url/bid/api/chat/send-message'),
+        Uri.parse('$base_url/bid/api/chat/provider/send-message'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -395,16 +375,13 @@ class UserChatProvider with ChangeNotifier {
         final data = jsonDecode(response.body);
         print("Message sent successfully!");
 
-        // Parse and add the message to local list
         try {
           if (data['message'] != null) {
             final chatMessage = ChatMessage.fromJson(data['message']);
 
-            // Check if message already exists (avoid duplicates)
             bool exists = _messages.any((m) => m.id == chatMessage.id);
             if (!exists) {
               _messages.add(chatMessage);
-              // Sort to maintain chronological order
               _messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
               print("Message added to local list: ${chatMessage.id}");
               notifyListeners();
@@ -414,7 +391,6 @@ class UserChatProvider with ChangeNotifier {
           }
         } catch (e) {
           print("Error parsing message: $e");
-          // Don't fail the whole operation if parsing fails
         }
 
         return true;
@@ -450,7 +426,6 @@ class UserChatProvider with ChangeNotifier {
     _chatId = null;
     _messages = [];
 
-    // Unsubscribe from NATS
     if (_chatSubscription != null && _chatId != null) {
       _natsService.unsubscribe('chat.message.$_chatId');
       _chatSubscription = null;
@@ -461,7 +436,6 @@ class UserChatProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    // Unsubscribe from NATS
     if (_chatSubscription != null && _chatId != null) {
       _natsService.unsubscribe('chat.message.$_chatId');
     }
@@ -493,7 +467,7 @@ class ChatMessage {
     print("=== Parsing ChatMessage ===");
     print("Raw JSON: $json");
 
-    // Handle nested id structure
+    // Parse ID - handle both direct int and nested structure
     String messageId = '';
     if (json['id'] != null) {
       if (json['id'] is Map) {
@@ -504,13 +478,15 @@ class ChatMessage {
     }
     print("Parsed ID: $messageId");
 
-    // Handle nested message structure: {"message": {"text": "hu"}}
+    // Parse message - handle both direct string and nested object with 'text' field
     String messageText = '';
     if (json['message'] != null) {
       if (json['message'] is Map) {
+        // Handle {"message": {"text": "hello"}} structure
         messageText = json['message']['text']?.toString() ?? '';
-      } else {
-        messageText = json['message'].toString();
+      } else if (json['message'] is String) {
+        // Handle direct string
+        messageText = json['message'];
       }
     }
     print("Parsed Message: $messageText");
@@ -518,7 +494,7 @@ class ChatMessage {
     // Parse other fields
     final chatId = json['chat_id']?.toString() ?? '';
     final senderId = json['sender_id']?.toString() ?? '';
-    final senderType = json['sender_type']?.toString() ?? '';
+    final senderType = json['sender_type']?.toString().toLowerCase() ?? '';
     final isRead = json['is_read'] == true;
 
     DateTime createdAt;
@@ -534,6 +510,7 @@ class ChatMessage {
     }
 
     print("Created ChatMessage successfully");
+    print("Sender Type: $senderType");
 
     return ChatMessage(
       id: messageId,

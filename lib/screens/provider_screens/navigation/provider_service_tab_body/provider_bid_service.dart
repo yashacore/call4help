@@ -17,9 +17,7 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
   void initState() {
     super.initState();
     // Initialize subscription when screen loads
-    // NATS is already connected from app startup
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Only initialize if not already initialized
       final provider = context.read<ProviderBidProvider>();
       if (!provider.isConnected || provider.providerId == null) {
         provider.initialize();
@@ -27,11 +25,16 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
     });
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(DateTime? date) {
+    // ✅ FIXED: Handle null date
+    if (date == null) return 'Not scheduled';
     return DateFormat('MMM dd, yyyy').format(date);
   }
 
-  String _formatTime(String time) {
+  String _formatTime(String? time) {
+    // ✅ FIXED: Handle null time
+    if (time == null || time.isEmpty) return 'Not specified';
+
     try {
       final parts = time.split(':');
       if (parts.length >= 2) {
@@ -44,6 +47,18 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
       return time;
     } catch (e) {
       return time;
+    }
+  }
+
+  // ✅ NEW: Helper method to get display date
+  String _getDisplayDate(dynamic bid) {
+    // Priority: scheduleDate > startDate > createdAt
+    if (bid.scheduleDate != null) {
+      return _formatDate(bid.scheduleDate);
+    } else if (bid.startDate != null) {
+      return _formatDate(bid.startDate);
+    } else {
+      return _formatDate(bid.createdAt);
     }
   }
 
@@ -168,16 +183,22 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
               itemBuilder: (context, index) {
                 final bid = bidProvider.bids[index];
 
+                // ✅ FIXED: Removed null-check operator on scheduleDate
                 return ProviderServiceListCard(
+                  key: ValueKey(bid.id),
                   category: bid.category,
                   subCategory: bid.service,
-                  date: _formatDate(bid.scheduleDate),
-                  dp: "https://picsum.photos/200/200?random=$index",
+                  date: _getDisplayDate(bid),
+                  // ✅ FIXED: Use helper method
+                  dp: "https://picsum.photos/200/200?random=${bid.id}",
                   price: bid.budget.toStringAsFixed(2),
                   duration: bid.durationDisplay,
+                  // ✅ Already handles null
                   priceBy: bid.tenure == 'one_time' ? 'One Time' : bid.tenure,
                   providerCount: null,
-                  status: "No status",
+                  status: bid.status,
+                  createdAt: bid.receivedAt,
+                  timerDurationMinutes: 1,
                   onPress: () {
                     Navigator.push(
                       context,
@@ -186,13 +207,19 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
                             ProviderServiceDetailsScreen(serviceId: bid.id),
                       ),
                     ).then((_) {
-                      // This runs when user comes back from ProviderServiceDetailsScreen
+                      // Re-initialize if needed when coming back
                       final provider = context.read<ProviderBidProvider>();
                       if (!provider.isConnected ||
                           provider.providerId == null) {
                         provider.initialize();
                       }
                     });
+                  },
+                  onTimerComplete: () {
+                    debugPrint(
+                      '⏱️ Timer expired for bid: ${bid.id} - ${bid.title}',
+                    );
+                    bidProvider.removeBid(bid.id);
                   },
                 );
               },

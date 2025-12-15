@@ -64,6 +64,7 @@ class ServiceAPI {
   static Future<AcceptServiceResponse> acceptService({
     required String serviceId,
     required String amount,
+    required String status,
     String notes = "cash",
   }) async {
     try {
@@ -89,6 +90,7 @@ class ServiceAPI {
         'service_id': serviceId,
         'amount': amount,
         'notes': notes,
+        'status': status,
       };
 
       // Make API call

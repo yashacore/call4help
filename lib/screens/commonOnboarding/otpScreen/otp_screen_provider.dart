@@ -555,7 +555,7 @@ class OtpScreenProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final url = Uri.parse('$base_url/api/auth/resend-otp');
+      final url = Uri.parse('$base_url/api/auth/send-otp');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},

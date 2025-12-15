@@ -25,7 +25,9 @@ class ServiceProvider with ChangeNotifier {
   String? _currentServiceId;
 
   bool get isLoading => _isLoading;
+
   String? get error => _error;
+
   bool get isNatsListening => _isNatsListening;
 
   // ✅ CHANGED: Return providers for current service only
@@ -35,15 +37,24 @@ class ServiceProvider with ChangeNotifier {
   }
 
   List<ServiceModel> get assignedServices {
-    return _allServices.where((service) =>
-    service.status == 'assigned'
-    ).toList();
+    return _allServices
+        .where(
+          (service) =>
+              service.status == 'assigned' ||
+              service.status == 'started' ||
+              service.status == 'arrived' ||
+              service.status == 'in_progress',
+        )
+        .toList();
   }
+
   // Only return closed and pending services
   List<ServiceModel> get filteredServices {
-    return _allServices.where((service) =>
-    service.status == 'closed' || service.status == 'open'
-    ).toList();
+    return _allServices
+        .where(
+          (service) => service.status == 'closed' || service.status == 'open',
+        )
+        .toList();
   }
 
   // ✅ NEW: Set current service when user opens details screen
@@ -113,7 +124,6 @@ class ServiceProvider with ChangeNotifier {
       _isNatsListening = true;
       notifyListeners();
       debugPrint('✅ NATS subscription active for user $userId');
-
     } catch (e) {
       debugPrint('❌ NATS Subscription Error: $e');
       _isNatsListening = false;
@@ -167,13 +177,13 @@ class ServiceProvider with ChangeNotifier {
         'providerName': providerName,
 
         // ✅ Get data from user object
-        'gender': user?['gender']?.toString().toUpperCase().substring(0, 1) ?? 'N/A',
+        'gender':
+            user?['gender']?.toString().toUpperCase().substring(0, 1) ?? 'N/A',
         'age': user?['age']?.toString() ?? 'N/A',
 
         // ✅ Distance and reach time (fallback to defaults if not available)
         'distance': '5', // Default value
         'reachTime': '10', // Default value
-
         // ✅ Category and subcategory from service
         'category': service?['category'] ?? 'N/A',
         'subCategory': service?['service'] ?? 'N/A',
@@ -184,7 +194,6 @@ class ServiceProvider with ChangeNotifier {
         // ✅ Rating and experience (defaults for now)
         'rating': '4.0', // Default
         'experience': '2', // Default
-
         // ✅ Profile picture from user
         'dp': user?['image'] ?? 'https://picsum.photos/200/200',
 
@@ -192,7 +201,11 @@ class ServiceProvider with ChangeNotifier {
         'phone': user?['mobile'] ?? user?['phone'] ?? 'N/A',
 
         // ✅ Provider ID from provider object
-        'providerId': providerData_raw?['id']?.toString() ?? user?['id']?.toString() ?? bidId ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        'providerId':
+            providerData_raw?['id']?.toString() ??
+            user?['id']?.toString() ??
+            bidId ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
 
         // ✅ Additional info
         'acceptedAt': acceptedAt,
@@ -204,21 +217,26 @@ class ServiceProvider with ChangeNotifier {
       }
 
       final existingIndex = _serviceProviders[serviceId]!.indexWhere(
-            (p) => p['providerId'] == providerData['providerId'],
+        (p) => p['providerId'] == providerData['providerId'],
       );
 
       if (existingIndex != -1) {
         _serviceProviders[serviceId]![existingIndex] = providerData;
-        debugPrint('🔄 Updated existing provider for service $serviceId at index $existingIndex');
+        debugPrint(
+          '🔄 Updated existing provider for service $serviceId at index $existingIndex',
+        );
       } else {
         _serviceProviders[serviceId]!.insert(0, providerData);
-        debugPrint('➕ Added new provider to service $serviceId. Total: ${_serviceProviders[serviceId]!.length}');
+        debugPrint(
+          '➕ Added new provider to service $serviceId. Total: ${_serviceProviders[serviceId]!.length}',
+        );
       }
 
       // Notify listeners to update UI
       notifyListeners();
-      debugPrint('🔔 UI notified. Service $serviceId has ${_serviceProviders[serviceId]!.length} providers');
-
+      debugPrint(
+        '🔔 UI notified. Service $serviceId has ${_serviceProviders[serviceId]!.length} providers',
+      );
     } catch (e, stackTrace) {
       debugPrint('❌ Error handling notification: $e');
       debugPrint('Stack trace: $stackTrace');

@@ -6,12 +6,14 @@ class UserExpansionTileListCard extends StatelessWidget {
   final String dp;
   final String title;
   final String subtitle;
+  final void Function(String serviceType)? onServiceTypeSelected; // Changed to String and nullable
 
   const UserExpansionTileListCard({
     super.key,
     required this.dp,
     required this.title,
     required this.subtitle,
+    this.onServiceTypeSelected, // Made optional
   });
 
   @override
@@ -35,7 +37,7 @@ class UserExpansionTileListCard extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               CachedNetworkImage(
-                imageUrl: dp,
+                imageUrl: dp.isNotEmpty ? dp : 'https://picsum.photos/200/200',
                 fit: BoxFit.cover,
                 placeholder: (context, url) =>
                     Image.asset('assets/images/moyo_image_placeholder.png'),
@@ -46,10 +48,10 @@ class UserExpansionTileListCard extends StatelessWidget {
           ),
         ),
         title: Text(
-          title,
+          title.isNotEmpty ? title : 'Unknown Service',
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
-        subtitle: Text(subtitle),
+        subtitle: Text(subtitle.isNotEmpty ? subtitle : 'Service'),
         childrenPadding: const EdgeInsets.all(16),
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -62,47 +64,62 @@ class UserExpansionTileListCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/UserInstantServiceScreen");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstant.moyoOrange,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text('Instant'),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/UserInstantServiceScreen");
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: ColorConstant.moyoOrange),
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Later',
-                    style: TextStyle(color: ColorConstant.moyoOrange),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          _buildServiceButtons(context),
         ],
       ),
+    );
+  }
+
+  Widget _buildServiceButtons(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton(
+            onPressed: () {
+              onServiceTypeSelected?.call('instant');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ColorConstant.moyoOrange,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              elevation: 2,
+            ),
+            child: const Text(
+              'Instant',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: OutlinedButton(
+            onPressed: () {
+              onServiceTypeSelected?.call('later');
+            },
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: ColorConstant.moyoOrange, width: 2),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text(
+              'Later',
+              style: TextStyle(
+                color: ColorConstant.moyoOrange,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

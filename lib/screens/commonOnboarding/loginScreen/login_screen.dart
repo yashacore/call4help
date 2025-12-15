@@ -3,13 +3,18 @@ import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/constants/imgConstant/img_constant.dart';
 import 'package:first_flutter/constants/utils/app_text_style.dart';
 import 'package:first_flutter/screens/commonOnboarding/otpScreen/otp_screen.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import '../../../NotificationService.dart';
+import '../../provider_screens/LegalDocumentScreen.dart';
+import '../../provider_screens/TermsandConditions.dart';
 import '../otpScreen/EmailVerificationScreen.dart';
 import 'MobileVerificationScreen.dart';
 import 'login_screen_provider.dart';
+import 'package:first_flutter/screens/commonOnboarding/otpScreen/otp_screen_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,6 +25,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
+  bool _isTermsAccepted = false;
 
   @override
   void dispose() {
@@ -40,6 +46,16 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    if (!_isTermsAccepted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please accept Terms and Conditions"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     provider.sendOtp(phoneNumber, () {
       Navigator.push(
         context,
@@ -52,39 +68,86 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void _handleGoogleSignIn(BuildContext context, LoginProvider provider) async {
-    // In your login screen or wherever you call signInWithGoogle
-    // Replace your existing onSuccess callback with this:
+  Future<void> _setupNotificationsAndNavigate() async {
+    final provider = context.read<OtpScreenProvider>();
 
-    await provider.signInWithGoogle((data) {
+    try {
+      print('=== Setting up notifications ===');
+
+      final permissionGranted =
+          await NotificationService.requestNotificationPermission(context);
+
+      if (permissionGranted) {
+        print('✓ Notification permission granted');
+
+        final deviceToken = await NotificationService.getDeviceToken();
+
+        if (deviceToken != null && deviceToken.isNotEmpty) {
+          print('✓ Device token obtained: ${deviceToken.substring(0, 20)}...');
+
+          final updated = await provider.updateDeviceToken(
+            deviceToken: deviceToken,
+          );
+
+          if (updated) {
+            print('✓ Device token updated successfully');
+          } else {
+            print('⚠ Failed to update device token on server');
+          }
+        } else {
+          print('⚠ No device token available');
+        }
+      } else {
+        print('✗ User declined notification permission');
+      }
+    } catch (e) {
+      print('Error in notification setup: $e');
+    }
+
+    if (mounted) {
+      print('=== Navigating to home screen ===');
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        "/UserCustomBottomNav",
+        (route) => false,
+      );
+    }
+  }
+
+  void _handleGoogleSignIn(BuildContext context, LoginProvider provider) async {
+    if (!_isTermsAccepted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please accept Terms and Conditions"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    await provider.signInWithGoogle((data) async {
       final needsMobileVerification = data['needsMobileVerification'] ?? false;
       final needsEmailVerification = data['needsEmailVerification'] ?? false;
       final userEmail = data['user']?['email'];
 
-      if (needsMobileVerification) {
-        // Navigate to mobile verification screen
+      await _setupNotificationsAndNavigate();
+      /*if (needsMobileVerification) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => const MobileVerificationScreen(),
           ),
         );
-      } else if (needsEmailVerification && userEmail != null) {
-        // Navigate to email verification screen
+      } */ /*else if (needsEmailVerification && userEmail != null) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => EmailVerificationScreen(userEmail: userEmail),
           ),
         );
-      } else {
-        // Navigate to home
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          "/UserCustomBottomNav",
-          (route) => false,
-        );
-      }
+      }*/ /* else {
+        await _setupNotificationsAndNavigate();
+      }*/
     });
   }
 
@@ -92,7 +155,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final provider = Provider.of<LoginProvider>(context);
 
-    // Show error message if any
     if (provider.errorMessage != null && provider.errorMessage!.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -107,16 +169,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      // Important: Allows screen to resize when keyboard appears
       body: Stack(
         children: [
-          // Background image
           Positioned.fill(
             child: Image.asset(ImageConstant.loginBgImg, fit: BoxFit.cover),
           ),
           SafeArea(
             child: SingleChildScrollView(
-              // Wraps content to make it scrollable when keyboard appears
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight:
@@ -131,7 +190,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Spacer(),
-                        // MOYO Text at top
                         Image.asset(
                           "assets/icons/app_icon_radius.png.png",
                           height: 100.h,
@@ -199,14 +257,94 @@ class _LoginScreenState extends State<LoginScreen> {
                             ],
                           ),
                         ),
+                        SizedBox(height: 16.h),
+                        // Terms and Conditions Checkbox
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 2.h),
+                              child: SizedBox(
+                                height: 18.h,
+                                width: 18.w,
+                                child: Checkbox(
+                                  value: _isTermsAccepted,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _isTermsAccepted = value ?? false;
+                                    });
+                                  },
+                                  activeColor: ColorConstant.appColor,
+                                  checkColor: Colors.white,
+                                  side: BorderSide(
+                                    color: Colors.white70,
+                                    width: 2,
+                                  ),
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  visualDensity: VisualDensity.compact,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 8.w),
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  style: AppTextStyle.robotoRegular.copyWith(
+                                    color: Colors.white70,
+                                    fontSize: 12.sp,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: "By continuing, you agree to our ",
+                                    ),
+                                    TextSpan(
+                                      text: "Terms and Conditions.",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Colors.white,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TermsandConditions(
+                                                    type: "terms",
+                                                    roles: [""],
+                                                  ),
+                                            ),
+                                          );
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                "Terms and Conditions coming soon",
+                                              ),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: 24.h),
                         // Primary Continue button
                         ElevatedButton(
-                          onPressed: provider.isLoading
+                          onPressed: (provider.isLoading || !_isTermsAccepted)
                               ? null
                               : () => _handleContinue(context, provider),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorConstant.appColor,
+                            backgroundColor: _isTermsAccepted
+                                ? ColorConstant.appColor
+                                : Colors.grey,
                             foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(vertical: 16.h),
                             shape: RoundedRectangleBorder(
@@ -247,7 +385,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 16.h),
                         // Continue with Google button
                         ElevatedButton(
-                          onPressed: provider.isLoading
+                          onPressed: (provider.isLoading || !_isTermsAccepted)
                               ? null
                               : () => _handleGoogleSignIn(context, provider),
                           style: ElevatedButton.styleFrom(
@@ -255,6 +393,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: EdgeInsets.symmetric(vertical: 14.h),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            disabledBackgroundColor: Colors.grey.withOpacity(
+                              0.3,
                             ),
                           ),
                           child: Row(
@@ -265,56 +406,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                 width: 22.w,
                                 height: 22.h,
                                 fit: BoxFit.cover,
+                                color: _isTermsAccepted ? null : Colors.grey,
                               ),
                               SizedBox(width: 8.w),
                               Text(
                                 "Continue with Google",
                                 style: AppTextStyle.robotoMedium.copyWith(
-                                  color: Colors.white,
+                                  color: _isTermsAccepted
+                                      ? Colors.white
+                                      : Colors.grey,
                                   fontSize: 16.sp,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        // Terms & Conditions at bottom
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 16.h, top: 16.h),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(right: 2.w),
-                                child: Text(
-                                  "By continuing, you agree to our",
-                                  style: AppTextStyle.robotoRegular.copyWith(
-                                    color: Colors.white70,
-                                    fontSize: 12.sp,
-                                  ),
-                                ),
-                              ),
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  minimumSize: Size(0, 0),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                onPressed: () {
-                                  debugPrint("Terms & Conditions pressed");
-                                },
-                                child: Text(
-                                  "Terms and Conditions.",
-                                  style: AppTextStyle.robotoRegular.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 12.sp,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        SizedBox(height: 16.h),
                       ],
                     ),
                   ),

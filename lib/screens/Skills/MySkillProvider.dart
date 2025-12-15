@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:first_flutter/baseControllers/APis.dart';
 
@@ -105,6 +106,89 @@ class MySkillProvider extends ChangeNotifier {
       }
     } catch (e) {
       _errorMessage = 'Error updating skill: ${e.toString()}';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // Update skill details (for rejected skills)
+  Future<bool> updateSkill({
+    required int skillId,
+    required String skillName,
+    required String serviceName,
+    required String experience,
+    File? proofDocument,
+  }) async {
+    try {
+      _isLoading = true;
+      _errorMessage = null;
+      notifyListeners();
+
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('provider_auth_token');
+
+      if (token == null || token.isEmpty) {
+        _errorMessage = 'Authentication token not found';
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$base_url/api/provider/update-skills'),
+      );
+
+      // Add headers
+      request.headers['Authorization'] = 'Bearer $token';
+
+      // Add form fields
+      request.fields['id'] = skillId.toString();
+      request.fields['skill_name'] = skillName;
+      request.fields['service_name'] = serviceName;
+      request.fields['experience'] = experience;
+
+      // Add file if provided
+      if (proofDocument != null) {
+        var stream = http.ByteStream(proofDocument.openRead());
+        var length = await proofDocument.length();
+        var multipartFile = http.MultipartFile(
+          'proof_document',
+          stream,
+          length,
+          filename: proofDocument.path.split('/').last,
+        );
+        request.files.add(multipartFile);
+      }
+
+      // Send request
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      print('Update Skill Response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        if (data['success'] == true || data['message'] != null) {
+          // Refresh skills list to get updated data
+          await fetchSkills();
+          return true;
+        } else {
+          _errorMessage = data['message'] ?? 'Failed to update skill';
+          _isLoading = false;
+          notifyListeners();
+          return false;
+        }
+      } else {
+        _errorMessage = 'Failed to update: ${response.statusCode}';
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _errorMessage = 'Error updating skill: ${e.toString()}';
+      _isLoading = false;
       notifyListeners();
       return false;
     }

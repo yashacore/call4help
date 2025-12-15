@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../widgets/UpdateProfileDialog.dart';
 import '../Home/CatehoryModel.dart';
 import '../User Instant Service/user_instant_service_screen.dart';
 import 'SubCategoryProvider.dart';
@@ -72,16 +74,22 @@ class _SubCatOfCatScreenState extends State<SubCatOfCatScreen> {
                   Text(
                     provider.errorMessage ?? 'An error occurred',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.roboto(fontSize: 16.sp, color: Colors.red),
+                    style: GoogleFonts.roboto(
+                      fontSize: 16.sp,
+                      color: Colors.red,
+                    ),
                   ),
                   SizedBox(height: 24.h),
                   ElevatedButton(
                     onPressed: () {
-                      final arguments = ModalRoute.of(context)?.settings.arguments;
+                      final arguments = ModalRoute.of(
+                        context,
+                      )?.settings.arguments;
                       if (arguments is Category) {
                         provider.fetchSubcategories(arguments.id);
                       } else if (arguments is Map<String, dynamic>) {
-                        final categoryId = arguments['id'] ?? arguments['categoryId'];
+                        final categoryId =
+                            arguments['id'] ?? arguments['categoryId'];
                         if (categoryId != null) {
                           provider.fetchSubcategories(categoryId);
                         }
@@ -110,7 +118,10 @@ class _SubCatOfCatScreenState extends State<SubCatOfCatScreen> {
                   SizedBox(height: 16.h),
                   Text(
                     'No subcategories available',
-                    style: GoogleFonts.roboto(fontSize: 18.sp, color: Colors.grey),
+                    style: GoogleFonts.roboto(
+                      fontSize: 18.sp,
+                      color: Colors.grey,
+                    ),
                   ),
                 ],
               ),
@@ -160,7 +171,9 @@ class UserExpansionTileListCard extends StatelessWidget {
             tilePadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
             leading: Container(
               clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(100.r)),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100.r),
+              ),
               height: 45.w,
               width: 45.w,
               child: CachedNetworkImage(
@@ -181,7 +194,10 @@ class UserExpansionTileListCard extends StatelessWidget {
               '₹${subcategory.hourlyRate}/hr',
               style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
             ),
-            childrenPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            childrenPadding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 12.h,
+            ),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             children: [
               LayoutBuilder(
@@ -193,7 +209,6 @@ class UserExpansionTileListCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildPricingInfo(constraints.maxWidth),
                           SizedBox(height: 16.h),
                           Text(
                             'Choose Service Type',
@@ -245,24 +260,18 @@ class UserExpansionTileListCard extends StatelessWidget {
           SizedBox(height: 8.h),
 
           // Hourly & Daily Row/Column
-          _buildPricingRow(
-            isSmallScreen,
-            [
-              _PriceItem(label: 'Hourly', price: subcategory.hourlyRate),
-              _PriceItem(label: 'Daily', price: subcategory.dailyRate),
-            ],
-          ),
+          _buildPricingRow(isSmallScreen, [
+            _PriceItem(label: 'Hourly', price: subcategory.hourlyRate),
+            _PriceItem(label: 'Daily', price: subcategory.dailyRate),
+          ]),
 
           SizedBox(height: 8.h),
 
           // Weekly & Monthly Row/Column
-          _buildPricingRow(
-            isSmallScreen,
-            [
-              _PriceItem(label: 'Weekly', price: subcategory.weeklyRate),
-              _PriceItem(label: 'Monthly', price: subcategory.monthlyRate),
-            ],
-          ),
+          _buildPricingRow(isSmallScreen, [
+            _PriceItem(label: 'Weekly', price: subcategory.weeklyRate),
+            _PriceItem(label: 'Monthly', price: subcategory.monthlyRate),
+          ]),
         ],
       ),
     );
@@ -271,12 +280,14 @@ class UserExpansionTileListCard extends StatelessWidget {
   Widget _buildPricingRow(bool isSmallScreen, List<Widget> items) {
     if (isSmallScreen) {
       return Column(
-        children: items.map((item) => Padding(
-          padding: EdgeInsets.only(bottom: 6.h),
-          child: Row(
-            children: [Expanded(child: item)],
-          ),
-        )).toList(),
+        children: items
+            .map(
+              (item) => Padding(
+                padding: EdgeInsets.only(bottom: 6.h),
+                child: Row(children: [Expanded(child: item)]),
+              ),
+            )
+            .toList(),
       );
     }
 
@@ -303,10 +314,7 @@ class UserExpansionTileListCard extends StatelessWidget {
             ),
             child: Text(
               'Instant',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 14.sp,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -337,13 +345,46 @@ class UserExpansionTileListCard extends StatelessWidget {
     );
   }
 
-  void _handleServiceTypeSelection(BuildContext context, String serviceType) {
+  void _handleServiceTypeSelection(
+    BuildContext context,
+    String serviceType,
+  ) async {
+    // Get SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    final isEmailVerified = prefs.getBool('is_email_verified') ?? false;
+    final userMobile = prefs.getString('user_mobile') ?? '';
+
+    // ADD THIS CHECK:
+    if (!isEmailVerified || userMobile.isEmpty) {
+      // Email not verified OR mobile not provided, show dialog first
+      print(
+        'Email not verified or mobile missing, showing update profile dialog',
+      );
+
+      await UpdateProfileDialog.show(context);
+
+      // After dialog closes, check again if both are now verified
+      final updatedPrefs = await SharedPreferences.getInstance();
+      final updatedEmailVerified =
+          updatedPrefs.getBool('is_email_verified') ?? false;
+      final updatedMobile = updatedPrefs.getString('user_mobile') ?? '';
+
+      if (!updatedEmailVerified || updatedMobile.isEmpty) {
+        // Still not complete, don't proceed
+        print('Profile still incomplete after dialog');
+        return;
+      }
+      // Both verified, continue to service screen below
+    }
+
+    print(subcategory.id);
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => UserInstantServiceScreen(
           categoryId: subcategory.id,
           categoryName: subcategory.name,
+          serviceType: serviceType,
         ),
       ),
     );

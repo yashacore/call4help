@@ -50,9 +50,11 @@ class _UserOngoingServiceState extends State<UserOngoingService> {
   }
 
   String _getPriceBy(ServiceModel service) {
-    if (service.serviceMode == 'hrs') return 'Hourly';
-    if (service.serviceMode == 'day') return 'Daily';
-    return 'Fixed';
+    // Return bid amount if available, otherwise return budget
+    if (service.bids.isNotEmpty) {
+      return service.bids.first.amount.toStringAsFixed(0);
+    }
+    return service.budget;
   }
 
   @override
@@ -127,7 +129,7 @@ class _UserOngoingServiceState extends State<UserOngoingService> {
                 dp: "https://ui-avatars.com/api/?name=${service.category}&background=random",
                 price: service.budget,
                 duration: _getDuration(service),
-                priceBy: _getPriceBy(service),
+                priceBy: _getPriceBy(service), // Now shows bid amount (600)
                 providerCount: int.tryParse(service.totalBids) ?? 0,
                 status: service.status,
                 onPress: () async {

@@ -21,6 +21,8 @@ class SubcategoryService {
         headers: {'Content-Type': 'application/json'},
       );
 
+      print(categoryId);
+      print(response.body);
       debugPrint('Fetch Subcategories Response: ${response.body}');
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
@@ -56,7 +58,9 @@ class SubcategoryService {
         final jsonData = json.decode(response.body);
         return jsonData as Map<String, dynamic>;
       } else {
-        debugPrint('Failed to create service. Status code: ${response.statusCode}');
+        debugPrint(
+          'Failed to create service. Status code: ${response.statusCode}',
+        );
         return null;
       }
     } catch (e) {
@@ -76,19 +80,15 @@ class UserInstantServiceProvider with ChangeNotifier {
   bool _isCreatingService = false;
   String? _error;
 
-  String? _selectedServiceMode;
-  DateTime? _startDate;
-  DateTime? _endDate;
-  int? _serviceDays;
+  // service mode ko non-null rakho
+  String _selectedServiceMode = 'hrs';
 
-  // Getters
-  String? get selectedServiceMode => _selectedServiceMode;
-  DateTime? get startDate => _startDate;
-  DateTime? get endDate => _endDate;
-  int? get serviceDays => _serviceDays;
-
-  // Form field values
-  Map<String, dynamic> _formValues = {};
+  // form values
+  final Map<String, dynamic> _formValues = {
+    'payment_method': 'postpaid',
+    'duration_unit': 'hour',
+    'tenure': 'one_time',
+  };
 
   // Location data
   double? _latitude;
@@ -96,8 +96,14 @@ class UserInstantServiceProvider with ChangeNotifier {
   String? _location;
 
   // Schedule data
+  DateTime? _startDate;
+  DateTime? _endDate;
+  int? _serviceDays;
   DateTime? _scheduleDate;
   TimeOfDay? _scheduleTime;
+
+  // map controller
+  GoogleMapController? _mapController;
 
   // Getters
   SubcategoryResponse? get subcategoryResponse => _subcategoryResponse;
@@ -105,27 +111,122 @@ class UserInstantServiceProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isCreatingService => _isCreatingService;
   String? get error => _error;
+
+  String get selectedServiceMode => _selectedServiceMode;
   Map<String, dynamic> get formValues => _formValues;
+
   double? get latitude => _latitude;
   double? get longitude => _longitude;
   String? get location => _location;
+
+  DateTime? get startDate => _startDate;
+  DateTime? get endDate => _endDate;
+  int? get serviceDays => _serviceDays;
+
   DateTime? get scheduleDate => _scheduleDate;
   TimeOfDay? get scheduleTime => _scheduleTime;
 
-  GoogleMapController? _mapController;
   GoogleMapController? get mapController => _mapController;
 
   void setMapController(GoogleMapController controller) {
     _mapController = controller;
   }
 
-  // ❌ REMOVED: Don't initialize NATS here - it's already initialized in main()
-  // NATS connection is managed globally, just use it
+  // ---------- Pricing / Budget ----------
 
-  // Get current location
+  double? calculateBaseAmount() {
+    if (_selectedSubcategory == null) return null;
+
+    int quantity = 1;
+    for (var field in _selectedSubcategory!.fields) {
+      if (field.isCalculate) {
+        final value = _formValues[field.fieldName];
+        if (value != null) {
+          quantity = int.tryParse(value.toString()) ?? 1;
+        }
+        break;
+      }
+    }
+
+    final billingType = _selectedSubcategory!.billingType.toLowerCase();
+
+    if (billingType == 'time') {
+      if (_selectedServiceMode == 'hrs') {
+        final durationValue =
+            int.tryParse(_formValues['duration_value']?.toString() ?? '1') ?? 1;
+        final hourlyRate =
+            double.tryParse(_selectedSubcategory!.hourlyRate) ?? 0.0;
+        return quantity * durationValue * hourlyRate;
+      } else {
+        final dailyRate =
+            double.tryParse(_selectedSubcategory!.dailyRate) ?? 0.0;
+        return quantity * (_serviceDays ?? 1) * dailyRate;
+      }
+    } else if (billingType == 'project') {
+      final hourlyRate =
+          double.tryParse(_selectedSubcategory!.hourlyRate) ?? 0.0;
+      return quantity * hourlyRate;
+    }
+
+    return null;
+  }
+
+  Map<String, double>? getBudgetRange() {
+    final baseAmount = calculateBaseAmount();
+    if (baseAmount == null) return null;
+
+    return {
+      'min': baseAmount * 0.7,
+      'max': baseAmount * 2.0,
+      'base': baseAmount,
+    };
+  }
+
+  String? validateBudget(String? budgetStr) {
+    if (budgetStr == null || budgetStr.isEmpty) {
+      return 'Please enter your budget';
+    }
+
+    final budget = double.tryParse(budgetStr);
+    if (budget == null) {
+      return 'Please enter a valid amount';
+    }
+
+    final paymentMethod = _formValues['payment_method'];
+    if (paymentMethod == 'cash' && budget > 2000) {
+      return 'Cash payment is limited to ₹2000';
+    }
+
+    final range = getBudgetRange();
+    if (range != null) {
+      if (budget < range['min']!) {
+        return 'Minimum budget should be ₹${range['min']!.toStringAsFixed(0)} (30% down from base rate)';
+      }
+      if (budget > range['max']!) {
+        return 'Maximum budget should be ₹${range['max']!.toStringAsFixed(0)} (100% up from base rate)';
+      }
+    }
+
+    return null;
+  }
+
+  String getBudgetHint() {
+    final range = getBudgetRange();
+    if (range != null) {
+      return 'Budget range: ₹${range['min']!.toStringAsFixed(0)} - ₹${range['max']!.toStringAsFixed(0)} (Base: ₹${range['base']!.toStringAsFixed(0)})';
+    }
+
+    if (_selectedSubcategory != null) {
+      return 'Minimum Service Price is ₹${_selectedSubcategory!.hourlyRate}';
+    }
+
+    return 'Enter your budget';
+  }
+
+  // ---------- Location ----------
+
   Future<void> getCurrentLocation() async {
     try {
-      // Check permission
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -142,14 +243,12 @@ class UserInstantServiceProvider with ChangeNotifier {
         return;
       }
 
-      // Get current position
-      Position position = await Geolocator.getCurrentPosition(
+      final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
 
       await updateLocationFromMap(position.latitude, position.longitude);
 
-      // Move camera to current location
       if (_mapController != null) {
         _mapController!.animateCamera(
           CameraUpdate.newLatLngZoom(
@@ -165,14 +264,12 @@ class UserInstantServiceProvider with ChangeNotifier {
     }
   }
 
-  // Update location from map tap
   Future<void> updateLocationFromMap(double lat, double lon) async {
     try {
       _latitude = lat;
       _longitude = lon;
 
-      // Get address from coordinates
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lon);
+      final placemarks = await placemarkFromCoordinates(lat, lon);
       if (placemarks.isNotEmpty) {
         final place = placemarks.first;
         _location =
@@ -191,7 +288,15 @@ class UserInstantServiceProvider with ChangeNotifier {
     }
   }
 
-  // Fetch subcategories from API
+  void setLocation(double lat, double lon, String loc) {
+    _latitude = lat;
+    _longitude = lon;
+    _location = loc;
+    notifyListeners();
+  }
+
+  // ---------- Subcategories / form ----------
+
   Future<void> fetchSubcategories(int categoryId) async {
     _isLoading = true;
     _error = null;
@@ -214,93 +319,128 @@ class UserInstantServiceProvider with ChangeNotifier {
     }
   }
 
-  // Set selected subcategory
   void setSelectedSubcategory(Subcategory? subcategory) {
     _selectedSubcategory = subcategory;
-    _formValues.clear();
-    _formValues['payment_method'] = 'postpaid';
-    _formValues['duration_unit'] = 'hour';
-    _formValues['tenure'] = 'one_time';
 
-    // Initialize service mode based on billing type
+    _formValues
+      ..clear()
+      ..addAll({
+        'payment_method': 'postpaid',
+        'duration_unit': 'hour',
+        'tenure': 'one_time',
+      });
+
     if (subcategory != null &&
         subcategory.billingType.toLowerCase() == 'time') {
-      _selectedServiceMode = 'hrs'; // Set default mode for time billing
+      _selectedServiceMode = 'hrs';
     }
 
     notifyListeners();
   }
 
-  // Update form field value
+  // Add this new method after setSelectedSubcategory
+  void setSelectedSubcategoryInitial(Subcategory? subcategory) {
+    _selectedSubcategory = subcategory;
+
+    _formValues
+      ..clear()
+      ..addAll({
+        'payment_method': 'postpaid',
+        'duration_unit': 'hour',
+        'tenure': 'one_time',
+      });
+
+    if (subcategory != null &&
+        subcategory.billingType.toLowerCase() == 'time') {
+      _selectedServiceMode = 'hrs';
+    }
+
+    // ✅ DON'T call notifyListeners() here - this is for initial setup only
+  }
+
   void updateFormValue(String fieldName, dynamic value) {
     _formValues[fieldName] = value;
     notifyListeners();
   }
 
-  // Get form field value
-  dynamic getFormValue(String fieldName) {
-    return _formValues[fieldName];
-  }
+  dynamic getFormValue(String fieldName) => _formValues[fieldName];
 
-  // Set location data
-  void setLocation(double lat, double lon, String loc) {
-    _latitude = lat;
-    _longitude = lon;
-    _location = loc;
-    notifyListeners();
-  }
-
-  // Set schedule date
-  void setScheduleDate(DateTime date) {
-    _scheduleDate = date;
-    notifyListeners();
-  }
-
-  // Set schedule time
-  void setScheduleTime(TimeOfDay time) {
-    _scheduleTime = time;
-    notifyListeners();
-  }
-
-  // Clear all form values
   void clearFormValues() {
-    _formValues.clear();
+    _formValues
+      ..clear()
+      ..addAll({
+        'payment_method': 'postpaid',
+        'duration_unit': 'hour',
+        'tenure': 'one_time',
+      });
     notifyListeners();
   }
+
+  // ---------- Time / date state ----------
 
   void setServiceMode(String mode) {
-    _selectedServiceMode = mode;
-    notifyListeners();
+    if (_selectedServiceMode != mode) {
+      _selectedServiceMode = mode;
+
+      // mode change pe time/date bhi reset kar sakte ho
+      if (mode == 'hrs') {
+        _serviceDays = null;
+        _startDate = null;
+        _endDate = null;
+      } else {
+        _scheduleDate = null;
+        _scheduleTime = null;
+      }
+
+      notifyListeners();
+    }
   }
 
   void setStartDate(DateTime date) {
-    _startDate = date;
-    // Auto calculate end date if service days is set
-    if (_serviceDays != null) {
-      _endDate = date.add(Duration(days: _serviceDays!));
+    _startDate = DateTime(date.year, date.month, date.day);
+    if (_serviceDays != null && _serviceDays! > 0) {
+      _endDate = _startDate!.add(Duration(days: _serviceDays!));
     }
+    notifyListeners();
+  }
+
+  void setScheduleDate(DateTime date) {
+    _scheduleDate = DateTime(date.year, date.month, date.day);
     notifyListeners();
   }
 
   void setEndDate(DateTime date) {
-    _endDate = date;
-    notifyListeners();
+    final normalized = DateTime(date.year, date.month, date.day);
+    if (_endDate != normalized) {
+      _endDate = normalized;
+      notifyListeners();
+    }
   }
 
   void setServiceDays(int days) {
-    _serviceDays = days;
-    // Auto calculate end date if start date is set
-    if (_startDate != null) {
-      _endDate = _startDate!.add(Duration(days: days));
+    if (days > 0 && _serviceDays != days) {
+      _serviceDays = days;
+      if (_startDate != null) {
+        _endDate = _startDate!.add(Duration(days: days));
+      }
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  // Validate form
-  bool validateForm() {
+
+
+  void setScheduleTime(TimeOfDay time) {
+    if (_scheduleTime != time) {
+      _scheduleTime = time;
+      notifyListeners();
+    }
+  }
+
+  // ---------- Validation ----------
+
+  bool validateForm({String? serviceType}) {
     if (_selectedSubcategory == null) return false;
 
-    // Validate required fields from API
     for (var field in _selectedSubcategory!.fields) {
       if (field.isRequired) {
         final value = _formValues[field.fieldName];
@@ -310,31 +450,25 @@ class UserInstantServiceProvider with ChangeNotifier {
       }
     }
 
-    // Validate budget
-    final budget = _formValues['budget'];
-    if (budget == null || budget.toString().isEmpty) {
+    if (_latitude == null || _longitude == null || _location == null) {
       return false;
     }
 
-    // Validate payment method
+    final budget = _formValues['budget'];
+    final budgetError = validateBudget(budget?.toString());
+    if (budgetError != null) {
+      return false;
+    }
+
     final paymentMethod = _formValues['payment_method'];
     if (paymentMethod == null || paymentMethod.toString().isEmpty) {
       return false;
     }
 
-    // Validate cash payment limit
-    if (paymentMethod == 'cash') {
-      final budgetValue = double.tryParse(budget.toString()) ?? 0.0;
-      if (budgetValue > 2000) {
-        return false;
-      }
-    }
-
     final billingType = _selectedSubcategory!.billingType.toLowerCase();
 
-    // Validation based on billing type
     if (billingType == 'time') {
-      if (_selectedServiceMode == null) return false;
+      if (_selectedServiceMode.isEmpty) return false;
 
       if (_selectedServiceMode == 'hrs') {
         final durationValue = _formValues['duration_value'];
@@ -347,29 +481,24 @@ class UserInstantServiceProvider with ChangeNotifier {
           return false;
         }
 
-        if (_scheduleDate == null || _scheduleTime == null) {
-          return false;
+        if (serviceType == 'later') {
+          if (_scheduleDate == null || _scheduleTime == null) {
+            return false;
+          }
         }
       } else if (_selectedServiceMode == 'day') {
-        if (_serviceDays == null || _serviceDays! <= 0) {
-          return false;
-        }
-        if (_startDate == null || _endDate == null) {
-          return false;
-        }
+        if (_serviceDays == null || _serviceDays! <= 0) return false;
+        if (_startDate == null || _endDate == null) return false;
       }
 
       final tenure = _formValues['tenure'];
-      if (tenure == null || tenure.toString().isEmpty) {
-        return false;
-      }
+      if (tenure == null || tenure.toString().isEmpty) return false;
     }
 
     return true;
   }
 
-  // Get validation error message
-  String? getValidationError() {
+  String? getValidationError({String? serviceType}) {
     if (_selectedSubcategory == null) return 'No subcategory selected';
 
     for (var field in _selectedSubcategory!.fields) {
@@ -381,9 +510,14 @@ class UserInstantServiceProvider with ChangeNotifier {
       }
     }
 
+    if (_latitude == null || _longitude == null || _location == null) {
+      return 'Please select service location';
+    }
+
     final budget = _formValues['budget'];
-    if (budget == null || budget.toString().isEmpty) {
-      return 'Please enter your budget';
+    final budgetError = validateBudget(budget?.toString());
+    if (budgetError != null) {
+      return budgetError;
     }
 
     final paymentMethod = _formValues['payment_method'];
@@ -391,17 +525,10 @@ class UserInstantServiceProvider with ChangeNotifier {
       return 'Please select a payment method';
     }
 
-    if (paymentMethod == 'cash') {
-      final budgetValue = double.tryParse(budget.toString()) ?? 0.0;
-      if (budgetValue > 2000) {
-        return 'Cash payment is limited to ₹2000. Please choose online payment or reduce the budget.';
-      }
-    }
-
     final billingType = _selectedSubcategory!.billingType.toLowerCase();
 
     if (billingType == 'time') {
-      if (_selectedServiceMode == null) {
+      if (_selectedServiceMode.isEmpty) {
         return 'Please select service mode (Hourly or Daily)';
       }
 
@@ -416,22 +543,21 @@ class UserInstantServiceProvider with ChangeNotifier {
           return 'Please select duration unit';
         }
 
-        if (_scheduleDate == null) {
-          return 'Please select schedule date';
-        }
-
-        if (_scheduleTime == null) {
-          return 'Please select schedule time';
+        if (serviceType != 'instant') {
+          if (_scheduleDate == null) {
+            return 'Please select schedule date';
+          }
+          if (_scheduleTime == null) {
+            return 'Please select schedule time';
+          }
         }
       } else if (_selectedServiceMode == 'day') {
         if (_serviceDays == null || _serviceDays! <= 0) {
           return 'Please enter number of days';
         }
-
         if (_startDate == null) {
           return 'Please select start date';
         }
-
         if (_endDate == null) {
           return 'Please select end date';
         }
@@ -446,7 +572,8 @@ class UserInstantServiceProvider with ChangeNotifier {
     return null;
   }
 
-  // Get authentication token
+  // ---------- Token ----------
+
   Future<String?> getToken() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -457,14 +584,16 @@ class UserInstantServiceProvider with ChangeNotifier {
     }
   }
 
-  // Create service with NATS integration
+  // ---------- Create service ----------
+
   Future<bool> createService({
     required String categoryName,
     required String billingtype,
     required String subcategoryName,
+    String? serviceType,
   }) async {
-    if (!validateForm()) {
-      _error = getValidationError();
+    if (!validateForm(serviceType: serviceType)) {
+      _error = getValidationError(serviceType: serviceType);
       notifyListeners();
       return false;
     }
@@ -474,8 +603,7 @@ class UserInstantServiceProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      // Prepare dynamic fields
-      final Map<String, dynamic> dynamicFields = {};
+      final dynamicFields = <String, dynamic>{};
       for (var field in _selectedSubcategory!.fields) {
         final value = _formValues[field.fieldName];
         if (value != null && value.toString().isNotEmpty) {
@@ -490,7 +618,6 @@ class UserInstantServiceProvider with ChangeNotifier {
         }
       }
 
-      // Get user data
       final prefs = await SharedPreferences.getInstance();
       final userId = prefs.getInt('user_id');
       final token = await getToken();
@@ -504,10 +631,9 @@ class UserInstantServiceProvider with ChangeNotifier {
 
       final double budgetValue =
           double.tryParse(_formValues['budget'].toString()) ?? 0.0;
-      final String billingTypeNormalized = billingtype.toLowerCase();
+      final billingTypeNormalized = billingtype.toLowerCase();
 
-      // Build service data
-      Map<String, dynamic> serviceData = {
+      final serviceData = <String, dynamic>{
         "title": "$subcategoryName Service",
         "category": categoryName,
         "description": "Service request for $subcategoryName",
@@ -523,32 +649,39 @@ class UserInstantServiceProvider with ChangeNotifier {
         "dynamic_fields": dynamicFields,
       };
 
-      // Add fields based on billing type
       if (billingTypeNormalized == 'time') {
         serviceData["tenure"] = _formValues['tenure'] ?? 'one_time';
 
         if (_selectedServiceMode == 'hrs') {
-          final int durationValue =
+          final durationValue =
               int.tryParse(_formValues['duration_value'].toString()) ?? 2;
 
-          final String scheduleDate =
-              '${_scheduleDate!.year}-${_scheduleDate!.month.toString().padLeft(2, '0')}-${_scheduleDate!.day.toString().padLeft(2, '0')}';
+          if (serviceType != 'instant') {
+            final scheduleDate =
+                '${_scheduleDate!.year}-${_scheduleDate!.month.toString().padLeft(2, '0')}-${_scheduleDate!.day.toString().padLeft(2, '0')}';
 
-          final String scheduleTime =
-              '${_scheduleTime!.hour.toString().padLeft(2, '0')}:${_scheduleTime!.minute.toString().padLeft(2, '0')}';
+            final scheduleTime =
+                '${_scheduleTime!.hour.toString().padLeft(2, '0')}:${_scheduleTime!.minute.toString().padLeft(2, '0')}';
 
-          serviceData.addAll({
-            "service_mode": "hrs",
-            "duration_value": durationValue,
-            "duration_unit": _formValues['duration_unit'] ?? 'hour',
-            "schedule_date": scheduleDate,
-            "schedule_time": scheduleTime,
-          });
-        } else if (_selectedServiceMode == 'day') {
-          final String startDateStr =
+            serviceData.addAll({
+              "service_mode": "hrs",
+              "duration_value": durationValue,
+              "duration_unit": _formValues['duration_unit'] ?? 'hour',
+              "schedule_date": scheduleDate,
+              "schedule_time": scheduleTime,
+            });
+          } else {
+            serviceData.addAll({
+              "service_mode": "hrs",
+              "duration_value": durationValue,
+              "duration_unit": _formValues['duration_unit'] ?? 'hour',
+            });
+          }
+        } else {
+          final startDateStr =
               '${_startDate!.year}-${_startDate!.month.toString().padLeft(2, '0')}-${_startDate!.day.toString().padLeft(2, '0')}';
 
-          final String endDateStr =
+          final endDateStr =
               '${_endDate!.year}-${_endDate!.month.toString().padLeft(2, '0')}-${_endDate!.day.toString().padLeft(2, '0')}';
 
           serviceData.addAll({
@@ -574,7 +707,6 @@ class UserInstantServiceProvider with ChangeNotifier {
 
       debugPrint('Service Data: ${json.encode(serviceData)}');
 
-      // ✅ FIXED: Only publish to NATS if connected (don't try to connect here)
       if (_natsService.isConnected) {
         try {
           final natsRequestPayload = {
@@ -590,23 +722,19 @@ class UserInstantServiceProvider with ChangeNotifier {
           debugPrint('📤 Published service creation request to NATS');
         } catch (e) {
           debugPrint('⚠️ Error publishing to NATS: $e');
-          // Don't fail the entire operation if NATS publish fails
         }
       } else {
         debugPrint('⚠️ NATS not connected, skipping publish');
       }
 
-      // Create service via API
       final response = await _service.createService(serviceData, token: token);
-      final bool isSuccess = response != null && (response['success'] == true);
+      final isSuccess = response != null && (response['success'] == true);
 
       if (isSuccess) {
-        final dynamic serviceIdDynamic = response['service']?['id'];
-        final String serviceId = serviceIdDynamic != null
-            ? serviceIdDynamic.toString()
-            : "unknown";
+        final serviceIdDynamic = response['service']?['id'];
+        final serviceId =
+        serviceIdDynamic != null ? serviceIdDynamic.toString() : "unknown";
 
-        // ✅ FIXED: Publish success only if connected
         if (_natsService.isConnected) {
           try {
             final successPayload = {
@@ -631,7 +759,6 @@ class UserInstantServiceProvider with ChangeNotifier {
       } else {
         _error = response?['message']?.toString() ?? 'Failed to create service';
 
-        // ✅ FIXED: Publish failure only if connected
         if (_natsService.isConnected) {
           try {
             final failurePayload = {
@@ -657,7 +784,6 @@ class UserInstantServiceProvider with ChangeNotifier {
       _error = 'An error occurred: $e';
       debugPrint('❌ Error creating service: $e');
 
-      // ✅ FIXED: Publish error only if connected
       if (_natsService.isConnected) {
         try {
           final errorPayload = {
@@ -680,26 +806,34 @@ class UserInstantServiceProvider with ChangeNotifier {
     }
   }
 
-  // Reset provider state
   void reset() {
     _subcategoryResponse = null;
     _selectedSubcategory = null;
     _isLoading = false;
     _isCreatingService = false;
     _error = null;
-    _formValues.clear();
+    _formValues
+      ..clear()
+      ..addAll({
+        'payment_method': 'postpaid',
+        'duration_unit': 'hour',
+        'tenure': 'one_time',
+      });
     _latitude = null;
     _longitude = null;
     _location = null;
     _scheduleDate = null;
     _scheduleTime = null;
+    _startDate = null;
+    _endDate = null;
+    _serviceDays = null;
+    _selectedServiceMode = 'hrs';
     notifyListeners();
   }
 
   @override
   void dispose() {
-    // ❌ REMOVED: Don't disconnect NATS here - it's shared across the app
-    // The global NATS connection should remain active
+    _mapController?.dispose();
     super.dispose();
   }
 }

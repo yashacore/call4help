@@ -8,10 +8,7 @@ import 'ProviderBidModel.dart';
 class ProviderBidProvider extends ChangeNotifier {
   final NatsService _natsService = NatsService();
 
-  // Subscription is now managed by NatsService internally
   String? _currentTopic;
-
-  // ✅ ADD THIS: Store stream subscription to prevent memory leak
   StreamSubscription<bool>? _connectionSubscription;
 
   List<ProviderBidModel> _bids = [];
@@ -21,23 +18,17 @@ class ProviderBidProvider extends ChangeNotifier {
   int? _providerId;
 
   List<ProviderBidModel> get bids => _bids;
-
   bool get isLoading => _isLoading;
-
   bool get isConnected => _isConnected;
-
   String? get error => _error;
-
   int? get providerId => _providerId;
 
   ProviderBidProvider() {
-    // ✅ CHANGE THIS: Store the subscription reference
     _connectionSubscription = _natsService.connectionStream.listen((connected) {
       _isConnected = connected;
 
       if (connected) {
         _error = null;
-        // If we have a topic and connection restored, subscription is auto-restored
         if (_currentTopic != null) {
           debugPrint(
             '✅ NATS reconnected. Subscription to $_currentTopic restored automatically',
@@ -50,8 +41,18 @@ class ProviderBidProvider extends ChangeNotifier {
       notifyListeners();
     });
 
-    // Set initial connection status
     _isConnected = _natsService.isConnected;
+  }
+
+  /// Remove bid from list (called when timer expires)
+  void removeBid(String bidId) {
+    final bidIndex = _bids.indexWhere((bid) => bid.id == bidId);
+    if (bidIndex != -1) {
+      final bid = _bids[bidIndex];
+      _bids.removeAt(bidIndex);
+      notifyListeners();
+      debugPrint('🗑️ Removed bid: ${bid.title} (ID: $bidId) - Timer expired');
+    }
   }
 
   /// Initialize subscription to provider-specific topic
@@ -61,7 +62,6 @@ class ProviderBidProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Get provider ID from SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       _providerId = prefs.getInt('provider_id');
 
@@ -72,11 +72,10 @@ class ProviderBidProvider extends ChangeNotifier {
         return;
       }
 
-      // Wait for NATS to be connected (it's initialized in main())
+      // Wait for NATS connection
       if (!_natsService.isConnected) {
         debugPrint('⚠️ NATS not connected yet, waiting...');
 
-        // Wait up to 5 seconds for connection
         int attempts = 0;
         while (!_natsService.isConnected && attempts < 10) {
           await Future.delayed(const Duration(milliseconds: 500));
@@ -101,8 +100,6 @@ class ProviderBidProvider extends ChangeNotifier {
 
       // Subscribe to provider-specific topic
       _currentTopic = 'services.provider.$_providerId';
-
-      // The subscribe method now handles persistence internally
       _natsService.subscribe(_currentTopic!, _handleBidNotification);
 
       debugPrint('✅ Successfully subscribed to: $_currentTopic');
@@ -125,22 +122,23 @@ class ProviderBidProvider extends ChangeNotifier {
     try {
       debugPrint('📥 Received service request: $message');
 
-      // Parse the JSON message
       final data = jsonDecode(message);
-
-      // Create bid model from the data
       final bid = ProviderBidModel.fromJson(data);
 
-      // Only add if status is 'open' (new service requests)
+      // Only process 'open' status bids
       if (bid.status == 'open') {
-        // Add to the list (avoid duplicates)
         final existingIndex = _bids.indexWhere((b) => b.id == bid.id);
+
         if (existingIndex != -1) {
-          _bids[existingIndex] = bid;
+          // Update existing bid with new receivedAt time
+          _bids[existingIndex] = bid.copyWith(receivedAt: DateTime.now());
           debugPrint('🔄 Updated existing service: ${bid.title}');
         } else {
-          _bids.insert(0, bid); // Add new bids at the top
+          // Add new bid with current timestamp (timer starts from now)
+          final newBid = bid.copyWith(receivedAt: DateTime.now());
+          _bids.insert(0, newBid); // Add at top of list
           debugPrint('✅ New service request added: ${bid.title}');
+          debugPrint('⏱️ Timer will start immediately for this service');
         }
 
         notifyListeners();
@@ -163,18 +161,12 @@ class ProviderBidProvider extends ChangeNotifier {
   void addBid(ProviderBidModel bid) {
     final existingIndex = _bids.indexWhere((b) => b.id == bid.id);
     if (existingIndex != -1) {
-      _bids[existingIndex] = bid;
+      _bids[existingIndex] = bid.copyWith(receivedAt: DateTime.now());
     } else {
-      _bids.insert(0, bid);
+      _bids.insert(0, bid.copyWith(receivedAt: DateTime.now()));
     }
     notifyListeners();
-  }
-
-  /// Remove a bid
-  void removeBid(String serviceId) {
-    _bids.removeWhere((bid) => bid.id == serviceId);
-    notifyListeners();
-    debugPrint('🗑️ Removed service: $serviceId');
+    debugPrint('➕ Manually added bid: ${bid.title}');
   }
 
   /// Clear all bids
@@ -188,15 +180,11 @@ class ProviderBidProvider extends ChangeNotifier {
   Future<void> retry() async {
     debugPrint('🔄 Retrying connection...');
 
-    // If NATS is not connected, trigger manual reconnect
     if (!_natsService.isConnected) {
       await _natsService.reconnect();
-
-      // Wait a bit for connection to establish
       await Future.delayed(const Duration(seconds: 1));
     }
 
-    // Re-initialize subscription
     await initialize();
   }
 
@@ -209,25 +197,21 @@ class ProviderBidProvider extends ChangeNotifier {
     }
   }
 
-  /// Refresh/reload bids (useful for pull-to-refresh)
+  /// Refresh/reload bids
   Future<void> refresh() async {
-    // You can add API call here to fetch initial bids if needed
     await Future.delayed(const Duration(seconds: 1));
     notifyListeners();
   }
 
   @override
   void dispose() {
-    // ✅ ADD THIS: Cancel stream subscription to prevent memory leak
     _connectionSubscription?.cancel();
 
-    // Unsubscribe from the topic using NatsService method
     if (_currentTopic != null) {
       _natsService.unsubscribe(_currentTopic!);
       debugPrint('🔕 Unsubscribed from topic: $_currentTopic');
     }
 
-    // Don't disconnect NATS here as it's shared across the app
     super.dispose();
   }
 }

@@ -6,6 +6,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../screens/user_screens/WidgetProviders/ServiceAPI.dart';
+import '../screens/user_screens/navigation/SOSEmergencyScreen.dart';
+import '../screens/user_screens/navigation/UserChats/UserChatScreen.dart';
+import 'CancelServiceDialog.dart';
+import 'RatingDialog.dart';
 
 class UserServiceDetails extends StatelessWidget {
   final String? serviceId;
@@ -18,6 +22,7 @@ class UserServiceDetails extends StatelessWidget {
   final String? name;
   final String? rating;
   final String status;
+  final String? providerId;
 
   final String? durationType;
   final String? duration;
@@ -33,6 +38,7 @@ class UserServiceDetails extends StatelessWidget {
   final VoidCallback? onCancel;
   final VoidCallback? onTaskComplete;
   final VoidCallback? onRateService;
+  final VoidCallback? onSeeWorktime;
 
   const UserServiceDetails({
     super.key,
@@ -58,6 +64,8 @@ class UserServiceDetails extends StatelessWidget {
     this.onCancel,
     this.onTaskComplete,
     this.onRateService,
+    this.providerId,
+    this.onSeeWorktime,
   });
 
   // Add this method to show note popup
@@ -412,6 +420,7 @@ class UserServiceDetails extends StatelessWidget {
         serviceId: serviceId!,
         amount: price!,
         notes: note,
+        status: "pending",
       );
 
       // Hide loading dialog
@@ -498,8 +507,9 @@ class UserServiceDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(status);
-    print(pin);
+    final statusLower = status.toLowerCase();
+    print(statusLower);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
       child: Container(
@@ -512,25 +522,41 @@ class UserServiceDetails extends StatelessWidget {
           spacing: 10,
           children: [
             _catSubCatDate(context, category, subCategory, date),
-            if (!(status == "completed" || status == "cancelled"))
+
+            // Hide SOS section for completed and cancelled
+            if (!(statusLower == "completed" || statusLower == "cancelled"))
               _sosPinTimeLeftCallMessage(context, pin, providerPhone),
+
             _dpNameStatus(context, _currentStatusChip(context, status)),
+
             _durationTypeDurationAndPrice(
               context,
               durationType,
               duration,
               price,
             ),
+
             _userAddress(context, address),
+
             if (particular != null) _particular(context, particular!),
+
             _description(context, description),
-            if ((status == "" || status == "open") && isProvider)
+
+            // Accept/ReBid buttons - show for 'open' and 'pending' if provider
+            if ((statusLower == "open" || statusLower == "pending") &&
+                isProvider)
               _acceptReBid(context),
-            if (status == "assigned" && !isProvider) _cancelTheService(context),
-            if ((status == "confirmed") && !isProvider)
+
+            // Cancel button - show for 'assigned' status (user side)
+            if (statusLower == "assigned" || statusLower == "arrived")
               _cancelTheService(context),
-            if (status == "ongoing") _taskComplete(context),
-            if (status == "completed") _rateService(context),
+
+            // Task complete - show for 'started' or 'in_progress' status
+            if (statusLower == "started" )
+              _taskComplete(context),
+
+            // Rate service - show for 'completed' status
+            if (statusLower == "completed") _rateService(context),
           ],
         ),
       ),
@@ -670,6 +696,7 @@ class UserServiceDetails extends StatelessWidget {
         serviceId: serviceId!,
         amount: newAmount,
         notes: note,
+        status: "Rebid",
       );
 
       // Hide loading dialog
@@ -724,124 +751,127 @@ class UserServiceDetails extends StatelessWidget {
   // (Copy all the other methods from your original code)
 
   Widget _currentStatusChip(BuildContext context, String? status3) {
-    switch (status3) {
+    final statusLower = status3?.toLowerCase() ?? '';
+
+    switch (statusLower) {
       case 'open':
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFE3F2FD),
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-          ),
-          child: Text(
-            "Open",
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
-              textStyle: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-              color: Color(0xFF1976D2),
-            ),
-          ),
+        return _buildStatusChip(
+          context,
+          text: "Open",
+          backgroundColor: Color(0xFFE8F5E9),
+          textColor: ColorConstant.moyoGreen,
         );
+
       case 'pending':
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: ColorConstant.moyoOrangeFade,
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-          ),
-          child: Text(
-            "Pending",
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
-              textStyle: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-              color: ColorConstant.moyoOrange,
-            ),
-          ),
+        return _buildStatusChip(
+          context,
+          text: "Pending",
+          backgroundColor: Color(0xFFFFF3E0),
+          textColor: Color(0xFFF57C00),
         );
-      case 'confirmed':
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFDEEAFA),
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-          ),
-          child: Text(
-            "Confirmed",
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
-              textStyle: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-              color: Color(0xFF1A4E88),
-            ),
-          ),
+
+      case 'assigned':
+        return _buildStatusChip(
+          context,
+          text: "Assigned",
+          backgroundColor: Color(0xFFDEEAFA),
+          textColor: Color(0xFF1A4E88),
         );
-      case 'ongoing':
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFE8FEEA),
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-          ),
-          child: Text(
-            "Ongoing",
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
-              textStyle: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-              color: Color(0xFF4ADB4A),
-            ),
-          ),
+
+      case 'started':
+        return _buildStatusChip(
+          context,
+          text: "Started",
+          backgroundColor: Color(0xFFE1F5FE),
+          textColor: Color(0xFF0277BD),
         );
+
+      case 'arrived':
+        return _buildStatusChip(
+          context,
+          text: "Arrived",
+          backgroundColor: Color(0xFFE8EAF6),
+          textColor: Color(0xFF3F51B5),
+        );
+
+      case 'in_progress':
+        return _buildStatusChip(
+          context,
+          text: "In Progress",
+          backgroundColor: Color(0xFFFFF9C4),
+          textColor: Color(0xFFF57F17),
+        );
+
       case 'completed':
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFDEEAFA),
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-          ),
-          child: Text(
-            "Completed",
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
-              textStyle: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-              color: Color(0xFF1A4E88),
-            ),
-          ),
+        return _buildStatusChip(
+          context,
+          text: "Completed",
+          backgroundColor: Color(0xFFE6F7C0),
+          textColor: ColorConstant.moyoGreen,
         );
+
       case 'cancelled':
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFFEE8E8),
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-          ),
-          child: Text(
-            "Cancelled",
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
-              textStyle: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-              color: Color(0xFFDB4A4C),
-            ),
-          ),
+        return _buildStatusChip(
+          context,
+          text: "Cancelled",
+          backgroundColor: Color(0xFFFEE8E8),
+          textColor: Color(0xFFDB4A4C),
         );
+
+      case 'closed':
+        return _buildStatusChip(
+          context,
+          text: "Closed",
+          backgroundColor: Color(0xFFEEEEEE),
+          textColor: Color(0xFF616161),
+        );
+
+      // Legacy statuses for backward compatibility
+      case 'confirmed':
+        return _buildStatusChip(
+          context,
+          text: "Confirmed",
+          backgroundColor: Color(0xFFDEEAFA),
+          textColor: Color(0xFF1A4E88),
+        );
+
+      case 'ongoing':
+        return _buildStatusChip(
+          context,
+          text: "Ongoing",
+          backgroundColor: Color(0xFFFFF9C4),
+          textColor: Color(0xFFF57F17),
+        );
+
       default:
         return SizedBox(width: 0, height: 0);
     }
+  }
+
+  Widget _buildStatusChip(
+    BuildContext context, {
+    required String text,
+    required Color backgroundColor,
+    required Color textColor,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.all(Radius.circular(50)),
+      ),
+      child: Text(
+        text,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: GoogleFonts.roboto(
+          textStyle: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+          color: textColor,
+        ),
+      ),
+    );
   }
 
   Widget _catSubCatDate(
@@ -887,79 +917,147 @@ class UserServiceDetails extends StatelessWidget {
     );
   }
 
+  // Replace the _sosPinTimeLeftCallMessage method with this updated version
+
   Widget _sosPinTimeLeftCallMessage(
     BuildContext context,
     String? pin,
     String? providerPhone,
   ) {
+    final statusLower = status.toLowerCase();
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            decoration: BoxDecoration(
-              color: Color(0xFFFF0000),
-              borderRadius: BorderRadius.all(Radius.circular(50)),
-            ),
-            child: Text(
-              "SOS",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.roboto(
-                textStyle: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
-                color: Color(0xFFFFFFFF),
+          // SOS Button
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SOSEmergencyScreen(serviceId: serviceId,)),
+              );
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              decoration: BoxDecoration(
+                color: Color(0xFFFF0000),
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+              ),
+              child: Text(
+                "SOS",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.roboto(
+                  textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                  color: Color(0xFFFFFFFF),
+                ),
               ),
             ),
           ),
-          if (status == "confirmed" || status == "assigned")
-            Text(
-              "PIN - ${pin ?? "No Pin"}",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.roboto(
-                textStyle: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-                color: Color(0xFF000000),
-              ),
+
+          // Center content - PIN or Timer based on status
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: _buildCenterContent(context, pin),
             ),
-          if (status == "ongoing")
+          ),
+
+          // Call and Message buttons - Hide for pending status
+          if (statusLower != "open")
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 16,
               children: [
-                Text(
-                  "${_timeLeft(context, serviceStartTime: "", duration: "4") ?? "No Pin"} left",
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.roboto(
-                    textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                    color: Color(0xFF0084FF),
+                // Call Button
+                InkWell(
+                  onTap: () {
+                    if (providerPhone != null && providerPhone.isNotEmpty) {
+                      // Add your call functionality here
+                      // Example: launch('tel:$providerPhone');
+                      print('Calling: $providerPhone');
+                    } else {
+                      _showErrorSnackbar(context, 'Phone number not available');
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(50),
+                  child: SvgPicture.asset("assets/icons/moyo_call_action.svg"),
+                ),
+
+                // Message/Chat Button
+                InkWell(
+                  onTap: () {
+                    // Navigate to chat screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserChatScreen(
+                          userName: name ?? "Provider",
+                          userImage: dp,
+                          serviceId: serviceId,
+                          providerId: providerId,
+                          isOnline: true,
+                          userPhone: providerPhone,
+                        ),
+                      ),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(50),
+                  child: SvgPicture.asset(
+                    "assets/icons/moyo_message_action.svg",
                   ),
                 ),
-                SvgPicture.asset("assets/icons/moyo_timer_of_service.svg"),
               ],
             ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 16,
-            children: [
-              SvgPicture.asset("assets/icons/moyo_call_action.svg"),
-              SvgPicture.asset("assets/icons/moyo_message_action.svg"),
-            ],
-          ),
         ],
       ),
     );
+  }
+
+  Widget _buildCenterContent(BuildContext context, String? pin) {
+    final statusLower = status.toLowerCase();
+
+    // Show PIN for assigned, arrived statuses
+    if (statusLower == "assigned" ||
+        statusLower == "arrived" ||
+        statusLower == "in_progress" ||
+        statusLower == "confirmed") {
+      return Column(
+        children: [
+          Text(
+            "PIN - ${pin ?? "No Pin"}",
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.roboto(
+              textStyle: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              color: Color(0xFF000000),
+            ),
+          ),
+          if (statusLower == "in_progress")
+            ElevatedButton(
+              onPressed: onSeeWorktime,
+              style: ElevatedButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                ),
+              ),
+              child: const Text("See Time"),
+            ),
+        ],
+      );
+    }
+
+    // Default - empty space
+    return SizedBox.shrink();
   }
 
   String? _timeLeft(
@@ -1207,11 +1305,55 @@ class UserServiceDetails extends StatelessWidget {
     );
   }
 
+  Future<void> _handleCancelService(BuildContext context) async {
+    // Validate required fields with null checks
+    if (serviceId == null || serviceId!.isEmpty) {
+      _showErrorSnackbar(context, 'Service ID is missing');
+      return;
+    }
+
+    try {
+      // Show cancellation bottom sheet
+      final result = await showModalBottomSheet<bool>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        isDismissible: false,
+        enableDrag: false,
+        builder: (BuildContext context) {
+          return CancelServiceBottomSheet(serviceId: serviceId!);
+        },
+      );
+
+      // If cancellation was successful
+      if (result == true && context.mounted) {
+        _showSuccessSnackbar(context, 'Service cancelled successfully');
+
+        // Add delay to show snackbar, then pop
+        await Future.delayed(Duration(milliseconds: 500));
+
+        // Pop the screen to go back
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+
+        // Call the original onCancel callback if provided
+        if (onCancel != null) {
+          onCancel!();
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        _showErrorSnackbar(context, e.toString().replaceAll('Exception: ', ''));
+      }
+    }
+  }
+
   Widget _cancelTheService(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: InkWell(
-        onTap: onCancel,
+        onTap: () => _handleCancelService(context),
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -1283,11 +1425,63 @@ class UserServiceDetails extends StatelessWidget {
     );
   }
 
+  Future<void> _handleRateService(BuildContext context) async {
+    // Validate required data with null checks
+    if (serviceId == null || serviceId!.isEmpty) {
+      _showErrorSnackbar(context, 'Service ID is missing');
+      return;
+    }
+
+    // Use the providerId from the widget's field
+    if (providerId == null || providerId!.isEmpty) {
+      _showErrorSnackbar(context, 'Provider information is missing');
+      return;
+    }
+
+    try {
+      // Show rating dialog
+      final result = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return RatingDialog(
+            serviceId: serviceId!,
+            providerId: providerId!,
+            providerName: name,
+          );
+        },
+      );
+
+      // If rating was submitted successfully
+      if (result == true && context.mounted) {
+        _showSuccessSnackbar(context, 'Thank you for rating the service!');
+
+        // Add delay to show snackbar, then pop
+        await Future.delayed(Duration(milliseconds: 500));
+
+        // Pop the screen to go back
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+
+        // Call the original onRateService callback if provided
+        if (onRateService != null) {
+          onRateService!();
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        _showErrorSnackbar(context, e.toString().replaceAll('Exception: ', ''));
+      }
+    }
+  }
+
+  // Update the _rateService widget to use the new handler
   Widget _rateService(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: InkWell(
-        onTap: onRateService,
+        onTap: () => _handleRateService(context),
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

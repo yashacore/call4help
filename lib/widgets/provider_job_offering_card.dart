@@ -1,182 +1,215 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 
-import '../constants/colorConstant/color_constant.dart';
-
-class ProviderJobOfferingCard extends StatefulWidget {
-  final bool verified;
+class ProviderJobOfferingCard extends StatelessWidget {
   final String subCat;
+  final bool verified;
   final String? serviceName;
   final String? experience;
   final String? status;
   final bool isChecked;
-  final Function(bool)? onToggle;
+  final bool showEditButton;
+  final VoidCallback? onEdit;
+  final Function(bool) onToggle;
 
   const ProviderJobOfferingCard({
-    super.key,
-    this.verified = false,
+    Key? key,
     required this.subCat,
+    required this.verified,
     this.serviceName,
     this.experience,
     this.status,
-    this.isChecked = false,
-    this.onToggle,
-  });
+    required this.isChecked,
+    this.showEditButton = false,
+    this.onEdit,
+    required this.onToggle,
+  }) : super(key: key);
 
-  @override
-  State<ProviderJobOfferingCard> createState() => _ProviderJobOfferingCardState();
-}
+  Color _getStatusColor() {
+    if (status == null) return Colors.grey;
 
-class _ProviderJobOfferingCardState extends State<ProviderJobOfferingCard> {
-  late bool _isActive;
-
-  @override
-  void initState() {
-    super.initState();
-    _isActive = widget.isChecked;
+    switch (status!.toLowerCase()) {
+      case 'approved':
+        return Colors.green;
+      case 'rejected':
+        return Colors.red;
+      case 'pending':
+        return Colors.orange;
+      default:
+        return Colors.grey;
+    }
   }
 
-  @override
-  void didUpdateWidget(ProviderJobOfferingCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.isChecked != widget.isChecked) {
-      _isActive = widget.isChecked;
-    }
+  String _getStatusText() {
+    if (status == null) return 'Unknown';
+    return status!.toUpperCase();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: ColorConstant.white,
-          borderRadius: BorderRadius.all(Radius.circular(16)),
-        ),
-        width: double.infinity,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.subCat,
-                    textAlign: TextAlign.start,
-                    style: GoogleFonts.roboto(
-                      textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: ColorConstant.black,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  if (widget.serviceName != null) ...[
-                    SizedBox(height: 4),
-                    Text(
-                      widget.serviceName!,
-                      style: GoogleFonts.roboto(
-                        textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ],
-                  if (widget.experience != null) ...[
-                    SizedBox(height: 2),
-                    Text(
-                      '${widget.experience} years experience',
-                      style: GoogleFonts.roboto(
-                        textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[500],
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
+            // Header Row with Title and Status
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _currentStatusChip(context, widget.verified),
-                SizedBox(width: 10),
-                Switch.adaptive(
-                  thumbColor: WidgetStateProperty.all(ColorConstant.white),
-                  activeTrackColor: ColorConstant.moyoGreen,
-                  inactiveTrackColor: ColorConstant.scaffoldGray,
-                  trackOutlineColor: WidgetStateProperty.all(
-                    Colors.white.withOpacity(0),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          subCat,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (verified) ...[
+                        SizedBox(width: 8),
+                        Icon(
+                          Icons.verified,
+                          color: Colors.blue,
+                          size: 20,
+                        ),
+                      ],
+                    ],
                   ),
-                  value: _isActive,
-                  onChanged: widget.verified ? (value) {
-                    setState(() {
-                      _isActive = value;
-                    });
-                    if (widget.onToggle != null) {
-                      widget.onToggle!(value);
-                    }
-                  } : null,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: _getStatusColor().withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: _getStatusColor(),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    _getStatusText(),
+                    style: TextStyle(
+                      color: _getStatusColor(),
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),
+
+            SizedBox(height: 12),
+
+            // Service Name
+            if (serviceName != null && serviceName!.isNotEmpty) ...[
+              Row(
+                children: [
+                  Icon(
+                    Icons.business_center_outlined,
+                    size: 16,
+                    color: Colors.grey[600],
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Service: $serviceName',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+            ],
+
+            // Experience
+            if (experience != null && experience!.isNotEmpty) ...[
+              Row(
+                children: [
+                  Icon(
+                    Icons.work_history_outlined,
+                    size: 16,
+                    color: Colors.grey[600],
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'Experience: ${experience} ${int.tryParse(experience!) == 1 ? 'year' : 'years'}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12),
+            ],
+
+            Divider(height: 1),
+            SizedBox(height: 12),
+
+            // Toggle and Edit Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Toggle Switch
+                Row(
+                  children: [
+                    Text(
+                      'Active',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Switch(
+                      value: isChecked,
+                      onChanged: onToggle,
+                      activeColor: ColorConstant.moyoGreen,
+                      activeTrackColor: ColorConstant.moyoGreen.withOpacity(0.5),
+                    ),
+                  ],
+                ),
+
+                // Edit Button (only shown for rejected skills)
+                if (showEditButton && onEdit != null)
+                  ElevatedButton.icon(
+                    onPressed: onEdit,
+                    icon: Icon(Icons.edit, size: 16),
+                    label: Text('Edit'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _currentStatusChip(BuildContext context, bool verified) {
-    // Handle different status values from API
-    final status = widget.status?.toLowerCase() ?? (verified ? 'approved' : 'pending');
-
-    Color backgroundColor;
-    Color textColor;
-    String statusText;
-
-    switch (status) {
-      case 'approved':
-        backgroundColor = Color(0xFFE6F7C0);
-        textColor = ColorConstant.moyoGreen;
-        statusText = 'Verified';
-        break;
-      case 'pending':
-        backgroundColor = Color(0xFFFFF4E6);
-        textColor = Color(0xFFFF9800);
-        statusText = 'Pending';
-        break;
-      case 'rejected':
-        backgroundColor = Color(0xFFFEE8E8);
-        textColor = Color(0xFFDB4A4C);
-        statusText = 'Rejected';
-        break;
-      default:
-        backgroundColor = Color(0xFFFEE8E8);
-        textColor = Color(0xFFDB4A4C);
-        statusText = 'Not Verified';
-    }
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.all(Radius.circular(50)),
-      ),
-      child: Text(
-        statusText,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.roboto(
-          textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 13,
-          ),
-          color: textColor,
         ),
       ),
     );

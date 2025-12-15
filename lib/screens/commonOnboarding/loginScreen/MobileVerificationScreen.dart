@@ -1,647 +1,372 @@
-// mobile_verification_screen.dart
-import 'package:first_flutter/baseControllers/APis.dart';
-import 'package:first_flutter/baseControllers/NavigationController/navigation_controller.dart';
-import 'package:first_flutter/constants/imgConstant/img_constant.dart';
-import 'package:first_flutter/constants/utils/app_text_style.dart';
+import 'dart:async';
+import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../../../constants/colorConstant/color_constant.dart';
-import '../otpScreen/EmailVerificationScreen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
-class MobileVerificationScreen extends StatefulWidget {
-  const MobileVerificationScreen({super.key});
+import '../../user_screens/Profile/EditProfileProvider.dart';
 
-  @override
-  State<MobileVerificationScreen> createState() =>
-      _MobileVerificationScreenState();
+class MobileVerificationDialog {
+  static Future<bool?> show(BuildContext context) async {
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const _MobileVerificationDialogContent(),
+    );
+  }
 }
 
-class _MobileVerificationScreenState extends State<MobileVerificationScreen> {
-  late TextEditingController mobileController;
-  late List<TextEditingController> mobileOtpControllers;
-  late List<FocusNode> mobileOtpFocusNodes;
-  bool otpSent = false;
-  bool isLoading = false;
-  String? errorMessage;
+class _MobileVerificationDialogContent extends StatefulWidget {
+  const _MobileVerificationDialogContent();
+
+  @override
+  State<_MobileVerificationDialogContent> createState() =>
+      __MobileVerificationDialogContentState();
+}
+
+class __MobileVerificationDialogContentState
+    extends State<_MobileVerificationDialogContent> {
+  final List<TextEditingController> _otpControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
+  final List<FocusNode> _otpFocusNodes = List.generate(6, (_) => FocusNode());
+
+  Timer? _resendTimer;
+  int _resendCountdown = 30;
+  bool _canResend = false;
 
   @override
   void initState() {
     super.initState();
-    mobileController = TextEditingController();
-    mobileOtpControllers = List.generate(6, (_) => TextEditingController());
-    mobileOtpFocusNodes = List.generate(6, (_) => FocusNode());
+    _startResendTimer();
+  }
+
+  void _startResendTimer() {
+    _canResend = false;
+    _resendCountdown = 30;
+    _resendTimer?.cancel();
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) {
+        setState(() {
+          if (_resendCountdown > 0) {
+            _resendCountdown--;
+          } else {
+            _canResend = true;
+            timer.cancel();
+          }
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
-    mobileController.dispose();
-    for (var controller in mobileOtpControllers) {
+    _resendTimer?.cancel();
+    for (var controller in _otpControllers) {
       controller.dispose();
     }
-    for (var focusNode in mobileOtpFocusNodes) {
+    for (var focusNode in _otpFocusNodes) {
       focusNode.dispose();
     }
     super.dispose();
   }
 
-  String _getMobileOtp() {
-    return mobileOtpControllers.map((c) => c.text).join();
+  String _getOtpCode() {
+    return _otpControllers.map((c) => c.text).join();
+  }
+
+  void _clearOtp() {
+    for (var controller in _otpControllers) {
+      controller.clear();
+    }
+    _otpFocusNodes[0].requestFocus();
+  }
+
+  Future<void> _handleVerify() async {
+    final editProvider = context.read<EditProfileProvider>();
+    final otp = _getOtpCode();
+
+    if (otp.length != 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter complete 6-digit OTP'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    editProvider.clearMobileError();
+
+    final verified = await editProvider.verifyMobileOtp(otp: otp);
+
+    if (verified && mounted) {
+      Navigator.pop(context, true);
+    } else if (editProvider.mobileErrorMessage != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(editProvider.mobileErrorMessage!),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      _clearOtp();
+    }
+  }
+
+  /*
+  Future<void> _handleResendOtp() async {
+    if (!_canResend) return;
+
+    final editProvider = context.read<EditProfileProvider>();
+    editProvider.clearMobileError();
+
+    final success = await editProvider.resendMobileOtp();
+
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('OTP sent successfully!'),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      _startResendTimer();
+      _clearOtp();
+    } else if (editProvider.mobileErrorMessage != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(editProvider.mobileErrorMessage!),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+*/
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<EditProfileProvider>(
+      builder: (context, editProvider, child) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24.r),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(24.w),
+            decoration: BoxDecoration(
+              color: ColorConstant.white,
+              borderRadius: BorderRadius.circular(24.r),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header Icon
+                  Container(
+                    padding: EdgeInsets.all(20.w),
+                    decoration: BoxDecoration(
+                      color: ColorConstant.moyoOrange.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.phone_android,
+                      size: 48.sp,
+                      color: ColorConstant.moyoOrange,
+                    ),
+                  ),
+                  SizedBox(height: 24.h),
+
+                  // Title
+                  Text(
+                    'Verify Mobile Number',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: ColorConstant.black,
+                      fontSize: 22.sp,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 12.h),
+
+                  // Subtitle
+                  Text(
+                    'Enter the 6-digit code sent to',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: const Color(0xFF7A7A7A),
+                      fontSize: 14.sp,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    editProvider.mobileController.text.trim(),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: ColorConstant.moyoOrange,
+                      fontSize: 16.sp,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 32.h),
+
+                  // OTP Input Fields
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(
+                      6,
+                      (index) => _buildOtpField(index),
+                    ),
+                  ),
+                  SizedBox(height: 32.h),
+
+                  // Verify Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: editProvider.isMobileOtpVerifying
+                          ? null
+                          : _handleVerify,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ColorConstant.moyoOrange,
+                        foregroundColor: ColorConstant.white,
+                        padding: EdgeInsets.symmetric(vertical: 16.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        elevation: 0,
+                        disabledBackgroundColor: ColorConstant.moyoOrange
+                            .withOpacity(0.6),
+                      ),
+                      child: editProvider.isMobileOtpVerifying
+                          ? SizedBox(
+                              height: 20.h,
+                              width: 20.w,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.w,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  ColorConstant.white,
+                                ),
+                              ),
+                            )
+                          : Text(
+                              'Verify Mobile',
+                              style: Theme.of(context).textTheme.labelLarge
+                                  ?.copyWith(
+                                    color: ColorConstant.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16.sp,
+                                  ),
+                            ),
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+
+                  // Resend OTP Section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Didn't receive the code? ",
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: const Color(0xFF7A7A7A),
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                      if (_canResend)
+                        GestureDetector(
+                          onTap: () {},
+                          child: Text(
+                            'Resend',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: ColorConstant.moyoOrange,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.sp,
+                                  decoration: TextDecoration.underline,
+                                ),
+                          ),
+                        )
+                      else
+                        Text(
+                          'Resend in ${_resendCountdown}s',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: Colors.grey, fontSize: 14.sp),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 16.h),
+
+                  // Cancel Button
+                  TextButton(
+                    onPressed: editProvider.isMobileOtpVerifying
+                        ? null
+                        : () {
+                            editProvider.resetMobileVerificationState();
+                            Navigator.pop(context, false);
+                          },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildOtpField(int index) {
     return Container(
-      width: 50,
-      height: 56,
+      width: 40.w,
+      height: 50.h,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Center(
-        child: TextField(
-          controller: mobileOtpControllers[index],
-          focusNode: mobileOtpFocusNodes[index],
-          keyboardType: TextInputType.number,
-          textAlign: TextAlign.center,
-          style: AppTextStyle.robotoBold.copyWith(
-            fontSize: 24,
-            color: Colors.black87,
-          ),
-          maxLength: 1,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: const InputDecoration(
-            counterText: "",
-            filled: false,
-            contentPadding: EdgeInsets.zero,
-            border: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-          ),
-          textAlignVertical: TextAlignVertical.center,
-          onChanged: (value) {
-            if (value.isNotEmpty && index < 5) {
-              mobileOtpFocusNodes[index + 1].requestFocus();
-            } else if (value.isEmpty && index > 0) {
-              mobileOtpFocusNodes[index - 1].requestFocus();
-            }
-          },
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: _otpControllers[index].text.isNotEmpty
+              ? ColorConstant.moyoOrange
+              : Colors.grey.shade300,
+          width: 2.w,
         ),
       ),
-    );
-  }
-
-  Future<void> _sendMobileOtp() async {
-    final mobile = mobileController.text.trim();
-
-    if (mobile.isEmpty) {
-      setState(() {
-        errorMessage = 'Please enter your mobile number';
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter your mobile number'),
-          backgroundColor: Colors.red,
+      child: TextField(
+        controller: _otpControllers[index],
+        focusNode: _otpFocusNodes[index],
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        maxLength: 1,
+        style: TextStyle(
+          fontSize: 18.sp,
+          fontWeight: FontWeight.bold,
+          color: ColorConstant.black,
         ),
-      );
-      return;
-    }
-
-    if (mobile.length < 10) {
-      setState(() {
-        errorMessage = 'Please enter a valid 10-digit mobile number';
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a valid 10-digit mobile number'),
-          backgroundColor: Colors.red,
+        decoration: InputDecoration(
+          counterText: '',
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.zero,
         ),
-      );
-      return;
-    }
-
-    setState(() {
-      isLoading = true;
-      errorMessage = null;
-    });
-
-    try {
-      // Get auth token from SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      final authToken = prefs.getString('auth_token');
-
-      if (authToken == null || authToken.isEmpty) {
-        throw Exception('Authentication token not found. Please login again.');
-      }
-
-      final response = await http.post(
-        Uri.parse('$base_url/api/auth/number-otp'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $authToken',
+        onChanged: (value) {
+          if (value.isNotEmpty && index < 5) {
+            _otpFocusNodes[index + 1].requestFocus();
+          } else if (value.isEmpty && index > 0) {
+            _otpFocusNodes[index - 1].requestFocus();
+          }
+          setState(() {});
         },
-        body: json.encode({'mobile': mobile}),
-      );
-
-      final responseData = json.decode(response.body);
-
-      if (response.statusCode == 200) {
-        setState(() {
-          otpSent = true;
-          isLoading = false;
-          errorMessage = null;
-        });
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(Icons.check_circle, color: Colors.white),
-                  const SizedBox(width: 8),
-                  Text(responseData['message'] ?? 'OTP sent to $mobile'),
-                ],
-              ),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-        }
-      } else {
-        throw Exception(responseData['message'] ?? 'Failed to send OTP');
-      }
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-        errorMessage = e.toString().replaceAll('Exception: ', '');
-      });
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage ?? 'Failed to send OTP'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
-  Future<void> _verifyMobileOtp() async {
-    final mobile = mobileController.text.trim();
-    final otp = _getMobileOtp();
-
-    if (otp.length != 6) {
-      setState(() {
-        errorMessage = 'Please enter complete 6-digit OTP';
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter complete 6-digit OTP'),
-          backgroundColor: Colors.orange,
-        ),
-      );
-      return;
-    }
-
-    setState(() {
-      isLoading = true;
-      errorMessage = null;
-    });
-
-    try {
-      // Get auth token from SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      final authToken = prefs.getString('auth_token');
-
-      if (authToken == null || authToken.isEmpty) {
-        throw Exception('Authentication token not found. Please login again.');
-      }
-
-      final response = await http.post(
-        Uri.parse('$base_url/api/auth/number-verify'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $authToken',
-        },
-        body: json.encode({'mobile': mobile, 'otp': otp}),
-      );
-
-      final responseData = json.decode(response.body);
-
-      if (response.statusCode == 200) {
-        setState(() {
-          isLoading = false;
-          errorMessage = null;
-        });
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(Icons.check_circle, color: Colors.white),
-                  const SizedBox(width: 8),
-                  Text(
-                    responseData['message'] ?? 'Mobile verified successfully!',
-                  ),
-                ],
-              ),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 2),
-            ),
-          );
-
-          // Get email verification status from SharedPreferences
-          final isEmailVerified = prefs.getBool('is_email_verified') ?? false;
-          final userEmail = prefs.getString('user_email');
-
-          print('Email verified status: $isEmailVerified');
-          print('User email: $userEmail');
-
-          Future.delayed(const Duration(milliseconds: 500), () {
-            if (mounted) {
-              if (!isEmailVerified &&
-                  userEmail != null &&
-                  userEmail.isNotEmpty) {
-                // Navigate to email verification screen
-                print('Navigating to email verification screen');
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        EmailVerificationScreen(userEmail: userEmail),
-                  ),
-                );
-              } else {
-                // Navigate to home
-                print('Navigating to home screen');
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  "/UserCustomBottomNav",
-                  (route) => false,
-                );
-              }
-            }
-          });
-        }
-      } else {
-        throw Exception(responseData['message'] ?? 'Failed to verify OTP');
-      }
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-        errorMessage = e.toString().replaceAll('Exception: ', '');
-      });
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage ?? 'Failed to verify OTP'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            navigationService.pop();
-          },
-        ),
-      ),
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(ImageConstant.loginBgImg, fit: BoxFit.cover),
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.15),
-
-                  // Icon
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.phone_android,
-                      size: 60,
-                      color: ColorConstant.appColor,
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  // Title
-                  Text(
-                    "Verify Your Mobile",
-                    style: AppTextStyle.robotoBold.copyWith(
-                      fontSize: 28,
-                      color: Colors.white,
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // Subtitle
-                  Text(
-                    "We'll send a verification code to\nyour mobile number",
-                    textAlign: TextAlign.center,
-                    style: AppTextStyle.robotoRegular.copyWith(
-                      fontSize: 15,
-                      color: Colors.white.withOpacity(0.9),
-                    ),
-                  ),
-
-                  const SizedBox(height: 40),
-
-                  // Mobile TextField
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      border: Border.all(color: Colors.grey, width: 2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          child: Icon(
-                            Icons.phone,
-                            color: ColorConstant.appColor,
-                            size: 24,
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.only(top: 15),
-                            height: 36,
-                            child: TextField(
-                              controller: mobileController,
-                              cursorColor: Colors.white,
-                              keyboardType: TextInputType.phone,
-                              maxLength: 10,
-                              style: AppTextStyle.robotoMedium.copyWith(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              decoration: InputDecoration(
-                                hintText: "Mobile Number",
-                                counterText: "",
-                                hintStyle: AppTextStyle.robotoMedium.copyWith(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                ),
-                                fillColor: Colors.black,
-                                border: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Error message for mobile
-                  if (errorMessage != null && !otpSent)
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.red),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.error_outline,
-                            color: Colors.red,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              errorMessage!,
-                              style: const TextStyle(
-                                color: Colors.red,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  const SizedBox(height: 8),
-
-                  // Send OTP Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: isLoading ? null : _sendMobileOtp,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorConstant.appColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 5,
-                      ),
-                      icon: isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : Icon(
-                              otpSent ? Icons.refresh : Icons.send,
-                              size: 20,
-                            ),
-                      label: Text(
-                        otpSent ? "Resend OTP" : "Send OTP",
-                        style: AppTextStyle.robotoMedium.copyWith(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // OTP Input Section
-                  if (otpSent)
-                    Column(
-                      children: [
-                        const SizedBox(height: 32),
-
-                        // OTP Label
-                        Text(
-                          "Enter 6-Digit Code",
-                          style: AppTextStyle.robotoBold.copyWith(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        Text(
-                          "Code sent to your mobile",
-                          style: AppTextStyle.robotoRegular.copyWith(
-                            fontSize: 14,
-                            color: Colors.white.withOpacity(0.8),
-                          ),
-                        ),
-
-                        const SizedBox(height: 24),
-
-                        // OTP Fields
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: List.generate(
-                              6,
-                              (index) => _buildOtpField(index),
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        // Error message for OTP verification
-                        if (errorMessage != null && otpSent)
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 16),
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.red),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.error_outline,
-                                  color: Colors.red,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    errorMessage!,
-                                    style: const TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                        const SizedBox(height: 8),
-
-                        // Verify Button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton.icon(
-                            onPressed: isLoading ? null : _verifyMobileOtp,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 5,
-                            ),
-                            icon: isLoading
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : const Icon(Icons.verified, size: 20),
-                            label: Text(
-                              "Verify Mobile",
-                              style: AppTextStyle.robotoMedium.copyWith(
-                                fontSize: 16,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

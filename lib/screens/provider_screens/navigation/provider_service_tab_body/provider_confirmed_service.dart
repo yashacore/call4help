@@ -28,7 +28,7 @@ class ProviderServiceApi {
         },
       );
 
-      print('Response Status: ${response.statusCode}');
+      print('Response token: ${token}');
       print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
@@ -332,11 +332,6 @@ class Customer {
   }
 }
 
-// ============================================================================
-// 3. PROVIDER STATE MANAGEMENT (No changes needed)
-// File: lib/providers/provider_service_provider.dart
-// ============================================================================
-
 class ProviderServiceProvider with ChangeNotifier {
   final ProviderServiceApi _api = ProviderServiceApi();
 
@@ -414,44 +409,45 @@ class _ProviderConfirmedServiceState extends State<ProviderConfirmedService> {
     return service.tenure;
   }
 
-  String _getStatus(ServiceHistory service) {
-    // Priority order for status determination:
+  /// Get formatted status display text based on API status
+  /// Official statuses: open, pending, assigned, started, arrived, in_progress, completed, cancelled, closed
+  String _getStatusDisplay(ServiceHistory service) {
+    final status = service.status.trim().toLowerCase();
 
-    // 1. Check if cancelled
-    if (service.status.toLowerCase() == 'cancelled') {
-      return 'Cancelled';
+    switch (status) {
+      case 'open':
+        return 'Open';
+      case 'pending':
+        return 'Pending';
+      case 'assigned':
+        return 'Assigned';
+      case 'started':
+        return 'Started';
+      case 'arrived':
+        return 'Arrived';
+      case 'in_progress':
+        return 'In Progress';
+      case 'completed':
+        return 'Completed';
+      case 'cancelled':
+        return 'Cancelled';
+      case 'closed':
+        return 'Closed';
+      default:
+        // Capitalize first letter for unknown statuses
+        return status.isNotEmpty
+            ? status[0].toUpperCase() + status.substring(1)
+            : 'Unknown';
     }
+  }
 
-    // 2. Check if closed/completed
-    if (service.status.toLowerCase() == 'closed') {
-      return 'Completed';
-    }
+  /// Check if service should be shown in confirmed list
+  /// Exclude 'open' and 'pending' statuses from confirmed services
+  bool _shouldShowInConfirmedList(ServiceHistory service) {
+    final status = service.status.trim().toLowerCase();
 
-    // 3. Check if confirmed
-    if (service.confirmedAt != null && service.confirmedAt!.isNotEmpty) {
-      return 'Confirmed';
-    }
-
-    // 4. Check if assigned
-    if (service.status.toLowerCase() == 'assigned' ||
-        service.assignedProviderId != null) {
-      return 'Assigned';
-    }
-
-    // 5. Check if started
-    if (service.startedAt != null && service.startedAt!.isNotEmpty) {
-      return 'In Progress';
-    }
-
-    // 6. Check if has bids
-    if (service.bids.isNotEmpty) {
-      return 'Bided';
-    }
-
-    // 7. Return the actual status from API
-    return service.status.isNotEmpty
-        ? service.status[0].toUpperCase() + service.status.substring(1)
-        : 'Pending';
+    // Exclude these statuses from confirmed list
+    return status != 'open' && status != 'pending';
   }
 
   @override
@@ -498,7 +494,19 @@ class _ProviderConfirmedServiceState extends State<ProviderConfirmedService> {
             );
           }
 
-          if (provider.services.isEmpty) {
+          // Filter services to show only confirmed ones
+          final confirmedServices = provider.services
+              .where((service) => _shouldShowInConfirmedList(service))
+              .toList();
+
+          // Debug: Print all statuses
+          print('Total services: ${provider.services.length}');
+          for (var service in provider.services) {
+            print('Service ${service.id}: status = ${service.status}');
+          }
+          print('Confirmed services count: ${confirmedServices.length}');
+
+          if (confirmedServices.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -506,7 +514,7 @@ class _ProviderConfirmedServiceState extends State<ProviderConfirmedService> {
                   Icon(Icons.inbox_outlined, size: 80, color: Colors.grey[400]),
                   const SizedBox(height: 16),
                   Text(
-                    'No services yet',
+                    'No confirmed services',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.grey[600],
@@ -515,7 +523,7 @@ class _ProviderConfirmedServiceState extends State<ProviderConfirmedService> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Services will appear here',
+                    'Confirmed services will appear here',
                     style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                   ),
                 ],
@@ -526,29 +534,26 @@ class _ProviderConfirmedServiceState extends State<ProviderConfirmedService> {
           return RefreshIndicator(
             onRefresh: () => provider.fetchServiceHistory(),
             child: ListView.builder(
-              itemCount: provider.services
-                  .where((service) => _getStatus(service) != 'Pending')
-                  .length,
+              itemCount: confirmedServices.length,
               padding: const EdgeInsets.all(8),
               itemBuilder: (context, index) {
-                // Filter out pending services
-                final filteredServices = provider.services
-                    .where((service) => _getStatus(service) != 'Pending')
-                    .toList();
+                final service = confirmedServices[index];
 
-                final service = filteredServices[index];
+                // Handle null customer gracefully
+                final customerImage = service.customer.image.isNotEmpty
+                    ? service.customer.image
+                    : 'https://via.placeholder.com/150';
 
-                print(service.status);
                 return ProviderServiceListCard(
                   category: service.category,
                   subCategory: service.service,
                   date: _formatDate(service.createdAt),
-                  dp: service.customer.image,
-                  price: service.budget,
+                  dp: customerImage,
+                  price: service.bids.first.amount.toString(),
                   duration: _getDuration(service),
                   priceBy: service.tenure == 'task' ? 'Task' : 'Hourly',
                   providerCount: int.tryParse(service.totalBids) ?? 0,
-                  status: _getStatus(service),
+                  status: _getStatusDisplay(service),
                   onPress: () {
                     Navigator.push(
                       context,

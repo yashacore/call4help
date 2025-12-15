@@ -4,6 +4,7 @@ import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/widgets/button_large.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:provider/provider.dart';
@@ -48,12 +49,28 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
     final profileProvider = context.read<ProviderProfileProvider>();
     if (profileProvider.providerProfile != null) {
       setState(() {
-        _aadhaarController.text =
-            profileProvider.providerProfile?.adharNo ?? '';
+        // Format Aadhaar with dashes if it exists
+        String aadhaarNo = profileProvider.providerProfile?.adharNo ?? '';
+        _aadhaarController.text = _formatAadhaar(aadhaarNo);
         _isActive = profileProvider.providerProfile?.isActive ?? false;
         _isRegistered = profileProvider.providerProfile?.isRegistered ?? false;
       });
     }
+  }
+
+  String _formatAadhaar(String value) {
+    // Remove all non-digits
+    String digitsOnly = value.replaceAll(RegExp(r'\D'), '');
+
+    // Add dash after every 4 digits
+    String formatted = '';
+    for (int i = 0; i < digitsOnly.length; i++) {
+      if (i > 0 && i % 4 == 0) {
+        formatted += '-';
+      }
+      formatted += digitsOnly[i];
+    }
+    return formatted;
   }
 
   @override
@@ -158,13 +175,26 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
 
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) {
+      _showErrorSnackBar('Please fill all required fields correctly');
       return;
     }
 
+    // Remove dashes from Aadhaar before sending
+    String cleanAadhaar = _aadhaarController.text.replaceAll('-', '');
+
+    print('=== Starting Profile Update ===');
+    print('Aadhaar: $cleanAadhaar');
+    print('PAN: ${_panController.text.trim()}');
+    print('IsActive: $_isActive');
+    print('IsRegistered: $_isRegistered');
+    print('Has Aadhaar Image: ${_aadhaarImage != null}');
+    print('Has PAN Image: ${_panImage != null}');
+
     final editProvider = context.read<EditProviderProfileProvider>();
+    final profileProvider = context.read<ProviderProfileProvider>();
 
     final success = await editProvider.updateProviderProfile(
-      adharNo: _aadhaarController.text.trim(),
+      adharNo: cleanAadhaar,
       panNo: _panController.text.trim(),
       isActive: _isActive,
       isRegistered: _isRegistered,
@@ -179,16 +209,15 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('is_provider_registered', _isRegistered);
 
+      // Reload the profile data to get updated info
+      await profileProvider.loadProviderProfile();
+
       // Check if this was the first-time registration completion
       final wasRegistered =
-          context
-              .read<ProviderProfileProvider>()
-              .providerProfile
-              ?.isRegistered ??
-          false;
+          profileProvider.providerProfile?.isRegistered ?? false;
 
       if (mounted) {
-        if (!wasRegistered && _isRegistered) {
+        if (_isRegistered && !wasRegistered) {
           // User just completed registration for the first time
           // Navigate to ProviderCustomBottomNav
           Navigator.pushNamedAndRemoveUntil(
@@ -204,6 +233,8 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         }
       }
     } else {
+      print('=== Profile Update Failed ===');
+      print('Error: ${editProvider.errorMessage}');
       _showErrorSnackBar(
         editProvider.errorMessage ?? 'Failed to update profile',
       );
@@ -233,30 +264,8 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                   spacing: 24,
                   children: [
                     _buildSectionTitle(context, "Document Information"),
-                    _buildTextField(
-                      controller: _aadhaarController,
-                      label: "Aadhaar Number",
-                      hint: "1234-5678-9012",
-                      icon: Icons.credit_card,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter Aadhaar number';
-                        }
-                        return null;
-                      },
-                    ),
-                    _buildTextField(
-                      controller: _panController,
-                      label: "PAN Number",
-                      hint: "ABCDE1234F",
-                      icon: Icons.badge,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter PAN number';
-                        }
-                        return null;
-                      },
-                    ),
+                    _buildAadhaarTextField(),
+                    _buildPANTextField(),
 
                     _buildSectionTitle(context, "Document Photos"),
                     _buildImagePicker(
@@ -303,7 +312,9 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                           : "Save Changes",
                       backgroundColor: ColorConstant.moyoOrange,
                       labelColor: Colors.white,
-                      onTap: editProvider.isLoading ? null : _saveProfile,
+                      onTap: editProvider.isLoading
+                          ? () {} // Empty function instead of null
+                          : _saveProfile,
                     ),
                     SizedBox(height: 20),
                   ],
@@ -322,6 +333,115 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
       style: Theme.of(
         context,
       ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+    );
+  }
+
+  Widget _buildAadhaarTextField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: _aadhaarController,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(12),
+          TextInputFormatter.withFunction((oldValue, newValue) {
+            // Format the text with dashes
+            String text = newValue.text;
+            String formatted = _formatAadhaar(text);
+
+            return TextEditingValue(
+              text: formatted,
+              selection: TextSelection.collapsed(offset: formatted.length),
+            );
+          }),
+        ],
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Please enter Aadhaar number';
+          }
+          String digitsOnly = value.replaceAll('-', '');
+          if (digitsOnly.length != 12) {
+            return 'Aadhaar number must be exactly 12 digits';
+          }
+          return null;
+        },
+        decoration: InputDecoration(
+          labelText: "Aadhaar Number",
+          hintText: "1234-5678-9012",
+          prefixIcon: Icon(Icons.credit_card, color: ColorConstant.moyoOrange),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPANTextField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: _panController,
+        textCapitalization: TextCapitalization.characters,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(10),
+          FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+          TextInputFormatter.withFunction((oldValue, newValue) {
+            return TextEditingValue(
+              text: newValue.text.toUpperCase(),
+              selection: newValue.selection,
+            );
+          }),
+        ],
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Please enter PAN number';
+          }
+          // PAN format: 5 letters, 4 digits, 1 letter (e.g., ABCDE1234F)
+          RegExp panRegex = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$');
+          if (!panRegex.hasMatch(value.trim())) {
+            return 'Invalid PAN format (e.g., ABCDE1234F)';
+          }
+          return null;
+        },
+        decoration: InputDecoration(
+          labelText: "PAN Number",
+          hintText: "ABCDE1234F",
+          prefixIcon: Icon(Icons.badge, color: ColorConstant.moyoOrange),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        ),
+      ),
     );
   }
 

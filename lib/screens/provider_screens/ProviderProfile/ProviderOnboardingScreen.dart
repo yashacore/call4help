@@ -68,7 +68,7 @@ class ProviderOnboardingDialog extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context); // Close dialog
-                  Navigator.pushNamed(context, '/editProviderProfile');
+                  Navigator.pushNamed(context, '/editProfile');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ColorConstant.moyoOrange,
@@ -95,7 +95,3 @@ class ProviderOnboardingDialog extends StatelessWidget {
     );
   }
 }
-
-// Usage in your code:
-// Instead of Navigator.pushNamed(context, "/ProviderOnboarding");
-// Use: ProviderOnboardingDialog.show(context);

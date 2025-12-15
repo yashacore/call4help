@@ -72,6 +72,9 @@ class UserProfileProvider with ChangeNotifier {
         },
       );
 
+      print('Profile API Response: ${response.statusCode}');
+      print('Profile API Body: ${response.body}');
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
@@ -141,6 +144,26 @@ class UserProfileProvider with ChangeNotifier {
     }
   }
 
+  // ✅ Refresh profile - This is the key method for syncing after EditProfile
+  Future<void> refreshProfile() async {
+    await loadUserProfile();
+  }
+
+  // Update profile data immediately (for instant UI feedback before API call)
+  void updateProfileDataLocally({
+    String? imageUrl,
+    String? name,
+    String? email,
+    String? mobile,
+  }) {
+    if (_userProfile != null) {
+      // Update local data immediately for instant UI update
+      // Note: This is optional and only for immediate feedback
+      // The real update happens when refreshProfile() is called after save
+      notifyListeners();
+    }
+  }
+
   // Clear profile data (useful for logout)
   void clearProfile() {
     _userProfile = null;
@@ -149,8 +172,23 @@ class UserProfileProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Refresh profile (same as loadUserProfile but can be called from UI)
-  Future<void> refreshProfile() async {
-    await loadUserProfile();
+  // Check if profile is loaded
+  bool isProfileLoaded() {
+    return _userProfile != null && !_isLoading;
+  }
+
+  // Get display name (username or firstname)
+  String getDisplayName() {
+    if (_userProfile == null) return 'User';
+    return _userProfile!.fullName;
+  }
+
+  // Get profile image URL with fallback
+  String getProfileImageUrl() {
+    if (_userProfile == null ||
+        _userProfile!.displayImage.isEmpty) {
+      return 'https://picsum.photos/200/200';
+    }
+    return _userProfile!.displayImage;
   }
 }

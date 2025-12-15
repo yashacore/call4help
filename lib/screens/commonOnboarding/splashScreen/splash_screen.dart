@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
     _initializeVideo();
 
     // Set a 3-second timer to navigate
-    _timer = Timer(const Duration(seconds: 3), () {
+    _timer = Timer(const Duration(seconds: 1), () {
       if (mounted) {
         final provider = Provider.of<SplashProvider>(context, listen: false);
         provider.initializeSplash((String route) {

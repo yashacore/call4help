@@ -27,7 +27,7 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
 
     if (!_isInitialized) {
       final service =
-      ModalRoute.of(context)?.settings.arguments as ServiceModel?;
+          ModalRoute.of(context)?.settings.arguments as ServiceModel?;
       if (service != null) {
         _currentService = service;
 
@@ -41,11 +41,11 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
   }
 
   Future<void> _handleBookProvider(
-      BuildContext context,
-      String serviceId,
-      String providerId,
-      String providerName,
-      ) async {
+    BuildContext context,
+    String serviceId,
+    String providerId,
+    String providerName,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -91,118 +91,10 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
       Navigator.pop(context, true); // ✅ Pass true to indicate success
       Navigator.pop(context, true); // ✅ Pass true to indicate success
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Provider booked successfully!')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Provider booked successfully!')));
     }
-
-
-    /*if (success) {
-      final bookingData = bookProvider.bookingData;
-
-      if (!mounted) return;
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.green, size: 28),
-              const SizedBox(width: 8),
-              const Text('Booking Confirmed'),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Provider $providerName has been booked successfully!'),
-              const SizedBox(height: 16),
-              if (bookingData != null) ...[
-                const Text(
-                  'Service OTPs:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.green.shade200),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Start OTP:'),
-                          Text(
-                            bookingData.startOtp,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('End OTP:'),
-                          Text(
-                            bookingData.endOtp,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Please save these OTPs for service verification.',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                ),
-              ],
-            ],
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                bookProvider.clearBookingData();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.moyoOrange,
-              ),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    } else {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            bookProvider.bookingError ??
-                'Failed to book provider. Please try again.',
-          ),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 4),
-          action: SnackBarAction(
-            label: 'Dismiss',
-            textColor: Colors.white,
-            onPressed: () {},
-          ),
-        ),
-      );
-    }*/
   }
 
   String _calculateAge(String dob) {
@@ -233,6 +125,14 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
       return '${service.serviceDays} day${service.serviceDays! > 1 ? 's' : ''}';
     }
     return 'N/A';
+  }
+
+  String _getPriceBy(ServiceModel service) {
+    // Return bid amount if available, otherwise return budget
+    if (service.bids.isNotEmpty) {
+      return service.bids.first.amount.toStringAsFixed(0);
+    }
+    return service.budget;
   }
 
   List<String> _getParticulars(ServiceModel service) {
@@ -267,6 +167,16 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Guard against null service
+    if (_currentService == null) {
+      return Scaffold(
+        backgroundColor: ColorConstant.moyoScaffoldGradient,
+        appBar: UserOnlyTitleAppbar(title: "Service Details"),
+        body: const Center(child: Text('Service data not available')),
+      );
+    }
+    print("Providerrrrrrrrrrr${_currentService?.assignedProviderId}");
+
     return Scaffold(
       backgroundColor: ColorConstant.moyoScaffoldGradient,
       appBar: UserOnlyTitleAppbar(title: "Service Details"),
@@ -288,24 +198,31 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 16,
                 children: [
+                  // ✅ Updated with dynamic data from ServiceModel
                   UserServiceDetails(
-                    category: "Home",
-                    subCategory: "Cleaning",
-                    date: "Dec 07, 2025",
+                    category: _currentService!.category,
+                    subCategory: _currentService!.service,
+                    date: _currentService!.createdAtFormatted,
                     pin: "2156",
+                    // TODO: Add this field to ServiceModel if needed
                     providerPhone: "8890879707",
-                    dp: "https://picsum.photos/200/200",
-                    name: "Aarif Husain",
+                    // TODO: Get from booked provider data
+                    dp: "https://ui-avatars.com/api/?name=${_currentService!.category}&background=random",
+                    name: _currentService!.title,
+                    // Using title as name
                     rating: "4.5",
-                    status: "confirmed",
-                    durationType: "Hourly",
-                    duration: "4 hours",
-                    price: "450",
-                    address:
-                    "Aarif Husain, Chacha Chai Zakir hotl k samne Tanzeem Nagar khajrana indore",
-                    particular: ["Cooking", "Dessert", "5 Days", "4 People"],
-                    description:
-                    "This is the service description can write here which will be five line long",
+                    // TODO: Get from booked provider data
+                    status: _currentService!.status,
+                    durationType: _getDurationType(_currentService!),
+                    duration: _getDuration(_currentService!),
+                    price: _getPriceBy(_currentService!),
+                    address: _currentService!.location,
+                    particular: _getParticulars(_currentService!),
+                    serviceId: _currentService?.id,
+                    providerId: _currentService?.assignedProviderId,
+                    description: _currentService!.description.isNotEmpty
+                        ? _currentService!.description
+                        : "No description available",
                   ),
 
                   // ✅ NATS Connection Status from ServiceProvider
@@ -405,23 +322,12 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
                         experience: provider['experience'] ?? 'N/A',
                         dp: provider['dp'] ?? 'https://picsum.photos/200/200',
                         onBook: () {
-                          if (_currentService != null) {
-                            _handleBookProvider(
-                              context,
-                              _currentService!.id,
-                              provider['providerId'] ?? '',
-                              provider['providerName'] ?? 'Provider',
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Service information not available',
-                                ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
+                          _handleBookProvider(
+                            context,
+                            _currentService!.id,
+                            provider['providerId'] ?? '',
+                            provider['providerName'] ?? 'Provider',
+                          );
                         },
                       );
                     }).toList())

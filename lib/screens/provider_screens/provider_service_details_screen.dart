@@ -73,8 +73,7 @@ class _ProviderServiceDetailsScreenState
         return;
       }
 
-      // Decode the token to get provider_id (assuming JWT format)
-      // If token is just the provider_id, use it directly
+
       String? providerId;
       try {
         // Try to decode JWT token
@@ -326,7 +325,7 @@ class _ProviderServiceDetailsScreenState
                       address: _serviceData!['location']?.toString() ?? 'N/A',
                       particular: _buildParticulars(_serviceData!),
                       description:
-                          _serviceData!['description']?.toString() ?? 'N/A',
+                          _serviceData!['description']?.toString() ?? 'N/A', user_id: '',
                     ),
                   ],
                 ),

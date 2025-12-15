@@ -1,10 +1,12 @@
 import 'package:first_flutter/baseControllers/APis.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../../../constants/colorConstant/color_constant.dart';
+import '../User Instant Service/UserLocationPickerScreen.dart';
 
 class EditAddressScreen extends StatefulWidget {
   final int addressId;
@@ -39,6 +41,10 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
   bool _isDefault = false;
   bool _isLoading = false;
 
+  // Store selected location
+  double? _selectedLatitude;
+  double? _selectedLongitude;
+
   @override
   void initState() {
     super.initState();
@@ -54,9 +60,21 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
     _stateController.text = widget.addressData['state'] ?? '';
     _pincodeController.text = widget.addressData['pincode'] ?? '';
     _countryController.text = widget.addressData['country'] ?? '';
-    _latitudeController.text = widget.addressData['latitude']?.toString() ?? '';
-    _longitudeController.text =
-        widget.addressData['longitude']?.toString() ?? '';
+
+    // Parse latitude and longitude
+    final latitude = widget.addressData['latitude'];
+    final longitude = widget.addressData['longitude'];
+
+    if (latitude != null) {
+      _selectedLatitude = double.tryParse(latitude.toString());
+      _latitudeController.text = _selectedLatitude?.toStringAsFixed(6) ?? '';
+    }
+
+    if (longitude != null) {
+      _selectedLongitude = double.tryParse(longitude.toString());
+      _longitudeController.text = _selectedLongitude?.toStringAsFixed(6) ?? '';
+    }
+
     _isDefault = widget.addressData['is_default'] ?? false;
   }
 
@@ -74,6 +92,115 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
     super.dispose();
   }
 
+  // Validation Methods
+  String? _validateAddressLine1(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Address line 1 is required';
+    }
+    if (value.trim().length < 5) {
+      return 'Address must be at least 5 characters';
+    }
+    if (value.trim().length > 200) {
+      return 'Address must not exceed 200 characters';
+    }
+    return null;
+  }
+
+  String? _validateAddressLine2(String? value) {
+    if (value != null && value.trim().isNotEmpty) {
+      if (value.trim().length > 200) {
+        return 'Address must not exceed 200 characters';
+      }
+    }
+    return null;
+  }
+
+  String? _validateLandmark(String? value) {
+    if (value != null && value.trim().isNotEmpty) {
+      if (value.trim().length > 100) {
+        return 'Landmark must not exceed 100 characters';
+      }
+    }
+    return null;
+  }
+
+  String? _validateCity(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'City is required';
+    }
+    if (value.trim().length < 2) {
+      return 'City name must be at least 2 characters';
+    }
+    if (value.trim().length > 50) {
+      return 'City name must not exceed 50 characters';
+    }
+    final cityRegex = RegExp(r"^[a-zA-Z\s\-']+$");
+    if (!cityRegex.hasMatch(value.trim())) {
+      return 'City name can only contain letters';
+    }
+    return null;
+  }
+
+  String? _validateState(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'State is required';
+    }
+    if (value.trim().length < 2) {
+      return 'State name must be at least 2 characters';
+    }
+    if (value.trim().length > 50) {
+      return 'State name must not exceed 50 characters';
+    }
+    final stateRegex = RegExp(r"^[a-zA-Z\s\-']+$");
+    if (!stateRegex.hasMatch(value.trim())) {
+      return 'State name can only contain letters';
+    }
+    return null;
+  }
+
+  String? _validatePincode(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Pincode is required';
+    }
+    final cleanedValue = value.trim().replaceAll(' ', '');
+
+    if (!RegExp(r'^\d+$').hasMatch(cleanedValue)) {
+      return 'Pincode must contain only numbers';
+    }
+
+    if (cleanedValue.length < 4) {
+      return 'Pincode must be at least 4 digits';
+    }
+    if (cleanedValue.length > 10) {
+      return 'Pincode must not exceed 10 digits';
+    }
+    return null;
+  }
+
+  String? _validateCountry(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Country is required';
+    }
+    if (value.trim().length < 2) {
+      return 'Country name must be at least 2 characters';
+    }
+    if (value.trim().length > 50) {
+      return 'Country name must not exceed 50 characters';
+    }
+    final countryRegex = RegExp(r"^[a-zA-Z\s\-']+$");
+    if (!countryRegex.hasMatch(value.trim())) {
+      return 'Country name can only contain letters';
+    }
+    return null;
+  }
+
+  String? _validateLocation() {
+    if (_selectedLatitude == null || _selectedLongitude == null) {
+      return 'Please select location on map';
+    }
+    return null;
+  }
+
   Future<String?> _getAuthToken() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -84,11 +211,126 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
     }
   }
 
+  // Open map to select location
+  Future<void> _openMapPicker() async {
+    try {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserLocationPickerScreen(
+            initialLatitude: _selectedLatitude,
+            initialLongitude: _selectedLongitude,
+          ),
+        ),
+      );
+
+      if (result != null && result is Map<String, dynamic>) {
+        setState(() {
+          _selectedLatitude = result['latitude'] as double?;
+          _selectedLongitude = result['longitude'] as double?;
+
+          // Update latitude/longitude fields
+          if (_selectedLatitude != null) {
+            _latitudeController.text = _selectedLatitude!.toStringAsFixed(6);
+          }
+          if (_selectedLongitude != null) {
+            _longitudeController.text = _selectedLongitude!.toStringAsFixed(6);
+          }
+
+          // Optionally update address line 1 with the returned address
+          final address = result['address'] as String?;
+          if (address != null && address.isNotEmpty) {
+            // Show dialog to ask if user wants to update address
+            _showAddressUpdateDialog(address);
+          }
+        });
+
+        // Show success message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Location updated successfully'),
+              backgroundColor: ColorConstant.moyoGreen,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('Error opening map picker: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error opening map: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _showAddressUpdateDialog(String address) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Update Address?'),
+        content: Text('Do you want to update address line 1 with:\n\n"$address"'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true) {
+      setState(() {
+        _addressLine1Controller.text = address;
+      });
+    }
+  }
+
   Future<void> _updateAddress() async {
-    if (!_formKey.currentState!.validate()) {
+    // Validate location first
+    final locationError = _validateLocation();
+    if (locationError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(locationError),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
       return;
     }
+
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fix all errors before submitting'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
     final token = await _getAuthToken();
+
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Authentication required. Please login again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     setState(() {
       _isLoading = true;
@@ -104,16 +346,16 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
         'landmark': _landmarkController.text.trim(),
         'city': _cityController.text.trim(),
         'state': _stateController.text.trim(),
-        'pincode': _pincodeController.text.trim(),
+        'pincode': _pincodeController.text.trim().replaceAll(' ', ''),
         'country': _countryController.text.trim(),
-        'latitude': double.tryParse(_latitudeController.text.trim()) ?? 0.0,
-        'longitude': double.tryParse(_longitudeController.text.trim()) ?? 0.0,
+        'latitude': _selectedLatitude ?? 0.0,
+        'longitude': _selectedLongitude ?? 0.0,
         'is_default': _isDefault,
       };
 
       final headers = {
         'Content-Type': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token',
+        'Authorization': 'Bearer $token',
       };
 
       final response = await http.put(
@@ -189,6 +431,16 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
 
     final token = await _getAuthToken();
 
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Authentication required. Please login again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -198,7 +450,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
 
       final headers = {
         'Content-Type': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token',
+        'Authorization': 'Bearer $token',
       };
 
       final response = await http.delete(url, headers: headers);
@@ -297,21 +549,21 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                       contentPadding: EdgeInsets.zero,
                       onChanged: (value) {
                         setState(() {
-                          _addressType = value!;
+                          _addressType = value ?? 'home';
                         });
                       },
                     ),
                   ),
                   Expanded(
                     child: RadioListTile<String>(
-                      title: const Text('office'),
+                      title: const Text('Office'),
                       value: 'office',
                       groupValue: _addressType,
                       activeColor: ColorConstant.moyoOrange,
                       contentPadding: EdgeInsets.zero,
                       onChanged: (value) {
                         setState(() {
-                          _addressType = value!;
+                          _addressType = value ?? 'office';
                         });
                       },
                     ),
@@ -325,40 +577,124 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                       contentPadding: EdgeInsets.zero,
                       onChanged: (value) {
                         setState(() {
-                          _addressType = value!;
+                          _addressType = value ?? 'other';
                         });
                       },
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 20),
 
+              // Map Location Button
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: ColorConstant.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: _selectedLatitude == null || _selectedLongitude == null
+                        ? Colors.red.withOpacity(0.5)
+                        : ColorConstant.moyoOrange.withOpacity(0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.location_on,
+                          color: _selectedLatitude == null || _selectedLongitude == null
+                              ? Colors.red
+                              : ColorConstant.moyoOrange,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _selectedLatitude != null && _selectedLongitude != null
+                                ? 'Location Selected'
+                                : 'Select Location on Map *',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: _selectedLatitude == null || _selectedLongitude == null
+                                  ? Colors.red
+                                  : ColorConstant.onSurface,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (_selectedLatitude != null && _selectedLongitude != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        'Lat: ${_selectedLatitude!.toStringAsFixed(6)}, '
+                            'Long: ${_selectedLongitude!.toStringAsFixed(6)}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _openMapPicker,
+                        icon: Icon(
+                          _selectedLatitude != null && _selectedLongitude != null
+                              ? Icons.edit_location
+                              : Icons.map,
+                          size: 20,
+                        ),
+                        label: Text(
+                          _selectedLatitude != null && _selectedLongitude != null
+                              ? 'Change Location'
+                              : 'Open Map',
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: ColorConstant.moyoOrange,
+                          side: BorderSide(color: ColorConstant.moyoOrange),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 20),
 
               _buildTextField(
                 label: 'Address Line 1',
                 controller: _addressLine1Controller,
                 hint: 'Enter address line 1',
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Please enter address line 1';
-                  }
-                  return null;
-                },
+                validator: _validateAddressLine1,
+                maxLength: 200,
               ),
               const SizedBox(height: 20),
 
               _buildTextField(
                 label: 'Address Line 2',
                 controller: _addressLine2Controller,
-                hint: 'Enter address line 2',
+                hint: 'Enter address line 2 (Optional)',
+                validator: _validateAddressLine2,
+                maxLength: 200,
               ),
               const SizedBox(height: 20),
 
               _buildTextField(
                 label: 'Landmark',
                 controller: _landmarkController,
-                hint: 'Enter landmark',
+                hint: 'Enter landmark (Optional)',
+                validator: _validateLandmark,
+                maxLength: 100,
               ),
               const SizedBox(height: 20),
 
@@ -369,12 +705,8 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                       label: 'City',
                       controller: _cityController,
                       hint: 'Enter city',
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Required';
-                        }
-                        return null;
-                      },
+                      validator: _validateCity,
+                      maxLength: 50,
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -383,12 +715,8 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                       label: 'State',
                       controller: _stateController,
                       hint: 'Enter state',
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Required';
-                        }
-                        return null;
-                      },
+                      validator: _validateState,
+                      maxLength: 50,
                     ),
                   ),
                 ],
@@ -403,12 +731,11 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                       controller: _pincodeController,
                       hint: 'Enter pincode',
                       keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Required';
-                        }
-                        return null;
-                      },
+                      validator: _validatePincode,
+                      maxLength: 10,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -417,17 +744,12 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                       label: 'Country',
                       controller: _countryController,
                       hint: 'Enter country',
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Required';
-                        }
-                        return null;
-                      },
+                      validator: _validateCountry,
+                      maxLength: 50,
                     ),
                   ),
                 ],
               ),
-
               const SizedBox(height: 20),
 
               Row(
@@ -436,10 +758,11 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                     child: _buildTextField(
                       label: 'Latitude',
                       controller: _latitudeController,
-                      hint: 'Enter latitude',
+                      hint: 'Auto-filled',
                       keyboardType: TextInputType.numberWithOptions(
                         decimal: true,
                       ),
+                      readOnly: true,
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -447,10 +770,11 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                     child: _buildTextField(
                       label: 'Longitude',
                       controller: _longitudeController,
-                      hint: 'Enter longitude',
+                      hint: 'Auto-filled',
                       keyboardType: TextInputType.numberWithOptions(
                         decimal: true,
                       ),
+                      readOnly: true,
                     ),
                   ),
                 ],
@@ -477,27 +801,28 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                   onPressed: _isLoading ? null : _updateAddress,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ColorConstant.moyoOrange,
+                    disabledBackgroundColor: ColorConstant.moyoOrange.withOpacity(0.6),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   child: _isLoading
                       ? const SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(
-                            color: ColorConstant.white,
-                            strokeWidth: 2,
-                          ),
-                        )
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(
+                      color: ColorConstant.white,
+                      strokeWidth: 2,
+                    ),
+                  )
                       : const Text(
-                          'Update Address',
-                          style: TextStyle(
-                            color: ColorConstant.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                    'Update Address',
+                    style: TextStyle(
+                      color: ColorConstant.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -514,6 +839,9 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
     required String hint,
     TextInputType? keyboardType,
     String? Function(String?)? validator,
+    bool readOnly = false,
+    int? maxLength,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -531,11 +859,15 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
           controller: controller,
           keyboardType: keyboardType,
           validator: validator,
+          readOnly: readOnly,
+          maxLength: maxLength,
+          inputFormatters: inputFormatters,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: const TextStyle(color: Colors.grey),
             filled: true,
-            fillColor: ColorConstant.white,
+            fillColor: readOnly ? Colors.grey[100] : ColorConstant.white,
+            counterText: maxLength != null ? '' : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,

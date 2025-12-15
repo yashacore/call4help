@@ -59,64 +59,6 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
     }
   }
 
-  Future<void> _handleLogout() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final splashProvider = Provider.of<SplashProvider>(
-        context,
-        listen: false,
-      );
-
-      // Clear all session data
-      await splashProvider.clearSession();
-
-      print('User logged out successfully');
-
-      // Navigate to login screen
-      if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/login',
-          (route) => false, // Remove all previous routes
-        );
-      }
-    } catch (e) {
-      _showErrorDialog('Logout failed: ${e.toString()}');
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  void _showLogoutConfirmationDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close dialog
-              _handleLogout(); // Perform logout
-            },
-            child: const Text('Logout', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showErrorDialog(String message) {
     if (!mounted) return;
 
@@ -170,17 +112,6 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
                                   ),
                             ),
                           ],
-                        ),
-                        // Logout Button
-                        IconButton(
-                          onPressed: _isLoading
-                              ? null
-                              : _showLogoutConfirmationDialog,
-                          icon: Icon(
-                            Icons.logout,
-                            color: _isLoading ? Colors.grey : Colors.red,
-                          ),
-                          tooltip: 'Logout',
                         ),
                       ],
                     ),
@@ -303,37 +234,6 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
         crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 10,
         children: [
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: InkWell(
-                onTap: _isLoading
-                    ? null
-                    : () {
-                        Navigator.pop(context);
-                      },
-                borderRadius: BorderRadius.circular(12),
-                child: Center(
-                  child: Text(
-                    "Cancel",
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: _isLoading
-                          ? Colors.grey
-                          : ColorConstant.moyoOrange,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
           Expanded(
             child: Container(
               width: double.infinity,

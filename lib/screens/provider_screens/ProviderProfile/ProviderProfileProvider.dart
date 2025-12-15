@@ -53,6 +53,8 @@ class ProviderProfileProvider extends ChangeNotifier {
         throw Exception('No authentication token found');
       }
 
+      print(token);
+
       final response = await http.get(
         Uri.parse('$base_url/api/provider/profile'),
         headers: {

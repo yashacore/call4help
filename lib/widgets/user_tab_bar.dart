@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../constants/colorConstant/color_constant.dart';
 
 class UserTabBar extends StatelessWidget {
-  const UserTabBar({super.key});
+  final TabController? controller;
+
+  const UserTabBar({super.key, this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +13,7 @@ class UserTabBar extends StatelessWidget {
       height: 50,
       alignment: Alignment.bottomCenter,
       child: TabBar(
+        controller: controller,
         indicatorColor: ColorConstant.moyoOrange,
         labelColor: ColorConstant.black,
         indicatorSize: TabBarIndicatorSize.tab,

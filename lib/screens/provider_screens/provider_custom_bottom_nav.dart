@@ -14,18 +14,14 @@ class ProviderCustomBottomNav extends StatelessWidget {
   static const List<Widget> _pages = [
     ProviderHomeScreenBody(),
     ProviderService(),
-    ProviderEarningScreenBody(),
+    ProviderEarningScreen(),
     ProviderGoToCustomer(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UserAppbar(
-        dp: "https://picsum.photos/200/200",
-        fullName: 'Friends',
-        type:"provider"
-      ),
+      appBar: UserAppbar(type: "provider"),
       backgroundColor: Color(0xFFF5F5F5),
       body: Consumer<ProviderNavigationProvider>(
         builder: (context, ProviderNavigationProvider, child) {

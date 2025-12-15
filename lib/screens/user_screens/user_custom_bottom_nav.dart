@@ -8,8 +8,35 @@ import 'Home/user_home_screen_body.dart';
 import 'navigation/user_search_screen_body.dart';
 import 'navigation/user_service.dart';
 
-class UserCustomBottomNav extends StatelessWidget {
-  const UserCustomBottomNav({super.key});
+class UserCustomBottomNav extends StatefulWidget {
+  final int initialTab; // ✅ Optional: which tab to open
+  final String?
+  notificationServiceId; // ✅ Optional: serviceId from notification
+
+  const UserCustomBottomNav({
+    super.key,
+    this.initialTab = 0, // Default to Home tab
+    this.notificationServiceId,
+  });
+
+  @override
+  State<UserCustomBottomNav> createState() => _UserCustomBottomNavState();
+}
+
+class _UserCustomBottomNavState extends State<UserCustomBottomNav> {
+  @override
+  void initState() {
+    super.initState();
+
+    // ✅ Set initial tab if provided
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.initialTab != 0) {
+        context.read<UserNavigationProvider>().setCurrentIndex(
+          widget.initialTab,
+        );
+      }
+    });
+  }
 
   static const List<Widget> _pages = [
     UserHomeScreenBody(),
@@ -21,11 +48,7 @@ class UserCustomBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UserAppbar(
-        dp: "https://picsum.photos/200/200",
-        fullName: 'Friends',
-        type: 'user',
-      ),
+      appBar: UserAppbar(type: 'user'),
       backgroundColor: Color(0xFFF5F5F5),
       body: Consumer<UserNavigationProvider>(
         builder: (context, userNavigationProvider, child) {
@@ -37,21 +60,14 @@ class UserCustomBottomNav extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
         selectedItemColor: Colors.orange,
-
-        selectedLabelStyle:
-            // Theme.of(context).textTheme.labelMedium,
-            TextStyle(
-              color: Colors.orange,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
+        selectedLabelStyle: TextStyle(
+          color: Colors.orange,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
         unselectedLabelStyle: TextStyle(color: Colors.black87),
         unselectedItemColor: Colors.black87,
         onTap: (index) {
-          // Provider.of<UserNavigationProvider>(
-          //   context,
-          //   listen: false,
-          // ).setCurrentIndex(index);
           context.read<UserNavigationProvider>().setCurrentIndex(index);
         },
         showUnselectedLabels: true,
@@ -74,9 +90,6 @@ class UserCustomBottomNav extends StatelessWidget {
     final bool isActive =
         context.watch<UserNavigationProvider>().currentIndex == index;
 
-    // print(
-    //   "Current index is ${context.watch<UserNavigationProvider>().currentIndex}. and isActive = $isActive",
-    // );
     return BottomNavigationBarItem(
       icon: Container(
         padding: const EdgeInsets.fromLTRB(6, 16, 6, 16),

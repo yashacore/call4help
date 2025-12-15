@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/screens/provider_screens/ProviderProfile/EditProviderProfileScreen.dart';
 import 'package:first_flutter/screens/user_screens/Profile/EditProfileScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,10 +12,13 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../baseControllers/APis.dart';
+import '../baseControllers/APis.dart';
 
-import '../user_screens/WidgetProviders/ServiceAPI.dart';
-import 'ServiceArrivalProvider.dart';
+import '../screens/provider_screens/navigation/ProviderChats/ProviderChatScreen.dart';
+import '../screens/user_screens/WidgetProviders/ServiceAPI.dart';
+import '../screens/provider_screens/ServiceArrivalProvider.dart';
+import '../screens/user_screens/navigation/ProviderSOSEmergencyScreen.dart';
+import '../screens/user_screens/navigation/SOSEmergencyScreen.dart';
 
 class ProviderConfirmServiceDetails extends StatelessWidget {
   final String? serviceId;
@@ -29,6 +33,8 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
   final String? rating;
   final String status;
   final VoidCallback? onStartWork;
+  final VoidCallback? onSeeWorktime;
+  final VoidCallback? onRating;
 
   final String? durationType;
   final String? duration;
@@ -38,6 +44,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
 
   final String? description;
   final bool isProvider;
+  String? user_id;
 
   final VoidCallback? onAccept;
   final VoidCallback? onReBid;
@@ -45,7 +52,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
   final VoidCallback? onTaskComplete;
   final VoidCallback? onRateService;
 
-  const ProviderConfirmServiceDetails({
+  ProviderConfirmServiceDetails({
     super.key,
     this.serviceId,
     this.category,
@@ -71,6 +78,9 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
     this.onTaskComplete,
     this.onRateService,
     this.onStartWork,
+    this.onSeeWorktime,
+    this.user_id,
+    this.onRating,
   });
 
   // Add this method to show note popup
@@ -197,16 +207,14 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
     final TextEditingController noteController = TextEditingController(
       text: "cash",
     );
-    String? amountError; // inline error message
+    String? amountError;
 
     return showDialog<Map<String, String>>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        // Use StatefulBuilder to update inline warning
         return StatefulBuilder(
           builder: (context, setState) {
-            // Validation function
             void validateAmount() {
               if (amountController.text.isEmpty) {
                 setState(() => amountError = null);
@@ -232,12 +240,12 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
 
             return AlertDialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
               ),
               title: Text(
                 'Re-Bid Service',
                 style: GoogleFonts.roboto(
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFF1D1B20),
                 ),
@@ -249,21 +257,20 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                   Text(
                     'Enter your new bid amount and note',
                     style: GoogleFonts.roboto(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: Color(0xFF7A7A7A),
                     ),
                   ),
-                  SizedBox(height: 16),
-                  // Amount TextField
+                  SizedBox(height: 16.h),
                   Text(
                     'Amount *',
                     style: GoogleFonts.roboto(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF1D1B20),
                     ),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   TextField(
                     controller: amountController,
                     keyboardType: TextInputType.number,
@@ -272,43 +279,41 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       hintText: 'Enter amount',
                       prefixText: '₹ ',
                       errorText: amountError,
-                      // inline warning here
                       hintStyle: GoogleFonts.roboto(color: Color(0xFFBDBDBD)),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                         borderSide: BorderSide(color: Color(0xFFE6E6E6)),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                         borderSide: BorderSide(color: Color(0xFFE6E6E6)),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                         borderSide: BorderSide(
                           color: ColorConstant.moyoOrange,
-                          width: 2,
+                          width: 2.w,
                         ),
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: EdgeInsets.all(12),
+                      contentPadding: EdgeInsets.all(12.w),
                     ),
                     style: GoogleFonts.roboto(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: Color(0xFF1D1B20),
                     ),
                   ),
-                  SizedBox(height: 16),
-                  // Note TextField
+                  SizedBox(height: 16.h),
                   Text(
                     'Note',
                     style: GoogleFonts.roboto(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF1D1B20),
                     ),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   TextField(
                     controller: noteController,
                     maxLines: 3,
@@ -317,26 +322,26 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       hintText: 'Enter note...',
                       hintStyle: GoogleFonts.roboto(color: Color(0xFFBDBDBD)),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                         borderSide: BorderSide(color: Color(0xFFE6E6E6)),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                         borderSide: BorderSide(color: Color(0xFFE6E6E6)),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                         borderSide: BorderSide(
                           color: ColorConstant.moyoOrange,
-                          width: 2,
+                          width: 2.w,
                         ),
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: EdgeInsets.all(12),
+                      contentPadding: EdgeInsets.all(12.w),
                     ),
                     style: GoogleFonts.roboto(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: Color(0xFF1D1B20),
                     ),
                   ),
@@ -348,12 +353,15 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                     Navigator.of(context).pop(null);
                   },
                   style: TextButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 12.h,
+                    ),
                   ),
                   child: Text(
                     'Cancel',
                     style: GoogleFonts.roboto(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
                       color: Color(0xFF7A7A7A),
                     ),
@@ -364,9 +372,15 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                     final amount = amountController.text.trim();
                     final note = noteController.text.trim();
 
+                    if (amount.isEmpty) {
+                      _showErrorSnackbar(context, 'Please enter amount');
+                      return;
+                    }
+
                     double entered = double.tryParse(amount) ?? 0;
                     double minAllowed = baseAmount * 0.70;
                     double maxAllowed = baseAmount * 2.00;
+
                     if (entered < minAllowed) {
                       _showErrorSnackbar(
                         context,
@@ -381,16 +395,6 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       return;
                     }
 
-                    if (amount.isEmpty) {
-                      _showErrorSnackbar(context, 'Please enter amount');
-                      return;
-                    }
-
-                    if (double.tryParse(amount) == null) {
-                      _showErrorSnackbar(context, 'Please enter valid amount');
-                      return;
-                    }
-
                     if (note.isEmpty) {
                       _showErrorSnackbar(context, 'Please enter a note');
                       return;
@@ -400,15 +404,18 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFCD3232),
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.w,
+                      vertical: 12.h,
+                    ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                   ),
                   child: Text(
                     'Submit Re-Bid',
                     style: GoogleFonts.roboto(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
@@ -432,7 +439,6 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
     }
   }
 
-  // Add this method to handle Accept button click
   Future<void> _handleAcceptService(BuildContext context) async {
     try {
       final token = await _getAuthToken();
@@ -450,23 +456,120 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
           'Authorization': 'Bearer $token',
         },
       );
+
+      print("object");
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        bool isRegister = data['profile']['provider']['isregistered'] ?? false;
+        bool isUserRegister = data['profile']['isregister'] ?? false;
 
-        bool isRegister = data['profile']['isregister'] ?? false;
-
-        if (isRegister == false) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  EditProfileScreen(), // Replace with your target page
-            ),
+        if (isRegister == false || isUserRegister == false) {
+          // Show profile incomplete popup
+          final shouldNavigate = await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                title: Row(
+                  children: [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      color: ColorConstant.moyoOrange,
+                      size: 28.sp,
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'Profile Incomplete',
+                      style: GoogleFonts.roboto(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF1D1B20),
+                      ),
+                    ),
+                  ],
+                ),
+                content: Text(
+                  'Please complete your profile to accept services. You will be redirected to the profile edit screen.',
+                  style: GoogleFonts.roboto(
+                    fontSize: 14.sp,
+                    color: Color(0xFF7A7A7A),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 12.h,
+                      ),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: GoogleFonts.roboto(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF7A7A7A),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorConstant.moyoOrange,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 12.h,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                    ),
+                    child: Text(
+                      'Complete Profile',
+                      style: GoogleFonts.roboto(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           );
+
+          // If user clicked "Complete Profile", navigate to edit profile screen
+          if (shouldNavigate == true) {
+            // Check which profile is incomplete and navigate accordingly
+            if (isRegister == false) {
+              // Provider profile is incomplete
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProviderProfileScreen(),
+                ),
+              );
+            } else if (isUserRegister == false) {
+              // User profile is incomplete
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => EditProfileScreen()),
+              );
+            }
+          }
+          return;
         }
       }
     } catch (e) {
-      _showErrorSnackbar(context, 'Service ID is missing');
+      _showErrorSnackbar(context, 'Failed to verify profile status');
       return;
     }
 
@@ -524,6 +627,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
         serviceId: serviceId!,
         amount: price!,
         notes: note,
+        status: "pending",
       );
 
       // Hide loading dialog
@@ -558,6 +662,243 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
           _showErrorSnackbar(
             context,
             response.message ?? 'Failed to accept service',
+          );
+        }
+      }
+    } catch (e) {
+      // Hide loading dialog if still showing
+      if (context.mounted && Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+
+      // Show error message
+      if (context.mounted) {
+        _showErrorSnackbar(context, e.toString().replaceAll('Exception: ', ''));
+      }
+    }
+  }
+
+  Future<void> _handleReBidService(BuildContext context) async {
+    // First check profile completion status
+    try {
+      final token = await _getAuthToken();
+
+      if (token == null || token.isEmpty) {
+        throw Exception('Authentication token not found. Please login again.');
+      }
+
+      final url = Uri.parse('$base_url/api/auth/profile');
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        bool isRegister = data['profile']['provider']['isregistered'] ?? false;
+        bool isUserRegister = data['profile']['isregister'] ?? false;
+
+        if (isRegister == false || isUserRegister == false) {
+          // Show profile incomplete popup
+          final shouldNavigate = await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                title: Row(
+                  children: [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      color: ColorConstant.moyoOrange,
+                      size: 28.sp,
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'Profile Incomplete',
+                      style: GoogleFonts.roboto(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF1D1B20),
+                      ),
+                    ),
+                  ],
+                ),
+                content: Text(
+                  'Please complete your profile to re-bid on services. You will be redirected to the profile edit screen.',
+                  style: GoogleFonts.roboto(
+                    fontSize: 14.sp,
+                    color: Color(0xFF7A7A7A),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 12.h,
+                      ),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: GoogleFonts.roboto(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF7A7A7A),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorConstant.moyoOrange,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 12.h,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                    ),
+                    child: Text(
+                      'Complete Profile',
+                      style: GoogleFonts.roboto(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+
+          // If user clicked "Complete Profile", navigate to edit profile screen
+          if (shouldNavigate == true) {
+            // Check which profile is incomplete and navigate accordingly
+            if (isRegister == false) {
+              // Provider profile is incomplete
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProviderProfileScreen(),
+                ),
+              );
+            } else if (isUserRegister == false) {
+              // User profile is incomplete
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => EditProfileScreen()),
+              );
+            }
+          }
+          return;
+        }
+      }
+    } catch (e) {
+      _showErrorSnackbar(context, 'Failed to verify profile status');
+      return;
+    }
+
+    // Validate required fields
+    if (serviceId == null || serviceId!.isEmpty) {
+      _showErrorSnackbar(context, 'Service ID is missing');
+      return;
+    }
+
+    // Show rebid dialog to get amount and note
+    final result = await _showReBidDialog(context);
+
+    // If user cancelled the dialog, return
+    if (result == null) {
+      return;
+    }
+
+    final newAmount = result['amount']!;
+    final note = result['note']!;
+
+    try {
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: Container(
+            padding: EdgeInsets.all(20.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16.h),
+                Text(
+                  'Submitting re-bid...',
+                  style: GoogleFonts.roboto(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      // Call the same API with new amount
+      final response = await ServiceAPI.acceptService(
+        serviceId: serviceId!,
+        amount: newAmount,
+        notes: note,
+        status: "Rebid",
+      );
+
+      // Hide loading dialog
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+
+      if (response.success) {
+        // Show success message
+        if (context.mounted) {
+          _showSuccessSnackbar(
+            context,
+            response.message ?? 'Re-bid submitted successfully',
+          );
+
+          // Add delay to show snackbar, then pop
+          await Future.delayed(Duration(milliseconds: 500));
+
+          // Pop the screen to go back
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        }
+
+        // Call the original onReBid callback if provided
+        if (onReBid != null) {
+          onReBid!();
+        }
+      } else {
+        // Show error message
+        if (context.mounted) {
+          _showErrorSnackbar(
+            context,
+            response.message ?? 'Failed to submit re-bid',
           );
         }
       }
@@ -648,7 +989,6 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
 
             _description(context, description),
 
-            // Fixed: Wrap with Consumer to get the ServiceArrivalProvider
             Consumer<ServiceArrivalProvider>(
               builder: (context, arrivalProvider, child) {
                 return _buildCenterContent(context, arrivalProvider);
@@ -669,7 +1009,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
               _taskComplete(context),
 
             // Rate service - show for 'completed' status
-            if (statusLower == "completed") _rateService(context),
+            //if (statusLower == "completed") _rateService(context),
           ],
         ),
       ),
@@ -687,7 +1027,10 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
         children: [
           Expanded(
             child: InkWell(
-              onTap: () => _handleAcceptService(context),
+              onTap: () {
+                print("Accept button tapped");
+                _handleAcceptService(context);
+              },
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -720,13 +1063,16 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
           ),
           Expanded(
             child: InkWell(
-              onTap: () => _handleReBidService(context),
+              onTap: () {
+                print("ReBid button tapped");
+                _handleReBidService(context);
+              },
               child: Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   color: Color(0xFFCD3232),
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -755,112 +1101,6 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
       ),
     );
   }
-
-  Future<void> _handleReBidService(BuildContext context) async {
-    // Validate required fields
-    if (serviceId == null || serviceId!.isEmpty) {
-      _showErrorSnackbar(context, 'Service ID is missing');
-      return;
-    }
-
-    // Show rebid dialog to get amount and note
-    final result = await _showReBidDialog(context);
-
-    // If user cancelled the dialog, return
-    if (result == null) {
-      return;
-    }
-
-    final newAmount = result['amount']!;
-    final note = result['note']!;
-
-    try {
-      // Show loading dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Center(
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16.h),
-                Text(
-                  'Submitting re-bid...',
-                  style: GoogleFonts.roboto(
-                    fontSize: 16.h,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      // Call the same API with new amount
-      final response = await ServiceAPI.acceptService(
-        serviceId: serviceId!,
-        amount: newAmount,
-        notes: note,
-      );
-
-      // Hide loading dialog
-      if (context.mounted) {
-        Navigator.of(context).pop();
-      }
-
-      if (response.success) {
-        // Show success message
-        if (context.mounted) {
-          _showSuccessSnackbar(
-            context,
-            response.message ?? 'Re-bid submitted successfully',
-          );
-
-          // Add delay to show snackbar, then pop
-          await Future.delayed(Duration(milliseconds: 500));
-
-          // Pop the screen to go back
-          if (context.mounted) {
-            Navigator.of(context).pop();
-          }
-        }
-
-        // Call the original onReBid callback if provided
-        if (onReBid != null) {
-          onReBid!();
-        }
-      } else {
-        // Show error message
-        if (context.mounted) {
-          _showErrorSnackbar(
-            context,
-            response.message ?? 'Failed to submit re-bid',
-          );
-        }
-      }
-    } catch (e) {
-      // Hide loading dialog if still showing
-      if (context.mounted && Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
-
-      // Show error message
-      if (context.mounted) {
-        _showErrorSnackbar(context, e.toString().replaceAll('Exception: ', ''));
-      }
-    }
-  }
-
-  // Keep all other existing methods unchanged...
-  // (Copy all the other methods from your original code)
 
   Widget _currentStatusChip(BuildContext context, String? status3) {
     final statusLower = status3?.toLowerCase() ?? '';
@@ -1043,29 +1283,42 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // SOS Button
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Color(0xFFFF0000),
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
-                ),
-                child: Text(
-                  "SOS",
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.roboto(
-                    textStyle: Theme.of(context).textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w500),
-                    color: Color(0xFFFFFFFF),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ProviderSOSEmergencyScreen(serviceId: serviceId),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFF0000),
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                  ),
+                  child: Text(
+                    "SOS",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.roboto(
+                      textStyle: Theme.of(context).textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w500),
+                      color: Color(0xFFFFFFFF),
+                    ),
                   ),
                 ),
               ),
 
-              if (status == "arrived")
+              if (status == "arrived" || status == "in_progress")
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: _startWork(context),
+                    child: status == "in_progress"
+                        ? _workTime(context)
+                        : _startWork(context),
                   ),
                 ),
 
@@ -1076,7 +1329,28 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                 spacing: 16,
                 children: [
                   SvgPicture.asset("assets/icons/moyo_call_action.svg"),
-                  SvgPicture.asset("assets/icons/moyo_message_action.svg"),
+                  InkWell(
+                    onTap: () {
+                      // Navigate to chat screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProviderChatScreen(
+                            userName: name ?? "Provider",
+                            userImage: dp,
+                            serviceId: serviceId,
+                            providerId: user_id,
+                            isOnline: true,
+                            userPhone: providerPhone,
+                          ),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(50),
+                    child: SvgPicture.asset(
+                      "assets/icons/moyo_message_action.svg",
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -1157,6 +1431,40 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
             Icon(Icons.work, color: Colors.white, size: 20),
             Text(
               "Start Work",
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.roboto(
+                textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: Color(0xFFFFFFFF),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _workTime(BuildContext context) {
+    return InkWell(
+      onTap: onSeeWorktime,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+        decoration: BoxDecoration(
+          color: ColorConstant.moyoOrange,
+          border: Border.all(color: ColorConstant.moyoGreen, width: 1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 8,
+          children: [
+            Icon(Icons.timelapse, color: Colors.white, size: 20),
+            Text(
+              "Work time",
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

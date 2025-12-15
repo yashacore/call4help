@@ -5,29 +5,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../constants/colorConstant/color_constant.dart';
-import 'UserChatProvider.dart';
+import 'ProviderChatProvider.dart';
 
-class Message {
-  final String id;
-  final String text;
-  final bool isSentByMe;
-  final DateTime timestamp;
-  final MessageStatus status;
-  final String? imageUrl;
-
-  Message({
-    required this.id,
-    required this.text,
-    required this.isSentByMe,
-    required this.timestamp,
-    this.status = MessageStatus.sent,
-    this.imageUrl,
-  });
-}
-
-enum MessageStatus { sending, sent, delivered, read, failed }
-
-class UserChatScreen extends StatefulWidget {
+class ProviderChatScreen extends StatefulWidget {
   final String? userName;
   final String? userImage;
   final String? userId;
@@ -36,9 +16,9 @@ class UserChatScreen extends StatefulWidget {
   final String? serviceId;
   final String? providerId;
 
-  const UserChatScreen({
+  const ProviderChatScreen({
     super.key,
-    this.userName = "Provider Name",
+    this.userName = "User Name",
     this.userImage,
     this.userId,
     this.isOnline = false,
@@ -48,10 +28,10 @@ class UserChatScreen extends StatefulWidget {
   });
 
   @override
-  State<UserChatScreen> createState() => _UserChatScreenState();
+  State<ProviderChatScreen> createState() => _ProviderChatScreenState();
 }
 
-class _UserChatScreenState extends State<UserChatScreen>
+class _ProviderChatScreenState extends State<ProviderChatScreen>
     with TickerProviderStateMixin {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -60,16 +40,26 @@ class _UserChatScreenState extends State<UserChatScreen>
   bool _isTyping = false;
   bool _chatInitialized = false;
   bool _isSending = false;
+  int _previousMessageCount = 0;
 
   @override
   void initState() {
     super.initState();
-    print("=== UserChatScreen initState ===");
+    print("=== ProviderChatScreen initState ===");
     print("Service ID: ${widget.serviceId}");
     print("Provider ID: ${widget.providerId}");
     print("User Name: ${widget.userName}");
 
     _messageController.addListener(_onTextChanged);
+
+    // Listen to keyboard changes
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        Future.delayed(Duration(milliseconds: 600), () {
+          _scrollToBottom();
+        });
+      }
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       print("PostFrameCallback - calling _initializeChat");
@@ -87,7 +77,6 @@ class _UserChatScreenState extends State<UserChatScreen>
       print("serviceId: ${widget.serviceId}");
       print("providerId: ${widget.providerId}");
 
-      // CHANGE: Show better error message
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -106,7 +95,7 @@ class _UserChatScreenState extends State<UserChatScreen>
     }
 
     try {
-      final chatProvider = Provider.of<UserChatProvider>(
+      final chatProvider = Provider.of<ProviderChatProvider>(
         context,
         listen: false,
       );
@@ -123,26 +112,16 @@ class _UserChatScreenState extends State<UserChatScreen>
       if (success) {
         setState(() {
           _chatInitialized = true;
+          _previousMessageCount = chatProvider.messages.length;
         });
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _scrollToBottom(immediate: true);
-        });
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Chat loaded successfully'),
-              backgroundColor: ColorConstant.moyoGreen,
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
+        // Wait for build to complete, then scroll
+        await Future.delayed(Duration(milliseconds: 300));
+        _scrollToBottom(immediate: true);
       } else {
         print("Chat initialization failed");
         if (mounted && chatProvider.error != null) {
           print("Error: ${chatProvider.error}");
-          // CHANGE: Add retry option
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(chatProvider.error!),
@@ -207,12 +186,11 @@ class _UserChatScreenState extends State<UserChatScreen>
     });
 
     try {
-      final chatProvider = Provider.of<UserChatProvider>(
+      final chatProvider = Provider.of<ProviderChatProvider>(
         context,
         listen: false,
       );
 
-      // Send message via API
       final success = await chatProvider.sendMessage(message: messageText);
 
       setState(() {
@@ -220,8 +198,13 @@ class _UserChatScreenState extends State<UserChatScreen>
       });
 
       if (success) {
-        // Scroll to bottom to show new message
-        _scrollToBottom();
+        // Wait for the UI to update with the new message
+        await Future.delayed(Duration(milliseconds: 100));
+        _scrollToBottom(immediate: true);
+
+        // Backup scroll attempt
+        await Future.delayed(Duration(milliseconds: 400));
+        _scrollToBottom(immediate: true);
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -250,15 +233,17 @@ class _UserChatScreenState extends State<UserChatScreen>
   }
 
   void _scrollToBottom({bool immediate = false}) {
-    Future.delayed(Duration(milliseconds: immediate ? 50 : 300), () {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: immediate ? 100 : 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
+    if (!_scrollController.hasClients) return;
+
+    if (immediate) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    } else {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   @override
@@ -274,38 +259,52 @@ class _UserChatScreenState extends State<UserChatScreen>
     return Scaffold(
       backgroundColor: ColorConstant.scaffoldGray,
       appBar: _buildAppBar(),
-      body: Consumer<UserChatProvider>(
-        builder: (context, chatProvider, child) {
-          if (chatProvider.isLoading && !_chatInitialized) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(color: ColorConstant.moyoOrange),
-                  SizedBox(height: 16.h),
-                  Text(
-                    'Loading chat...',
-                    style: GoogleFonts.roboto(
-                      fontSize: 14.sp,
-                      color: Color(0xFF7A7A7A),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        child: Consumer<ProviderChatProvider>(
+          builder: (context, chatProvider, child) {
+            // Check if new message was added
+            if (chatProvider.messages.length > _previousMessageCount) {
+              _previousMessageCount = chatProvider.messages.length;
+              // Scroll to bottom when new message arrives
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Future.delayed(Duration(milliseconds: 200), () {
+                  _scrollToBottom(immediate: true);
+                });
+              });
+            }
 
-          return Column(
-            children: [
-              Expanded(
-                child: chatProvider.messages.isEmpty
-                    ? _buildEmptyState()
-                    : _buildMessagesList(chatProvider),
-              ),
-              _buildMessageInput(),
-            ],
-          );
-        },
+            if (chatProvider.isLoading && !_chatInitialized) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(color: ColorConstant.moyoOrange),
+                    SizedBox(height: 16.h),
+                    Text(
+                      'Loading chat...',
+                      style: GoogleFonts.roboto(
+                        fontSize: 14.sp,
+                        color: Color(0xFF7A7A7A),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return Column(
+              children: [
+                Expanded(
+                  child: chatProvider.messages.isEmpty
+                      ? _buildEmptyState()
+                      : _buildMessagesList(chatProvider),
+                ),
+                _buildMessageInput(),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -419,39 +418,54 @@ class _UserChatScreenState extends State<UserChatScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.userName ?? "Provider Name",
+                  widget.userName ?? "User Name",
                   style: GoogleFonts.roboto(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF1D1B20),
                   ),
                 ),
+                if (widget.isOnline)
+                  Text(
+                    'Online',
+                    style: GoogleFonts.roboto(
+                      fontSize: 12.sp,
+                      color: ColorConstant.moyoGreen,
+                    ),
+                  ),
               ],
             ),
           ),
         ],
       ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.more_vert, color: Color(0xFF1D1B20)),
+          onPressed: () {
+            // Show options menu
+          },
+        ),
+      ],
     );
   }
 
-  Widget _buildMessagesList(UserChatProvider chatProvider) {
+  Widget _buildMessagesList(ProviderChatProvider chatProvider) {
+    // Sort messages to ensure correct order (oldest first)
+    final sortedMessages = List<ChatMessage>.from(chatProvider.messages)
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
     return ListView.builder(
       controller: _scrollController,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-      itemCount: chatProvider.messages.length,
+      itemCount: sortedMessages.length,
+      physics: AlwaysScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        final message = chatProvider.messages[index];
+        final message = sortedMessages[index];
         final showDate =
             index == 0 ||
-            !_isSameDay(
-              message.createdAt,
-              chatProvider.messages[index - 1].createdAt,
-            );
+            !_isSameDay(message.createdAt, sortedMessages[index - 1].createdAt);
 
-        // Determine if message is sent by current user
-        // senderType 'user' hai toh right side (sent by me),
-        // senderType 'provider' hai toh left side (received)
-        final isSentByMe = message.senderType.toLowerCase() == 'user';
+        final isSentByMe = message.senderType.toLowerCase() == 'provider';
 
         return Column(
           children: [
@@ -514,15 +528,15 @@ class _UserChatScreenState extends State<UserChatScreen>
         children: [
           if (!isSentByMe) ...[
             Container(
-              width: 24.w,
-              height: 24.w,
+              width: 28.w,
+              height: 28.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: ColorConstant.moyoOrangeFade,
               ),
               child: Icon(
                 Icons.person,
-                size: 14.sp,
+                size: 16.sp,
                 color: ColorConstant.moyoOrange,
               ),
             ),
@@ -557,6 +571,7 @@ class _UserChatScreenState extends State<UserChatScreen>
                       fontSize: 14.sp,
                       color: isSentByMe ? Colors.white : Color(0xFF1D1B20),
                       fontWeight: FontWeight.w400,
+                      height: 1.4,
                     ),
                   ),
                   SizedBox(height: 4.h),
@@ -578,7 +593,7 @@ class _UserChatScreenState extends State<UserChatScreen>
                           message.isRead ? Icons.done_all : Icons.check,
                           size: 14.sp,
                           color: message.isRead
-                              ? Colors.white
+                              ? ColorConstant.moyoGreen
                               : Colors.white.withOpacity(0.8),
                         ),
                       ],
@@ -613,79 +628,75 @@ class _UserChatScreenState extends State<UserChatScreen>
         ],
       ),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      child: SafeArea(
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFFF5F5F5),
-                  borderRadius: BorderRadius.circular(25.r),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Color(0xFFF5F5F5),
+                borderRadius: BorderRadius.circular(25.r),
+              ),
+              child: TextField(
+                controller: _messageController,
+                focusNode: _focusNode,
+                maxLines: null,
+                textInputAction: TextInputAction.newline,
+                enabled: _chatInitialized && !_isSending,
+                style: GoogleFonts.roboto(
+                  fontSize: 14.sp,
+                  color: Color(0xFF1D1B20),
                 ),
-                child: TextField(
-                  controller: _messageController,
-                  focusNode: _focusNode,
-                  maxLines: null,
-                  textInputAction: TextInputAction.newline,
-                  enabled: _chatInitialized && !_isSending,
-                  style: GoogleFonts.roboto(
+                decoration: InputDecoration(
+                  hintText: _chatInitialized
+                      ? 'Type a message...'
+                      : 'Loading chat...',
+                  hintStyle: GoogleFonts.roboto(
                     fontSize: 14.sp,
-                    color: Color(0xFF1D1B20),
+                    color: Color(0xFF7A7A7A),
                   ),
-                  decoration: InputDecoration(
-                    hintText: _chatInitialized
-                        ? 'Type a message...'
-                        : 'Loading chat...',
-                    hintStyle: GoogleFonts.roboto(
-                      fontSize: 14.sp,
-                      color: Color(0xFF7A7A7A),
-                    ),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                      vertical: 10.h,
-                    ),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 10.h,
                   ),
                 ),
               ),
             ),
-            SizedBox(width: 12.w),
-            InkWell(
-              onTap: (_isTyping && _chatInitialized && !_isSending)
-                  ? _sendMessage
-                  : null,
-              borderRadius: BorderRadius.circular(25.r),
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 200),
-                width: 40.w,
-                height: 40.w,
-                decoration: BoxDecoration(
-                  color: (_isTyping && _chatInitialized && !_isSending)
-                      ? ColorConstant.moyoOrange
-                      : ColorConstant.moyoOrangeFade,
-                  shape: BoxShape.circle,
-                ),
-                child: _isSending
-                    ? Padding(
-                        padding: EdgeInsets.all(10.w),
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        ),
-                      )
-                    : Icon(
-                        Icons.send,
-                        color: (_isTyping && _chatInitialized)
-                            ? Colors.white
-                            : ColorConstant.moyoOrange,
-                        size: 20.sp,
+          ),
+          SizedBox(width: 12.w),
+          InkWell(
+            onTap: (_isTyping && _chatInitialized && !_isSending)
+                ? _sendMessage
+                : null,
+            borderRadius: BorderRadius.circular(25.r),
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              width: 44.w,
+              height: 44.w,
+              decoration: BoxDecoration(
+                color: (_isTyping && _chatInitialized && !_isSending)
+                    ? ColorConstant.moyoOrange
+                    : ColorConstant.moyoOrangeFade,
+                shape: BoxShape.circle,
+              ),
+              child: _isSending
+                  ? Padding(
+                      padding: EdgeInsets.all(12.w),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
-              ),
+                    )
+                  : Icon(
+                      Icons.send,
+                      color: (_isTyping && _chatInitialized)
+                          ? Colors.white
+                          : ColorConstant.moyoOrange,
+                      size: 20.sp,
+                    ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

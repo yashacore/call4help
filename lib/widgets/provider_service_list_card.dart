@@ -2,8 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:async';
 
-class ProviderServiceListCard extends StatelessWidget {
+class ProviderServiceListCard extends StatefulWidget {
   final String? category;
   final String? subCategory;
   final String? date;
@@ -13,8 +14,10 @@ class ProviderServiceListCard extends StatelessWidget {
   final String? priceBy;
   final int? providerCount;
   final String status;
-
+  final DateTime? createdAt;
+  final int timerDurationMinutes;
   final VoidCallback? onPress;
+  final VoidCallback? onTimerComplete;
 
   const ProviderServiceListCard({
     super.key,
@@ -27,13 +30,116 @@ class ProviderServiceListCard extends StatelessWidget {
     this.priceBy,
     this.providerCount,
     this.status = "No status",
+    this.createdAt,
+    this.timerDurationMinutes = 60,
     this.onPress,
+    this.onTimerComplete,
   });
 
   @override
+  State<ProviderServiceListCard> createState() =>
+      _ProviderServiceListCardState();
+}
+
+class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
+  Timer? _timer;
+  Duration _remainingTime = Duration.zero;
+  double _progress = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Start timer immediately when card is added to the list
+    if (widget.status.toLowerCase() == "open" && widget.createdAt != null) {
+      _startTimer();
+    }
+  }
+
+  @override
+  void didUpdateWidget(ProviderServiceListCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Only restart timer if createdAt actually changed (new service)
+    if (oldWidget.createdAt != widget.createdAt) {
+      _timer?.cancel();
+      if (widget.status.toLowerCase() == "open" && widget.createdAt != null) {
+        _startTimer();
+      }
+    }
+  }
+
+  void _startTimer() {
+    final elapsed = DateTime.now().difference(widget.createdAt!);
+    final totalDuration = Duration(minutes: widget.timerDurationMinutes);
+    _remainingTime = totalDuration - elapsed;
+
+    if (_remainingTime.isNegative || _remainingTime.inSeconds <= 0) {
+      // Timer already expired
+      _remainingTime = Duration.zero;
+      _progress = 0.0;
+      // Immediately notify parent to remove this item
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (widget.onTimerComplete != null && mounted) {
+          widget.onTimerComplete!();
+        }
+      });
+      return;
+    }
+
+    // Calculate initial progress
+    _progress = _remainingTime.inSeconds / totalDuration.inSeconds;
+
+    // Start countdown timer
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
+      setState(() {
+        if (_remainingTime.inSeconds > 0) {
+          _remainingTime -= Duration(seconds: 1);
+          _progress = _remainingTime.inSeconds / totalDuration.inSeconds;
+        } else {
+          // Timer completed
+          _timer?.cancel();
+          _remainingTime = Duration.zero;
+          _progress = 0.0;
+
+          // Notify parent to remove this item from list
+          if (widget.onTimerComplete != null) {
+            widget.onTimerComplete!();
+          }
+        }
+      });
+    });
+
+    debugPrint(
+      '⏱️ Timer started for service: ${widget.category} - ${widget.subCategory}',
+    );
+    debugPrint('⏱️ Remaining time: ${_formatTime(_remainingTime)}');
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  String _formatTime(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$hours:$minutes:$seconds";
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final bool showTimer =
+        widget.status.toLowerCase() == "open" && widget.createdAt != null;
+
     return InkWell(
-      onTap: onPress,
+      onTap: widget.onPress,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
         child: Container(
@@ -41,7 +147,6 @@ class ProviderServiceListCard extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
           ),
-
           child: Column(
             children: [
               Container(
@@ -57,7 +162,7 @@ class ProviderServiceListCard extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        "$category > $subCategory",
+                        "${widget.category} > ${widget.subCategory}",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.roboto(
@@ -68,7 +173,7 @@ class ProviderServiceListCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      date ?? "No date",
+                      widget.date ?? "No date",
                       style: GoogleFonts.roboto(
                         textStyle: Theme.of(context).textTheme.labelLarge
                             ?.copyWith(color: Colors.black.withAlpha(100)),
@@ -99,10 +204,8 @@ class ProviderServiceListCard extends StatelessWidget {
                         alignment: Alignment.center,
                         children: [
                           CachedNetworkImage(
-                            imageUrl: dp!,
+                            imageUrl: widget.dp!,
                             fit: BoxFit.cover,
-                            // width: 80,
-                            // height: 80,
                             placeholder: (context, url) => Image.asset(
                               'assets/images/moyo_image_placeholder.png',
                             ),
@@ -125,7 +228,7 @@ class ProviderServiceListCard extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  "₹ ${price ?? "No price"} /-",
+                                  "₹ ${widget.price ?? "No price"} /-",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.roboto(
@@ -141,7 +244,7 @@ class ProviderServiceListCard extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                "for ${duration ?? "No Duration"}",
+                                "for ${widget.duration ?? "No Duration"}",
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.end,
@@ -159,7 +262,6 @@ class ProviderServiceListCard extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
-
                             children: [
                               Flexible(
                                 child: Container(
@@ -174,7 +276,7 @@ class ProviderServiceListCard extends StatelessWidget {
                                     ),
                                   ),
                                   child: Text(
-                                    priceBy ?? "N/A",
+                                    widget.priceBy ?? "N/A",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.roboto(
@@ -191,13 +293,12 @@ class ProviderServiceListCard extends StatelessWidget {
                               ),
                               Container(
                                 alignment: Alignment.center,
-                                // width: 47,
                                 child: Row(
                                   spacing: 6,
                                   children: [
-                                    if (status == "No status")
+                                    if (widget.status == "No status")
                                       Text(
-                                        "${providerCount ?? "No Count"}",
+                                        "${widget.providerCount ?? "No Count"}",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.roboto(
@@ -210,15 +311,12 @@ class ProviderServiceListCard extends StatelessWidget {
                                           color: ColorConstant.moyoOrange,
                                         ),
                                       ),
-                                    if (status == "No status")
+                                    if (widget.status == "No status")
                                       Icon(
                                         Icons.work_outline,
                                         color: ColorConstant.moyoOrange,
                                       ),
-
-                                    /// Status Chip
-                                    currentStatusChip(context, status),
-
+                                    currentStatusChip(context, widget.status),
                                   ],
                                 ),
                               ),
@@ -230,6 +328,28 @@ class ProviderServiceListCard extends StatelessWidget {
                   ],
                 ),
               ),
+
+              // Animated timer bar - shows remaining time
+              if (showTimer)
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 500),
+                      width: MediaQuery.of(context).size.width * _progress,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: _progress > 0.3
+                            ? ColorConstant.moyoGreen
+                            : Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -238,67 +358,109 @@ class ProviderServiceListCard extends StatelessWidget {
   }
 
   Widget currentStatusChip(BuildContext context, String status) {
-    switch (status) {
+    final statusLower = status.toLowerCase();
+
+    switch (statusLower) {
+      case 'open':
+        return _buildStatusChip(
+          context,
+          text: "Open",
+          backgroundColor: Color(0xFFE8F5E9),
+          textColor: ColorConstant.moyoGreen,
+        );
+
+      case 'pending':
+        return _buildStatusChip(
+          context,
+          text: "Pending",
+          backgroundColor: Color(0xFFFFF3E0),
+          textColor: Color(0xFFF57C00),
+        );
+
       case 'assigned':
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFDEEAFA),
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-          ),
-          child: Text(
-            "assigned",
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
-              textStyle: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-              color: Color(0xFF1A4E88),
-            ),
-          ),
+        return _buildStatusChip(
+          context,
+          text: "Assigned",
+          backgroundColor: Color(0xFFDEEAFA),
+          textColor: Color(0xFF1A4E88),
         );
+
+      case 'started':
+        return _buildStatusChip(
+          context,
+          text: "Started",
+          backgroundColor: Color(0xFFE1F5FE),
+          textColor: Color(0xFF0277BD),
+        );
+
+      case 'arrived':
+        return _buildStatusChip(
+          context,
+          text: "Arrived",
+          backgroundColor: Color(0xFFE8EAF6),
+          textColor: Color(0xFF3F51B5),
+        );
+
+      case 'in_progress':
+        return _buildStatusChip(
+          context,
+          text: "In Progress",
+          backgroundColor: Color(0xFFFFF9C4),
+          textColor: Color(0xFFF57F17),
+        );
+
       case 'completed':
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFE6F7C0),
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-          ),
-          child: Text(
-            "Completed",
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
-              textStyle: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-              color: ColorConstant.moyoGreen,
-            ),
-          ),
+        return _buildStatusChip(
+          context,
+          text: "Completed",
+          backgroundColor: Color(0xFFE6F7C0),
+          textColor: ColorConstant.moyoGreen,
         );
+
       case 'cancelled':
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFFEE8E8),
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-          ),
-          child: Text(
-            "Cancelled",
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
-              textStyle: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-              color: Color(0xFFDB4A4C),
-            ),
-          ),
+        return _buildStatusChip(
+          context,
+          text: "Cancelled",
+          backgroundColor: Color(0xFFFEE8E8),
+          textColor: Color(0xFFDB4A4C),
+        );
+
+      case 'closed':
+        return _buildStatusChip(
+          context,
+          text: "Closed",
+          backgroundColor: Color(0xFFEEEEEE),
+          textColor: Color(0xFF616161),
         );
 
       default:
         return SizedBox(width: 0, height: 0);
     }
+  }
+
+  Widget _buildStatusChip(
+    BuildContext context, {
+    required String text,
+    required Color backgroundColor,
+    required Color textColor,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.all(Radius.circular(50)),
+      ),
+      child: Text(
+        text,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: GoogleFonts.roboto(
+          textStyle: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+          color: textColor,
+        ),
+      ),
+    );
   }
 }

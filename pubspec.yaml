@@ -4,7 +4,7 @@ description: "A new Flutter project."
 publish_to: 'none'
 
 
-version: 1.0.0+1
+version: 7.0.0+7
 
 environment:
   sdk: '>=3.8.0 <4.0.0'
@@ -39,12 +39,23 @@ dependencies:
   http_parser: ^4.1.2
   flutter_background_service: ^5.1.0
   permission_handler: ^12.0.1
+  flutter_polyline_points: ^3.1.0
+  flutter_html: ^3.0.0
+  share_plus: ^12.0.1
+  screenshot: ^3.0.0
+  pdf: ^3.11.3
+  url_launcher: ^6.3.2
+  app_settings: ^7.0.0
+  flutter_riverpod: ^3.0.3
+  sms_autofill: ^2.3.0
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
   flutter_lints: ^5.0.0
+
 
 flutter_icons:
   android: true

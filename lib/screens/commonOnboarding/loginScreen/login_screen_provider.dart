@@ -8,12 +8,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginProvider with ChangeNotifier {
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   String? _errorMessage;
+
   String? get errorMessage => _errorMessage;
 
   String? _otpResponse;
+
   String? get otpResponse => _otpResponse;
 
   // Firebase Auth instance
@@ -91,8 +94,8 @@ class LoginProvider with ChangeNotifier {
 
   // Google Sign-In with Firebase - OPTIMIZED VERSION
   Future<void> signInWithGoogle(
-      Function(Map<String, dynamic>) onSuccess,
-      ) async {
+    Function(Map<String, dynamic>) onSuccess,
+  ) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -119,7 +122,7 @@ class LoginProvider with ChangeNotifier {
 
       // Get authentication details from Google
       final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+          await googleUser.authentication;
 
       debugPrint("✓ Got Google Auth tokens");
 
@@ -166,7 +169,9 @@ class LoginProvider with ChangeNotifier {
           firebaseIdToken = await userCredential.user?.getIdToken(true);
 
           if (firebaseIdToken != null) {
-            debugPrint("✓ Firebase ID Token obtained on attempt ${retryCount + 1}");
+            debugPrint(
+              "✓ Firebase ID Token obtained on attempt ${retryCount + 1}",
+            );
             break;
           }
         } catch (e) {
@@ -177,7 +182,8 @@ class LoginProvider with ChangeNotifier {
 
       if (firebaseIdToken == null) {
         _isLoading = false;
-        _errorMessage = "Failed to get Firebase ID token after $maxRetries attempts";
+        _errorMessage =
+            "Failed to get Firebase ID token after $maxRetries attempts";
         notifyListeners();
         debugPrint("✗ Could not obtain Firebase token");
         return;
@@ -200,9 +206,13 @@ class LoginProvider with ChangeNotifier {
 
       // Decode and log token payload for debugging
       try {
-        final payloadJson = utf8.decode(base64Url.decode(base64Url.normalize(tokenParts[1])));
+        final payloadJson = utf8.decode(
+          base64Url.decode(base64Url.normalize(tokenParts[1])),
+        );
         final payload = jsonDecode(payloadJson);
-        debugPrint("  Token project: ${payload['aud']}"); // Should be 'moyo-159ed'
+        debugPrint(
+          "  Token project: ${payload['aud']}",
+        ); // Should be 'moyo-159ed'
         debugPrint("  Token issuer: ${payload['iss']}");
         debugPrint("  Token email: ${payload['email']}");
       } catch (e) {
@@ -224,21 +234,21 @@ class LoginProvider with ChangeNotifier {
       // Send Firebase ID Token to backend with timeout
       final response = await http
           .post(
-        Uri.parse('$base_url/api/auth/google-login'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: requestBody,
-      )
+            Uri.parse('$base_url/api/auth/google-login'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: requestBody,
+          )
           .timeout(
-        Duration(seconds: 30),
-        onTimeout: () {
-          throw Exception(
-            'Connection timeout - Server took too long to respond',
+            Duration(seconds: 30),
+            onTimeout: () {
+              throw Exception(
+                'Connection timeout - Server took too long to respond',
+              );
+            },
           );
-        },
-      );
 
       debugPrint("=== Backend Response ===");
       debugPrint("  Status: ${response.statusCode}");
@@ -286,13 +296,18 @@ class LoginProvider with ChangeNotifier {
         await prefs.setString('user_firstname', userData['firstname'] ?? '');
         await prefs.setString('user_lastname', userData['lastname'] ?? '');
         await prefs.setString('referral_code', userData['referral_code'] ?? '');
-        await prefs.setBool('is_email_verified', userData['email_verified'] ?? false);
+        await prefs.setBool(
+          'is_email_verified',
+          userData['email_verified'] ?? false,
+        );
+        await prefs.setString('user_mobile', userData['mobile'] ?? '');
 
         debugPrint("✓ User data saved to SharedPreferences");
 
         // Check verification requirements
         final userMobile = userData['mobile'];
-        final needsMobileVerification = (userMobile == null || userMobile.toString().isEmpty);
+        final needsMobileVerification =
+            (userMobile == null || userMobile.toString().isEmpty);
         final needsEmailVerification = !(userData['email_verified'] ?? false);
 
         debugPrint("  Mobile verification needed: $needsMobileVerification");
@@ -308,7 +323,6 @@ class LoginProvider with ChangeNotifier {
         notifyListeners();
         debugPrint("=== Google Sign-In Complete ===");
         return;
-
       } else {
         // Handle error response
         _errorMessage = "Google login failed. Status: ${response.statusCode}";
@@ -318,7 +332,8 @@ class LoginProvider with ChangeNotifier {
         if (response.body.isNotEmpty) {
           try {
             final errorData = jsonDecode(response.body);
-            _errorMessage = errorData['message'] ??
+            _errorMessage =
+                errorData['message'] ??
                 errorData['error']?['message'] ??
                 _errorMessage;
             debugPrint("  Error message: $_errorMessage");
@@ -335,21 +350,18 @@ class LoginProvider with ChangeNotifier {
         notifyListeners();
         return;
       }
-
     } on FirebaseAuthException catch (e) {
       _isLoading = false;
       _errorMessage = "Firebase Auth error: ${e.message}";
       notifyListeners();
       debugPrint("✗ FirebaseAuthException: ${e.code} - ${e.message}");
       return;
-
     } on http.ClientException catch (e) {
       _isLoading = false;
       _errorMessage = "Network connection error: ${e.message}";
       notifyListeners();
       debugPrint("✗ HTTP ClientException: $e");
       return;
-
     } catch (e, stackTrace) {
       _isLoading = false;
       _errorMessage = "Google sign-in error: ${e.toString()}";

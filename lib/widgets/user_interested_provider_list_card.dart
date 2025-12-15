@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UserInterestedProviderListCard extends StatelessWidget {
   final String? providerName;
@@ -45,13 +46,12 @@ class UserInterestedProviderListCard extends StatelessWidget {
     return InkWell(
       onTap: onBook,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+        padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
           ),
-
           child: Column(
             children: [
               _nameGenderAgeDistanceReachTime(
@@ -84,19 +84,19 @@ class UserInterestedProviderListCard extends StatelessWidget {
 
   /// module method
   Widget _nameGenderAgeDistanceReachTime(
-    BuildContext context, {
-    String? providerName,
-    String? gender,
-    String? age,
-    String? distance,
-    String? reachTime,
-  }) {
+      BuildContext context, {
+        String? providerName,
+        String? gender,
+        String? age,
+        String? distance,
+        String? reachTime,
+      }) {
     return Container(
-      height: 44,
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      height: 44.h,
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: Color(0xFFE6E6E6), width: 1.0),
+          bottom: BorderSide(color: Color(0xFFE6E6E6), width: 1.0.w),
         ),
       ),
       child: Row(
@@ -106,7 +106,6 @@ class UserInterestedProviderListCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: 4,
               children: [
                 Text(
                   providerName ?? "no name",
@@ -114,35 +113,43 @@ class UserInterestedProviderListCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
+                    fontSize: 16.sp,
                     color: Color(0xFF1D1B20),
                   ),
                 ),
-                Text(
-                  "(${gender ?? "no gender"} - ${age ?? "No age"}years)",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF808080),
+                SizedBox(width: 4.w),
+                Flexible(
+                  child: Text(
+                    "(${gender ?? "no gender"} - ${age ?? "No age"}years)",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14.sp,
+                      color: Color(0xFF808080),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
+          SizedBox(width: 8.w),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 2,
             children: [
               Text(
                 distance ?? "No distance",
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  fontSize: 13.sp,
                   color: Colors.black.withAlpha(100),
                 ),
               ),
+              SizedBox(width: 2.w),
               Text(
                 "(${reachTime ?? "No reachTime"})",
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  fontSize: 13.sp,
                   color: Colors.black.withAlpha(100),
                 ),
               ),
@@ -154,45 +161,44 @@ class UserInterestedProviderListCard extends StatelessWidget {
   }
 
   Widget _categorySubCategory(
-    BuildContext context, {
-    String? category,
-    String? subCategory,
-  }) {
+      BuildContext context, {
+        String? category,
+        String? subCategory,
+      }) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
       child: Text(
         textAlign: TextAlign.start,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         "${category ?? "No category"} • ${subCategory ?? "No subCategory"}",
-        style: Theme.of(
-          context,
-        ).textTheme.labelLarge?.copyWith(color: Colors.black.withAlpha(100)),
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+          fontSize: 13.sp,
+          color: Colors.black.withAlpha(100),
+        ),
       ),
     );
   }
 
   _chargesRateIsVerifiedRatingExperience(
-    BuildContext context, {
-    String? chargeRate,
-    bool? isVerified,
-    String? rating,
-    String? experience,
-  }) {
+      BuildContext context, {
+        String? chargeRate,
+        bool? isVerified,
+        String? rating,
+        String? experience,
+      }) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
       child: Wrap(
         alignment: WrapAlignment.spaceBetween,
-        runSpacing: 8,
+        runSpacing: 8.h,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            spacing: 6,
             children: [
               Text(
                 "₹ ${chargeRate ?? "no chargeRate"}",
@@ -200,38 +206,41 @@ class UserInterestedProviderListCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
+                  fontSize: 16.sp,
                   color: Color(0xFF1D1B20),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0.5),
-                decoration: BoxDecoration(
-                  color: Color(0xFFABF383),
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
-                ),
-                child: Text(
-                  "Verified",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF328303),
+              SizedBox(width: 6.w),
+              if (isVerified == true)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFABF383),
+                    borderRadius: BorderRadius.all(Radius.circular(50.r)),
+                  ),
+                  child: Text(
+                    "Verified",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12.sp,
+                      color: Color(0xFF328303),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            spacing: 6,
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: ColorConstant.moyoOrangeFade,
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                  borderRadius: BorderRadius.all(Radius.circular(50.r)),
                 ),
                 child: Text(
                   "⭐ ${rating ?? "no rating"}",
@@ -239,15 +248,17 @@ class UserInterestedProviderListCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
+                    fontSize: 13.sp,
                     color: Color(0xFF000000),
                   ),
                 ),
               ),
+              SizedBox(width: 6.w),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: ColorConstant.moyoOrangeFade,
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                  borderRadius: BorderRadius.all(Radius.circular(50.r)),
                 ),
                 child: Text(
                   "${experience ?? "no rating"} yrs exp",
@@ -255,6 +266,7 @@ class UserInterestedProviderListCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
+                    fontSize: 13.sp,
                     color: Color(0xFF000000),
                   ),
                 ),
@@ -267,13 +279,13 @@ class UserInterestedProviderListCard extends StatelessWidget {
   }
 
   Widget _bookProviderDp(
-    BuildContext context, {
-    String? dp,
-    VoidCallback? onBook,
-  }) {
+      BuildContext context, {
+        String? dp,
+        VoidCallback? onBook,
+      }) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -281,12 +293,11 @@ class UserInterestedProviderListCard extends StatelessWidget {
           InkWell(
             onTap: onBook,
             child: Container(
-              width: 200,
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              width: 200.w,
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
               decoration: BoxDecoration(
                 color: ColorConstant.moyoOrange,
-
-                borderRadius: BorderRadius.circular(50),
+                borderRadius: BorderRadius.circular(50.r),
               ),
               child: Text(
                 "Book this provider",
@@ -294,26 +305,24 @@ class UserInterestedProviderListCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  fontSize: 14.sp,
                   color: Color(0xFFFFFFFF),
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
           ),
-
           Container(
             clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
-            height: 54,
-            width: 54,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(100.r)),
+            height: 54.h,
+            width: 54.w,
             child: Stack(
               alignment: Alignment.center,
               children: [
                 CachedNetworkImage(
                   imageUrl: dp ?? "https://picsum.photos/200/200",
                   fit: BoxFit.cover,
-                  // width: 80,
-                  // height: 80,
                   placeholder: (context, url) =>
                       Image.asset('assets//images/moyo_image_placeholder.png'),
                   errorWidget: (context, url, error) =>

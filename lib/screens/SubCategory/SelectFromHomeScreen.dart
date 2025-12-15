@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
+import 'dart:async'; // ✅ ADDED: For AlwaysStoppedAnimation
 
 import 'SubcategoryProvider.dart';
 import 'SkillProvider.dart';
@@ -31,6 +32,9 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
   Map<int, File?> attachments = {};
   int? expandedCardIndex;
 
+  // ✅ 5MB limit constant (5 * 1024 * 1024 bytes)
+  static const int maxFileSizeBytes = 5 * 1024 * 1024; // 5MB
+
   @override
   void initState() {
     super.initState();
@@ -47,11 +51,27 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
       );
 
       if (result != null) {
+        final file = File(result.files.single.path!);
+
+        // ✅ Check file size before accepting
+        final fileSize = await file.length();
+        if (fileSize > maxFileSizeBytes) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('File size exceeds 5MB limit. Please select a smaller file.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
         setState(() {
-          attachments[index] = File(result.files.single.path!);
+          attachments[index] = file;
         });
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error picking file: $e')),
       );
@@ -68,7 +88,10 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
     final bytes = file.lengthSync();
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    // ✅ Show warning for files near 5MB limit
+    final isNearLimit = bytes > (maxFileSizeBytes * 0.9);
+    final sizeText = '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    return isNearLimit ? '⚠️ $sizeText (Max: 5MB)' : sizeText;
   }
 
   Future<void> _showUncheckDialog(int skillId, String skillName) async {
@@ -81,11 +104,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
           ),
           title: Row(
             children: [
-              Icon(
-                Icons.warning_amber_rounded,
-                color: Colors.orange,
-                size: 28,
-              ),
+              Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 28),
               SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -100,10 +119,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
           ),
           content: Text(
             'Are you sure you want to uncheck "$skillName"? This will mark it as not selected.',
-            style: GoogleFonts.roboto(
-              fontSize: 16,
-              color: Colors.grey[700],
-            ),
+            style: GoogleFonts.roboto(fontSize: 16, color: Colors.grey[700]),
           ),
           actions: [
             TextButton(
@@ -149,6 +165,8 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
 
     final result = await subcategoryProvider.uncheckSkill(skillId);
 
+    if (!mounted) return;
+
     if (result) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -173,6 +191,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
 
     final experience = experienceYears[index];
     if (experience == null || experience.isEmpty) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Please enter years of experience'),
@@ -182,14 +201,32 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
       return;
     }
 
+    // ✅ Double-check file size before submission
+    final attachment = attachments[index];
+    if (attachment != null) {
+      final fileSize = attachment.lengthSync();
+      if (fileSize > maxFileSizeBytes) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('File size exceeds 5MB limit. Please select a smaller file.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+    }
+
     final skillProvider = context.read<SkillProvider>();
 
     final result = await skillProvider.addSkill(
       skillName: subcategory.name,
       serviceName: widget.categoryName,
       experience: experience,
-      proofDocument: attachments[index],
+      proofDocument: attachment,
     );
+
+    if (!mounted) return;
 
     if (result != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -260,7 +297,9 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                     SizedBox(height: 24),
                     ElevatedButton.icon(
                       onPressed: () {
-                        subcategoryProvider.fetchSubcategories(widget.categoryId);
+                        subcategoryProvider.fetchSubcategories(
+                          widget.categoryId,
+                        );
                       },
                       icon: Icon(Icons.refresh),
                       label: Text('Retry'),
@@ -291,7 +330,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
               final subcategory = subcategoryProvider.subcategories[index];
               final isSelected = selectedSubcategories[index] ?? false;
               final isExpanded = expandedCardIndex == index;
-              final isAlreadyChecked = subcategory.isChecked;
+              final isAlreadyChecked = subcategory.isSubcategory;
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
@@ -309,7 +348,6 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                   ),
                   child: Column(
                     children: [
-                      // Main Row with Icon, Name, and Checkbox
                       InkWell(
                         onTap: isAlreadyChecked
                             ? null
@@ -377,11 +415,10 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                   ),
                                 ),
                               ),
-                              // Checkbox - Green if already checked, normal if not
+                              // Checkbox
                               GestureDetector(
                                 onTap: isAlreadyChecked
                                     ? () {
-                                  // Show uncheck dialog when clicking green checkbox
                                   _showUncheckDialog(
                                     subcategory.id,
                                     subcategory.name,
@@ -389,8 +426,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                 }
                                     : () {
                                   setState(() {
-                                    selectedSubcategories[index] =
-                                    !isSelected;
+                                    selectedSubcategories[index] = !isSelected;
                                     if (!isSelected) {
                                       expandedCardIndex = index;
                                     } else {
@@ -433,8 +469,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                         ),
                       ),
 
-                      // Expanded Content - Only show if NOT already checked
-                      if (isExpanded && !isAlreadyChecked)
+                      if (isExpanded)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                           child: Column(
@@ -442,6 +477,50 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                             children: [
                               Divider(height: 1),
                               SizedBox(height: 16),
+
+                              // ✅ File format info with size limit
+                              Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[50],
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.grey[200]!),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.info_outline,
+                                      color: Colors.grey[600],
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: GoogleFonts.roboto(
+                                            fontSize: 13,
+                                            color: Colors.grey[700],
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          children: [
+                                            TextSpan(text: 'Supported formats: PDF, PNG, JPG, JPEG ('),
+                                            TextSpan(
+                                              text: 'Max 5MB',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: ColorConstant.moyoOrange,
+                                              ),
+                                            ),
+                                            TextSpan(text: ')'),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 16),
+
                               // Year of Experience
                               Text(
                                 'Year Of Experience',
@@ -492,6 +571,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                 ),
                               ),
                               SizedBox(height: 16),
+
                               // Add Attachment Button
                               InkWell(
                                 onTap: () => _pickFile(index),
@@ -514,18 +594,33 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                         size: 24,
                                       ),
                                       SizedBox(width: 8),
-                                      Text(
-                                        'Add Attachment',
-                                        style: GoogleFonts.roboto(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: ColorConstant.black,
-                                        ),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Add Attachment',
+                                            style: GoogleFonts.roboto(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: ColorConstant.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            'PDF, PNG, JPG, JPEG • Max 5MB',
+                                            style: GoogleFonts.roboto(
+                                              fontSize: 12,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
+
                               // Show attached file
                               if (attachments[index] != null) ...[
                                 SizedBox(height: 12),
@@ -552,8 +647,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                       SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               _getFileName(attachments[index]),
@@ -590,7 +684,8 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                 ),
                               ],
                               SizedBox(height: 16),
-                              // Submit Button
+
+                              // ✅ FIXED: Submit Button with proper CircularProgressIndicator
                               SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(
@@ -612,10 +707,9 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                     width: 20,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      valueColor:
-                                      AlwaysStoppedAnimation<Color>(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
                                         Colors.white,
-                                      ),
+                                      ), // ✅ FIXED: Proper syntax
                                     ),
                                   )
                                       : Text(

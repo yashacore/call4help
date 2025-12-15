@@ -1,4 +1,4 @@
-// models/user_profile_model.dart
+// models/UserProfileModel.dart
 
 class UserProfileModel {
   final int id;
@@ -6,22 +6,22 @@ class UserProfileModel {
   final String? email;
   final String? firstname;
   final String? lastname;
-  final String mobile;
-  final String? address;
+  final String? mobile;
   final int? age;
-  final String createdAt;
   final String? gender;
   final String? image;
   final bool isRegister;
   final bool isProvider;
   final bool isBlocked;
-  final String? uid;
-  final String? deviceToken;
-  final String referralCode;
+  final String? referralCode;
   final String? referredBy;
   final double wallet;
   final bool emailVerified;
-  final String updatedAt;
+  final String createdAt;
+  final String? updatedAt;
+  final int? primaryAddressId;
+  final bool? declaration;
+  final ProviderModel? provider;
 
   UserProfileModel({
     required this.id,
@@ -29,22 +29,22 @@ class UserProfileModel {
     this.email,
     this.firstname,
     this.lastname,
-    required this.mobile,
-    this.address,
+    this.mobile,
     this.age,
-    required this.createdAt,
     this.gender,
     this.image,
     required this.isRegister,
     required this.isProvider,
     required this.isBlocked,
-    this.uid,
-    this.deviceToken,
-    required this.referralCode,
+    this.referralCode,
     this.referredBy,
     required this.wallet,
     required this.emailVerified,
-    required this.updatedAt,
+    required this.createdAt,
+    this.updatedAt,
+    this.primaryAddressId,
+    this.declaration,
+    this.provider,
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
@@ -54,63 +54,95 @@ class UserProfileModel {
       email: json['email'],
       firstname: json['firstname'],
       lastname: json['lastname'],
-      mobile: json['mobile'] ?? '',
-      address: json['address'],
+      mobile: json['mobile'],
       age: json['age'],
-      createdAt: json['created_at'] ?? '',
-      gender: json['gander'], // Note: API has typo "gander" instead of "gender"
+      gender: json['gender'],
       image: json['image'],
       isRegister: json['isregister'] ?? false,
       isProvider: json['is_provider'] ?? false,
       isBlocked: json['is_blocked'] ?? false,
-      uid: json['uid'],
-      deviceToken: json['device_token'],
-      referralCode: json['referral_code'] ?? '',
+      referralCode: json['referral_code'],
       referredBy: json['referred_by'],
       wallet: (json['wallet'] ?? 0).toDouble(),
       emailVerified: json['email_verified'] ?? false,
-      updatedAt: json['updated_at'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'],
+      primaryAddressId: json['primary_address_id'],
+      declaration: json['declaration'],
+      provider: json['provider'] != null
+          ? ProviderModel.fromJson(json['provider'])
+          : null,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'username': username,
-      'email': email,
-      'firstname': firstname,
-      'lastname': lastname,
-      'mobile': mobile,
-      'address': address,
-      'age': age,
-      'created_at': createdAt,
-      'gander': gender,
-      'image': image,
-      'isregister': isRegister,
-      'is_provider': isProvider,
-      'is_blocked': isBlocked,
-      'uid': uid,
-      'device_token': deviceToken,
-      'referral_code': referralCode,
-      'referred_by': referredBy,
-      'wallet': wallet,
-      'email_verified': emailVerified,
-      'updated_at': updatedAt,
-    };
-  }
-
+  // Computed properties with null checks
   String get fullName {
     if (firstname != null && lastname != null) {
-      return '${firstname!} ${lastname!}'.trim();
+      return '$firstname $lastname';
     } else if (firstname != null) {
       return firstname!;
     } else if (lastname != null) {
       return lastname!;
+    } else if (username != null) {
+      return username!;
+    } else if (mobile != null) {
+      return mobile!;
     }
     return 'User';
   }
 
   String get displayEmail => email ?? 'Not provided';
-  String get displayAddress => address ?? 'Not provided';
+
+  String get displayMobile => mobile ?? 'Not provided';
+
   String get displayImage => image ?? '';
+
+  String get displayAddress => 'Not provided'; // Update when address is implemented
+
+  bool get hasProviderData => provider != null;
+
+  // Check if profile has basic information
+  bool get hasBasicInfo =>
+      firstname != null ||
+          lastname != null ||
+          username != null ||
+          email != null;
+}
+
+class ProviderModel {
+  final int id;
+  final int userId;
+  final bool isActive;
+  final bool isRegistered;
+  final double workRadius;
+  final String? education;
+  final String? adharNo;
+  final String? panNo;
+  final bool isBlocked;
+
+  ProviderModel({
+    required this.id,
+    required this.userId,
+    required this.isActive,
+    required this.isRegistered,
+    required this.workRadius,
+    this.education,
+    this.adharNo,
+    this.panNo,
+    required this.isBlocked,
+  });
+
+  factory ProviderModel.fromJson(Map<String, dynamic> json) {
+    return ProviderModel(
+      id: json['id'] ?? 0,
+      userId: json['user_id'] ?? 0,
+      isActive: json['is_active'] ?? false,
+      isRegistered: json['is_registered'] ?? false,
+      workRadius: (json['work_radius'] ?? 0).toDouble(),
+      education: json['education'],
+      adharNo: json['adhar_no'],
+      panNo: json['pan_no'],
+      isBlocked: json['is_blocked'] ?? false,
+    );
+  }
 }

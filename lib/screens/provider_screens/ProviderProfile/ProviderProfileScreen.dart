@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/widgets/button_large.dart';
@@ -39,14 +38,13 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
           // Show loading indicator
           if (profileProvider.isLoading && !profileProvider.hasProfile) {
             return Center(
-              child: CircularProgressIndicator(
-                color: ColorConstant.moyoOrange,
-              ),
+              child: CircularProgressIndicator(color: ColorConstant.moyoOrange),
             );
           }
 
           // Show error message
-          if (profileProvider.errorMessage != null && !profileProvider.hasProfile) {
+          if (profileProvider.errorMessage != null &&
+              !profileProvider.hasProfile) {
             return _buildErrorWidget(context, profileProvider);
           }
 
@@ -57,7 +55,10 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 16,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -73,7 +74,10 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                       backgroundColor: ColorConstant.moyoOrange,
                       labelColor: Colors.white,
                       onTap: () async {
-                        final result = await Navigator.pushNamed(context, '/editProviderProfile');
+                        final result = await Navigator.pushNamed(
+                          context,
+                          '/editProviderProfile',
+                        );
                         if (result == true) {
                           profileProvider.refreshProfile();
                         }
@@ -90,32 +94,31 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
     );
   }
 
-  Widget _buildErrorWidget(BuildContext context, ProviderProfileProvider provider) {
+  Widget _buildErrorWidget(
+    BuildContext context,
+    ProviderProfileProvider provider,
+  ) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red.shade400,
-            ),
+            Icon(Icons.error_outline, size: 64, color: Colors.red.shade400),
             SizedBox(height: 16),
             Text(
               'Failed to load profile',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 8),
             Text(
               provider.errorMessage ?? 'Unknown error occurred',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey.shade600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
             ),
             SizedBox(height: 24),
             ElevatedButton.icon(
@@ -179,7 +182,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
   }
 
   Widget _personalInformation(
-      BuildContext context, ProviderProfileProvider profileProvider) {
+    BuildContext context,
+    ProviderProfileProvider profileProvider,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -189,10 +194,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
           width: double.infinity,
           child: Text(
             "Personal Information",
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
         ),
         PersonalInfoCard(
@@ -240,7 +244,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
   }
 
   Widget _professionalInformation(
-      BuildContext context, ProviderProfileProvider profileProvider) {
+    BuildContext context,
+    ProviderProfileProvider profileProvider,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -250,10 +256,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
           width: double.infinity,
           child: Text(
             "Professional Information",
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
         ),
         if (profileProvider.providerProfile?.service != null)
@@ -296,7 +301,8 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
           PersonalInfoCard(
             isLabel: true,
             label: "Location",
-            title: '${profileProvider.providerProfile!.latitude}, ${profileProvider.providerProfile!.longitude}',
+            title:
+                '${profileProvider.providerProfile!.latitude}, ${profileProvider.providerProfile!.longitude}',
             iconPath: 'assets/icons/moyo_icon_info_card_address.svg',
           ),
       ],
@@ -304,7 +310,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
   }
 
   Widget _accountStatus(
-      BuildContext context, ProviderProfileProvider profileProvider) {
+    BuildContext context,
+    ProviderProfileProvider profileProvider,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -314,10 +322,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
           width: double.infinity,
           child: Text(
             "Account Status",
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
         ),
         _buildStatusCard(
@@ -336,20 +343,21 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
           PersonalInfoCard(
             isLabel: true,
             label: "Provider Since",
-            title: _formatDate(profileProvider.providerProfile!.providerCreatedAt),
+            title: _formatDate(
+              profileProvider.providerProfile!.providerCreatedAt,
+            ),
             iconPath: 'assets/icons/moyo_icon_info_card_full_name.svg',
           ),
-        PersonalInfoCard(
-          isLabel: true,
-          label: "Provider ID",
-          title: profileProvider.providerProfile!.id.toString(),
-          iconPath: 'assets/icons/moyo_icon_info_card_full_name.svg',
-        ),
       ],
     );
   }
 
-  Widget _buildStatusCard(BuildContext context, String label, String value, bool isPositive) {
+  Widget _buildStatusCard(
+    BuildContext context,
+    String label,
+    String value,
+    bool isPositive,
+  ) {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -368,9 +376,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
         children: [
           Text(
             label,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -383,7 +391,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
             child: Text(
               value,
               style: TextStyle(
-                color: isPositive ? Colors.green.shade700 : Colors.orange.shade700,
+                color: isPositive
+                    ? Colors.green.shade700
+                    : Colors.orange.shade700,
                 fontWeight: FontWeight.w600,
                 fontSize: 12,
               ),
@@ -397,8 +407,20 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
   String _formatDate(String dateString) {
     try {
       final date = DateTime.parse(dateString);
-      final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      final months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
       return '${months[date.month - 1]} ${date.day}, ${date.year}';
     } catch (e) {
       return dateString;

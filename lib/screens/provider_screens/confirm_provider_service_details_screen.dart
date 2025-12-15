@@ -1,13 +1,26 @@
 import 'dart:convert';
+import 'dart:async';
+import 'package:first_flutter/baseControllers/APis.dart';
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:first_flutter/widgets/user_service_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:math' show cos, sqrt, asin;
+import 'package:http/http.dart' as http;
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:provider/provider.dart';
 
 import '../../NATS Service/NatsService.dart';
 import '../../widgets/ProviderConfirmServiceDetails.dart';
+import '../user_screens/WidgetProviders/EndWorkOTPDialog.dart';
+import '../user_screens/WidgetProviders/OTPDialog.dart';
+import 'ServiceArrivalProvider.dart';
+import 'StartWorkProvider.dart';
+import 'navigation/ServiceTimerScreen.dart';
 
 class ConfirmProviderServiceDetailsScreen extends StatefulWidget {
   final String serviceId;
@@ -26,18 +39,40 @@ class _ConfirmProviderServiceDetailsScreenState
     extends State<ConfirmProviderServiceDetailsScreen> {
   final NatsService _natsService = NatsService();
   Map<String, dynamic>? _serviceData;
+  Map<String, dynamic>? _locationData;
   bool _isLoading = true;
   String? _errorMessage;
+  GoogleMapController? _mapController;
+  Set<Marker> _markers = {};
+  Set<Polyline> _polylines = {};
+  Set<Circle> _circles = {};
+  String? _arrivalTime;
+  Timer? _locationUpdateTimer;
+  bool _isMapReady = false;
+
+  bool _isNearDestination = false;
+  double _distanceToDestination = 0.0;
+  static const double ARRIVAL_THRESHOLD_METERS = 100.0;
+
+  static const String GOOGLE_MAPS_API_KEY =
+      'AIzaSyBqTGBtJYtoRpvJFpF6tls1jcwlbiNcEVI';
 
   @override
   void initState() {
     super.initState();
     _initializeAndFetchData();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final arrivalProvider = Provider.of<ServiceArrivalProvider>(
+        context,
+        listen: false,
+      );
+      arrivalProvider.loadTimerState(widget.serviceId);
+    });
   }
 
   Future<void> _initializeAndFetchData() async {
     try {
-      // Connect to NATS if not already connected
       if (!_natsService.isConnected) {
         final connected = await _natsService.connect(
           url: 'nats://api.moyointernational.com:4222',
@@ -52,8 +87,13 @@ class _ConfirmProviderServiceDetailsScreenState
         }
       }
 
-      // Fetch service details
       await _fetchServiceDetails();
+      await _fetchLocationDetails();
+
+      _locationUpdateTimer = Timer.periodic(
+        const Duration(seconds: 10),
+        (timer) => _fetchLocationDetails(),
+      );
     } catch (e) {
       setState(() {
         _errorMessage = 'Error initializing: $e';
@@ -64,7 +104,6 @@ class _ConfirmProviderServiceDetailsScreenState
 
   Future<void> _fetchServiceDetails() async {
     try {
-      // Get provider_id from SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final providerToken = prefs.getString('provider_auth_token');
 
@@ -76,11 +115,8 @@ class _ConfirmProviderServiceDetailsScreenState
         return;
       }
 
-      // Decode the token to get provider_id (assuming JWT format)
-      // If token is just the provider_id, use it directly
       String? providerId;
       try {
-        // Try to decode JWT token
         final parts = providerToken.split('.');
         if (parts.length == 3) {
           final payload = json.decode(
@@ -91,11 +127,9 @@ class _ConfirmProviderServiceDetailsScreenState
               payload['id']?.toString() ??
               payload['sub']?.toString();
         } else {
-          // Token might be the provider_id itself
           providerId = providerToken;
         }
       } catch (e) {
-        // If decode fails, assume token is the provider_id
         providerId = providerToken;
       }
 
@@ -122,7 +156,6 @@ class _ConfirmProviderServiceDetailsScreenState
         final data = jsonDecode(response);
         setState(() {
           _serviceData = data;
-          _isLoading = false;
         });
       } else {
         setState(() {
@@ -136,6 +169,456 @@ class _ConfirmProviderServiceDetailsScreenState
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _fetchLocationDetails() async {
+    try {
+      final requestData = jsonEncode({'service_id': widget.serviceId});
+
+      final response = await _natsService.request(
+        'service.location.info',
+        requestData,
+        timeout: const Duration(seconds: 3),
+      );
+
+      if (response != null) {
+        final data = jsonDecode(response);
+        setState(() {
+          _locationData = data;
+          _isLoading = false;
+        });
+
+        _checkArrivalDistance();
+
+        if (_isMapReady) {
+          _setupMap(animate: _markers.isNotEmpty);
+        }
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      print('Error fetching location details: $e');
+    }
+  }
+
+  void _checkArrivalDistance() {
+    if (_locationData == null) return;
+
+    final serviceLat = double.tryParse(
+      _locationData!['latitude']?.toString() ?? '0',
+    );
+    final serviceLng = double.tryParse(
+      _locationData!['longitude']?.toString() ?? '0',
+    );
+    final providerLat = double.tryParse(
+      _locationData!['provider']?['latitude']?.toString() ?? '0',
+    );
+    final providerLng = double.tryParse(
+      _locationData!['provider']?['longitude']?.toString() ?? '0',
+    );
+
+    if (serviceLat == null ||
+        serviceLng == null ||
+        providerLat == null ||
+        providerLng == null) {
+      return;
+    }
+
+    final distanceKm = _calculateDistance(
+      providerLat,
+      providerLng,
+      serviceLat,
+      serviceLng,
+    );
+
+    _distanceToDestination = distanceKm * 1000;
+
+    setState(() {
+      _isNearDestination = _distanceToDestination <= ARRIVAL_THRESHOLD_METERS;
+    });
+  }
+
+  Future<void> _handleArrived() async {
+    final provider = Provider.of<ServiceArrivalProvider>(
+      context,
+      listen: false,
+    );
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        title: Text(
+          'Confirm Arrival',
+          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Have you arrived at the service location?',
+          style: TextStyle(fontSize: 16.sp),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Cancel', style: TextStyle(fontSize: 16.sp)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+            ),
+            child: Text(
+              'Yes, I\'ve Arrived',
+              style: TextStyle(fontSize: 16.sp),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final success = await provider.confirmProviderArrival(widget.serviceId);
+
+      if (mounted) {
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Arrival confirmed! Timer started for work.',
+                style: TextStyle(fontSize: 14.sp),
+              ),
+              backgroundColor: Colors.green,
+            ),
+          );
+
+          await _fetchServiceDetails();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                provider.errorMessage ?? 'Failed to confirm arrival',
+                style: TextStyle(fontSize: 14.sp),
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _showOTPDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return OTPDialog(serviceId: widget.serviceId);
+      },
+    );
+
+    // Handle the result after dialog is closed
+    if (result == true && mounted) {
+      // Clear arrival timer state
+      final arrivalProvider = Provider.of<ServiceArrivalProvider>(
+        context,
+        listen: false,
+      );
+      await arrivalProvider.clearTimerState(widget.serviceId);
+
+      // Show success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Work started successfully!',
+              style: TextStyle(fontSize: 14.sp),
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+
+        // Fetch latest service details to get duration
+        await _fetchServiceDetails();
+
+        if (_serviceData != null) {
+          // Extract duration information
+          final durationValue = _serviceData!['duration_value'] ?? 1;
+          final durationUnit = _serviceData!['duration_unit'] ?? 'hour';
+
+          // Navigate to Timer Screen
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => ServiceTimerScreen(
+                  serviceId: widget.serviceId,
+                  durationValue: durationValue is int
+                      ? durationValue
+                      : int.tryParse(durationValue.toString()) ?? 1,
+                  durationUnit: durationUnit.toString(),
+                ),
+              ),
+            );
+          }
+        }
+
+        // Reset provider state
+        final startWorkProvider = Provider.of<StartWorkProvider>(
+          context,
+          listen: false,
+        );
+        startWorkProvider.reset();
+      }
+    }
+  }
+
+  // NEW METHOD: Navigate to Timer Screen without OTP
+  void _navigateToTimerScreen() {
+    if (_serviceData == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Service data not available',
+            style: TextStyle(fontSize: 14.sp),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Extract duration information
+    final durationValue = _serviceData!['duration_value'] ?? 1;
+    final durationUnit = _serviceData!['duration_unit'] ?? 'hour';
+
+    // Navigate to Timer Screen
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => ServiceTimerScreen(
+          serviceId: widget.serviceId,
+          durationValue: durationValue is int
+              ? durationValue
+              : int.tryParse(durationValue.toString()) ?? 1,
+          durationUnit: durationUnit.toString(),
+        ),
+      ),
+    );
+  }
+
+  bool _isWorkInProgress() {
+    if (_serviceData == null) return false;
+    final status = _serviceData!['status']?.toString().toLowerCase() ?? '';
+    return status == 'in_progress' || status == 'started';
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_isWorkInProgress() && _serviceData != null) {
+        final durationValue = _serviceData!['duration_value'] ?? 1;
+        final durationUnit = _serviceData!['duration_unit'] ?? 'hour';
+
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => ServiceTimerScreen(
+              serviceId: widget.serviceId,
+              durationValue: durationValue is int
+                  ? durationValue
+                  : int.tryParse(durationValue.toString()) ?? 1,
+              durationUnit: durationUnit.toString(),
+            ),
+          ),
+        );
+      }
+    });
+  }
+
+  Future<List<LatLng>> _getDirectionsRoute(
+    LatLng origin,
+    LatLng destination,
+  ) async {
+    try {
+      final String url =
+          'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=$GOOGLE_MAPS_API_KEY&mode=driving';
+
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        if (data['status'] == 'OK') {
+          final routes = data['routes'] as List;
+          if (routes.isNotEmpty) {
+            final route = routes[0];
+
+            final legs = route['legs'] as List;
+            if (legs.isNotEmpty) {
+              final duration = legs[0]['duration'];
+              if (duration != null) {
+                final durationValue = duration['value'];
+                setState(() {
+                  _arrivalTime = (durationValue / 60).round().toString();
+                });
+              }
+            }
+
+            final polylinePoints = route['overview_polyline']['points'];
+            PolylinePoints polylinePointsDecoder = PolylinePoints(apiKey: '');
+            List<PointLatLng> decodedPoints = PolylinePoints.decodePolyline(
+              polylinePoints,
+            );
+
+            return decodedPoints
+                .map((point) => LatLng(point.latitude, point.longitude))
+                .toList();
+          }
+        }
+      }
+
+      return [origin, destination];
+    } catch (e) {
+      print('Error fetching directions: $e');
+      return [origin, destination];
+    }
+  }
+
+  void _setupMap({bool animate = false}) async {
+    if (_locationData == null) return;
+
+    final serviceLat = double.tryParse(
+      _locationData!['latitude']?.toString() ?? '0',
+    );
+    final serviceLng = double.tryParse(
+      _locationData!['longitude']?.toString() ?? '0',
+    );
+    final providerLat = double.tryParse(
+      _locationData!['provider']?['latitude']?.toString() ?? '0',
+    );
+    final providerLng = double.tryParse(
+      _locationData!['provider']?['longitude']?.toString() ?? '0',
+    );
+
+    if (serviceLat == null ||
+        serviceLng == null ||
+        providerLat == null ||
+        providerLng == null) {
+      return;
+    }
+
+    final providerLocation = LatLng(providerLat, providerLng);
+    final serviceLocation = LatLng(serviceLat, serviceLng);
+
+    final distance = _calculateDistance(
+      providerLat,
+      providerLng,
+      serviceLat,
+      serviceLng,
+    );
+    final fallbackTimeInMinutes = (distance / 0.5).round();
+
+    _markers = {
+      Marker(
+        markerId: const MarkerId('service_location'),
+        position: serviceLocation,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        anchor: const Offset(0.5, 1.0),
+        infoWindow: const InfoWindow(title: 'Service Location'),
+      ),
+      Marker(
+        markerId: const MarkerId('provider_location'),
+        position: providerLocation,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+        anchor: const Offset(0.5, 0.5),
+        infoWindow: const InfoWindow(title: 'Provider Location'),
+      ),
+    };
+
+    _circles = {
+      Circle(
+        circleId: const CircleId('provider_circle'),
+        center: providerLocation,
+        radius: 1,
+        fillColor: Colors.orange.withOpacity(0.2),
+        strokeColor: Colors.orange,
+        strokeWidth: 2,
+      ),
+    };
+
+    List<LatLng> routePoints = await _getDirectionsRoute(
+      providerLocation,
+      serviceLocation,
+    );
+
+    if (_arrivalTime == null) {
+      _arrivalTime = fallbackTimeInMinutes.toString();
+    }
+
+    _polylines = {
+      Polyline(
+        polylineId: const PolylineId('route'),
+        points: routePoints,
+        color: const Color(0xFF5B8DEE),
+        width: 5,
+        geodesic: true,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+      ),
+    };
+
+    setState(() {});
+
+    if (_mapController != null) {
+      final bounds = _calculateBounds([serviceLocation, providerLocation]);
+
+      Future.delayed(const Duration(milliseconds: 100), () {
+        _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
+      });
+    }
+  }
+
+  LatLngBounds _calculateBounds(List<LatLng> positions) {
+    double minLat = positions.first.latitude;
+    double maxLat = positions.first.latitude;
+    double minLng = positions.first.longitude;
+    double maxLng = positions.first.longitude;
+
+    for (var pos in positions) {
+      if (pos.latitude < minLat) minLat = pos.latitude;
+      if (pos.latitude > maxLat) maxLat = pos.latitude;
+      if (pos.longitude < minLng) minLng = pos.longitude;
+      if (pos.longitude > maxLng) maxLng = pos.longitude;
+    }
+
+    double latPadding = (maxLat - minLat) * 0.2;
+    double lngPadding = (maxLng - minLng) * 0.2;
+
+    return LatLngBounds(
+      southwest: LatLng(minLat - latPadding, minLng - lngPadding),
+      northeast: LatLng(maxLat + latPadding, maxLng + lngPadding),
+    );
+  }
+
+  double _calculateDistance(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
+    const p = 0.017453292519943295;
+    final a =
+        0.5 -
+        cos((lat2 - lat1) * p) / 2 +
+        cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a));
   }
 
   String _formatDate(String? dateString) {
@@ -191,37 +674,31 @@ class _ConfirmProviderServiceDetailsScreenState
   List<String> _buildParticulars(Map<String, dynamic> data) {
     final List<String> particulars = [];
 
-    // Add service type
     final service = data['service'];
     if (service != null && service.toString().isNotEmpty) {
       particulars.add(service.toString());
     }
 
-    // Add tenure
     final tenure = data['tenure'];
     if (tenure != null && tenure.toString().isNotEmpty) {
       particulars.add(tenure.toString().replaceAll('_', ' '));
     }
 
-    // Add duration
     final duration = _formatDuration(data);
     if (duration != 'N/A') {
       particulars.add(duration);
     }
 
-    // Add service type (instant/scheduled)
     final serviceType = data['service_type'];
     if (serviceType != null && serviceType.toString().isNotEmpty) {
       particulars.add('Type: ${serviceType.toString()}');
     }
 
-    // Add payment method
     final paymentMethod = data['payment_method'];
     if (paymentMethod != null && paymentMethod.toString().isNotEmpty) {
       particulars.add('Payment: ${paymentMethod.toString()}');
     }
 
-    // Add dynamic fields if available
     final dynamicFields = data['dynamic_fields'];
     if (dynamicFields != null && dynamicFields is Map<String, dynamic>) {
       dynamicFields.forEach((key, value) {
@@ -237,8 +714,8 @@ class _ConfirmProviderServiceDetailsScreenState
 
   @override
   void dispose() {
-    // Don't disconnect if other parts of app might be using it
-    // _natsService.disconnect();
+    _mapController?.dispose();
+    _locationUpdateTimer?.cancel();
     super.dispose();
   }
 
@@ -251,90 +728,311 @@ class _ConfirmProviderServiceDetailsScreenState
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
           ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: Colors.red,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, size: 64.sp, color: Colors.red),
+                  SizedBox(height: 16.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 32.w),
+                    child: Text(
                       _errorMessage!,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 16.sp),
                     ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _isLoading = true;
-                          _errorMessage = null;
-                        });
-                        _initializeAndFetchData();
-                      },
-                      child: const Text('Retry'),
+                  ),
+                  SizedBox(height: 16.h),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _isLoading = true;
+                        _errorMessage = null;
+                      });
+                      _initializeAndFetchData();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 32.w,
+                        vertical: 12.h,
+                      ),
                     ),
-                  ],
-                ),
+                    child: Text('Retry', style: TextStyle(fontSize: 16.sp)),
+                  ),
+                ],
               ),
             )
           : _serviceData == null
-          ? const Center(child: Text('No service data available'))
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ProviderConfirmServiceDetails(
-                      isProvider: true,
-                      category: _serviceData!['category']?.toString() ?? 'N/A',
-                      serviceId: _serviceData!['id']?.toString() ?? 'N/A',
-                      subCategory:
-                          _serviceData!['service']?.toString() ??
-                          _serviceData!['title']?.toString() ??
-                          'N/A',
-                      date:
-                          _formatDate(_serviceData!['schedule_date']) +
-                          _formatTime(_serviceData!['schedule_time']),
-                      pin: _serviceData!['start_otp']?.toString() ?? 'N/A',
-                      providerPhone:
-                          _serviceData!['user']?['mobile']?.toString() ?? 'N/A',
-                      dp:
-                          _serviceData!['user']?['image']?.toString() ??
-                          'https://picsum.photos/200/200',
-                      name:
-                          '${_serviceData!['user']?['firstname']?.toString() ?? ''} ${_serviceData!['user']?['lastname']?.toString() ?? ''}'
-                              .trim()
-                              .isEmpty
-                          ? 'N/A'
-                          : '${_serviceData!['user']?['firstname']?.toString() ?? ''} ${_serviceData!['user']?['lastname']?.toString() ?? ''}'
-                                .trim(),
-                      rating: "4.5",
-                      // Rating not in response, using default
-                      status: _serviceData!['status']?.toString() ?? 'pending',
-                      durationType: _getDurationType(
-                        _serviceData!['service_mode']?.toString(),
-                      ),
-                      duration: _formatDuration(_serviceData!),
-                      price:
-                          _serviceData!['budget']?.toString() ??
-                          _serviceData!['bid']?['amount']?.toString() ??
-                          '0',
-                      address: _serviceData!['location']?.toString() ?? 'N/A',
-                      particular: _buildParticulars(_serviceData!),
-                      description:
-                          _serviceData!['description']?.toString() ?? 'N/A',
-                    ),
-                  ],
-                ),
+          ? Center(
+              child: Text(
+                'No service data available',
+                style: TextStyle(fontSize: 16.sp),
               ),
+            )
+          : Consumer<ServiceArrivalProvider>(
+              builder: (context, arrivalProvider, child) {
+                return SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ProviderConfirmServiceDetails(
+                        isProvider: true,
+                        user_id: _serviceData!['user_id']?.toString() ?? 'N/A',
+                        category:
+                            _serviceData!['category']?.toString() ?? 'N/A',
+                        serviceId: _serviceData!['id']?.toString() ?? 'N/A',
+                        subCategory:
+                            _serviceData!['service']?.toString() ??
+                            _serviceData!['title']?.toString() ??
+                            'N/A',
+                        date:
+                            _formatDate(_serviceData!['schedule_date']) +
+                            _formatTime(_serviceData!['schedule_time']),
+                        pin: _serviceData!['start_otp']?.toString() ?? 'N/A',
+                        providerPhone:
+                            _serviceData!['user']?['mobile']?.toString() ??
+                            'N/A',
+                        dp:
+                            _serviceData!['user']?['image']?.toString() ??
+                            'https://picsum.photos/200/200',
+                        name:
+                            '${_serviceData!['user']?['firstname']?.toString() ?? ''} ${_serviceData!['user']?['lastname']?.toString() ?? ''}'
+                                .trim()
+                                .isEmpty
+                            ? 'N/A'
+                            : '${_serviceData!['user']?['firstname']?.toString() ?? ''} ${_serviceData!['user']?['lastname']?.toString() ?? ''}'
+                                  .trim(),
+                        rating: "4.5",
+                        status:
+                            _serviceData!['status']?.toString() ?? 'pending',
+                        durationType: _getDurationType(
+                          _serviceData!['service_mode']?.toString(),
+                        ),
+                        duration: _formatDuration(_serviceData!),
+                        price: _serviceData!['bid']?['amount']?.toString(),
+                        address: _serviceData!['location']?.toString() ?? 'N/A',
+                        particular: _buildParticulars(_serviceData!),
+                        description:
+                            _serviceData!['description']?.toString() ?? 'N/A',
+                        onStartWork: _showOTPDialog,
+                        onTaskComplete: _showEndWorkOTPDialog,
+                        onSeeWorktime: _navigateToTimerScreen,
+                      ),
+                      if (_locationData != null && _shouldShowMap()) ...[
+                        SizedBox(height: 16.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10.w),
+                          child: Container(
+                            height: 300.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20.r),
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                  target: LatLng(
+                                    double.parse(
+                                      _locationData!['latitude']?.toString() ??
+                                          '0',
+                                    ),
+                                    double.parse(
+                                      _locationData!['longitude']?.toString() ??
+                                          '0',
+                                    ),
+                                  ),
+                                  zoom: 13,
+                                ),
+                                markers: _markers,
+                                polylines: _polylines,
+                                circles: _circles,
+                                myLocationButtonEnabled: false,
+                                zoomControlsEnabled: false,
+                                compassEnabled: false,
+                                mapToolbarEnabled: false,
+                                myLocationEnabled: false,
+                                mapType: MapType.normal,
+                                onMapCreated: (controller) {
+                                  _mapController = controller;
+                                  _isMapReady = true;
+                                  _setupMap();
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 12.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(8.w),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.access_time,
+                                color: Colors.black87,
+                                size: 20.sp,
+                              ),
+                            ),
+                            SizedBox(width: 12.w),
+                            Text(
+                              'Arriving in $_arrivalTime minutes',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        if (_isNearDestination &&
+                            !arrivalProvider.hasArrived) ...[
+                          SizedBox(height: 16.h),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20.w),
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(12.w),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12.r),
+                                    border: Border.all(
+                                      color: Colors.green,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        color: Colors.green,
+                                        size: 24.sp,
+                                      ),
+                                      SizedBox(width: 8.w),
+                                      Text(
+                                        'You are ${_distanceToDestination.round()}m from destination',
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 12.h),
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 56.h,
+                                  child: ElevatedButton(
+                                    onPressed:
+                                        arrivalProvider.isProcessingArrival
+                                        ? null
+                                        : _handleArrived,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          12.r,
+                                        ),
+                                      ),
+                                      elevation: 4,
+                                    ),
+                                    child: arrivalProvider.isProcessingArrival
+                                        ? SizedBox(
+                                            height: 24.h,
+                                            width: 24.w,
+                                            child:
+                                                const CircularProgressIndicator(
+                                                  color: Colors.white,
+                                                  strokeWidth: 2,
+                                                ),
+                                          )
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.check_circle,
+                                                size: 28.sp,
+                                              ),
+                                              SizedBox(width: 12.w),
+                                              Text(
+                                                'I\'ve Arrived',
+                                                style: TextStyle(
+                                                  fontSize: 18.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ],
+
+                      SizedBox(height: 16.h),
+                    ],
+                  ),
+                );
+              },
             ),
     );
+  }
+
+  Future<void> _showEndWorkOTPDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return EndWorkOTPDialog(serviceId: widget.serviceId);
+      },
+    );
+
+    if (result == true && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Work completed successfully!',
+            style: TextStyle(fontSize: 14.sp),
+          ),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+
+      await _fetchServiceDetails();
+
+      final startWorkProvider = Provider.of<StartWorkProvider>(
+        context,
+        listen: false,
+      );
+      startWorkProvider.reset();
+    }
+  }
+
+  bool _shouldShowMap() {
+    if (_serviceData == null) return false;
+    final status = _serviceData!['status']?.toString().toLowerCase() ?? '';
+    return status == 'assigned';
   }
 }

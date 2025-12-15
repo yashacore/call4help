@@ -45,5 +45,31 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- Location Permissions -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Moyo needs your location to show nearby services and provide location-based features.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Moyo needs your location to provide continuous location-based services.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Moyo needs your location to provide continuous location-based services even when the app is in background.</string>
+
+	<!-- Push Notifications -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>fetch</string>
+	</array>
+
+	<!-- Google Maps API Key for iOS -->
+	<key>GMSApiKey</key>
+	<string>AIzaSyBU-9QrJBntM7m5f4FSz-PnYk79oYI3Pvk</string>
+
+	<!-- App Transport Security -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+	</dict>
 </dict>
 </plist>

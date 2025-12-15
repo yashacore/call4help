@@ -49,9 +49,11 @@ class _UserPendingServiceState extends State<UserPendingService> {
   }
 
   String _getPriceBy(ServiceModel service) {
-    if (service.serviceMode == 'hrs') return 'Hourly';
-    if (service.serviceMode == 'day') return 'Daily';
-    return 'Fixed';
+    // Return bid amount if available, otherwise return budget
+    if (service.bids.isNotEmpty) {
+      return service.bids.first.amount.toStringAsFixed(0);
+    }
+    return service.budget;
   }
 
   @override
@@ -108,12 +110,14 @@ class _UserPendingServiceState extends State<UserPendingService> {
             itemCount: provider.filteredServices.length,
             itemBuilder: (context, index) {
               final service = provider.filteredServices[index];
+              print("Providerrrrrrrrrrr111111${service?.assignedProviderId}");
+
               return UserServiceListCard(
                 category: service.category,
                 subCategory: service.service,
                 date: service.createdAtFormatted,
                 dp: "https://ui-avatars.com/api/?name=${service.category}&background=random",
-                price: service.budget,
+                price: _getPriceBy(service),
                 duration: _getDuration(service),
                 priceBy: _getPriceBy(service),
                 providerCount: int.tryParse(service.totalBids) ?? 0,

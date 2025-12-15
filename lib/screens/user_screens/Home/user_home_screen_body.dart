@@ -177,16 +177,16 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                   );
                 }
 
-                // Show categories
+                // Show categories without animations
                 return SizedBox(
                   width: double.infinity,
                   child: Wrap(
                     alignment: WrapAlignment.start,
                     spacing: 16,
                     runSpacing: 16,
-                    children: categoryProvider.categories.map((category) {
-                      return _categoryCard(
-                        context,
+                    children: categoryProvider.categories
+                        .map((category) {
+                      return _CategoryCard(
                         category: category,
                         categoryProvider: categoryProvider,
                       );
@@ -200,37 +200,47 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
       ),
     );
   }
+}
 
-  Widget _categoryCard(
-      BuildContext context, {
-        required dynamic category,
-        required CategoryProvider categoryProvider,
-  }) {
+// Static Category Card Widget (no animation)
+class _CategoryCard extends StatelessWidget {
+  final dynamic category;
+  final CategoryProvider categoryProvider;
+
+  const _CategoryCard({
+    required this.category,
+    required this.categoryProvider,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
 
+    // Calculate fixed card width based on 4 cards per row with spacing
+    final cardWidth = (screenWidth - 32 - 48) / 4; // 32 padding, 48 spacing (16*3)
+
     // Get the full image URL - icon already contains full S3 URL from API
     final imageUrl = category.icon != null && category.icon.isNotEmpty
-        ? category
-              .icon // Icon already contains full S3 URL
+        ? category.icon
         : null;
 
     return InkWell(
+      onTap: () {
+        // Clear previous subcategories before navigating
+        context.read<SubCategoryProvider>().clearSubcategories();
 
-        onTap: () {
-      // Clear previous subcategories before navigating
-      context.read<SubCategoryProvider>().clearSubcategories();
-
-      // Navigate and pass the entire category object
-      Navigator.pushNamed(
+        // Navigate and pass the entire category object
+        Navigator.pushNamed(
           context,
           '/SubCatOfCatScreen',
-          arguments: category
-      );
-    },
+          arguments: category,
+        );
+      },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 16),
-        width: (screenWidth - 80) / 4,
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+        width: cardWidth,
+        height: 100, // Fixed height for consistency
         decoration: BoxDecoration(
           color: Color(0xFFF7E5D1),
           borderRadius: BorderRadius.circular(16),
@@ -238,7 +248,6 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 10,
           children: [
             Container(
               clipBehavior: Clip.hardEdge,
@@ -249,26 +258,31 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
               width: 48,
               child: imageUrl != null && imageUrl.isNotEmpty
                   ? CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Image.asset(
-                        'assets/images/moyo_service_placeholder.png',
-                      ),
-                      errorWidget: (context, url, error) => Image.asset(
-                        'assets/images/moyo_service_placeholder.png',
-                      ),
-                    )
+                imageUrl: imageUrl,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Image.asset(
+                  'assets/images/moyo_service_placeholder.png',
+                ),
+                errorWidget: (context, url, error) => Image.asset(
+                  'assets/images/moyo_service_placeholder.png',
+                ),
+              )
                   : Image.asset('assets/images/moyo_service_placeholder.png'),
             ),
-            Text(
-              category.name ?? "Category",
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.roboto(
-                textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Color(0xFF000000),
-                  fontSize: 10,
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                category.name ?? "Category",
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.roboto(
+                  textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Color(0xFF000000),
+                    fontSize: 10,
+                    height: 1.2,
+                  ),
                 ),
               ),
             ),

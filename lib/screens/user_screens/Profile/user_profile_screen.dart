@@ -9,6 +9,7 @@ import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../widgets/personal_info_card.dart';
+import 'FAQScreen.dart';
 import 'UserProfileProvider.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -22,7 +23,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Load profile data when screen initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadProfile();
     });
@@ -40,20 +40,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       backgroundColor: Color(0xFFF5F5F5),
       body: Consumer<UserProfileProvider>(
         builder: (context, profileProvider, child) {
-          // Show loading indicator
           if (profileProvider.isLoading && !profileProvider.hasProfile) {
             return Center(
               child: CircularProgressIndicator(color: ColorConstant.moyoOrange),
             );
           }
 
-          // Show error message
           if (profileProvider.errorMessage != null &&
               !profileProvider.hasProfile) {
             return _buildErrorWidget(context, profileProvider);
           }
 
-          // Show profile data
           return RefreshIndicator(
             onRefresh: () => profileProvider.refreshProfile(),
             color: ColorConstant.moyoOrange,
@@ -73,6 +70,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     _personalInformation(context, profileProvider),
                     _accountInformation(context, profileProvider),
                     _accountStatus(context, profileProvider),
+                    // Show provider section only if provider data exists
+                    if (profileProvider.userProfile?.hasProviderData ?? false)
+                      _providerInformation(context, profileProvider),
                     ButtonLarge(
                       isIcon: false,
                       label: "Edit Profile",
@@ -83,7 +83,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           context,
                           '/editProfile',
                         );
-                        // Reload profile if edit was successful
                         if (result == true) {
                           profileProvider.refreshProfile();
                         }
@@ -276,12 +275,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
         ),
-        PersonalInfoCard(
-          isLabel: true,
-          label: "Wallet Balance",
-          title: '₹${profileProvider.walletBalance.toStringAsFixed(2)}',
-          iconPath: 'assets/icons/moyo_icon_info_card_phone.svg',
-        ),
         if (profileProvider.referralCode.isNotEmpty)
           PersonalInfoCard(
             isLabel: true,
@@ -295,13 +288,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             label: "Referred By",
             title: profileProvider.userProfile!.referredBy!,
             iconPath: 'assets/icons/moyo_icon_info_card_phone.svg',
-          ),
-        if (profileProvider.userProfile?.uid != null)
-          PersonalInfoCard(
-            isLabel: true,
-            label: "User ID",
-            title: profileProvider.userProfile!.uid!,
-            iconPath: 'assets/icons/moyo_icon_info_card_full_name.svg',
           ),
       ],
     );
@@ -354,6 +340,74 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             title: _formatDate(profileProvider.userProfile!.createdAt),
             iconPath: 'assets/icons/moyo_icon_info_card_full_name.svg',
           ),
+      ],
+    );
+  }
+
+  // New section for provider information
+  Widget _providerInformation(
+    BuildContext context,
+    UserProfileProvider profileProvider,
+  ) {
+    final provider = profileProvider.userProfile?.provider;
+
+    if (provider == null) return SizedBox.shrink();
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      spacing: 20,
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: Text(
+            "Provider Information",
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+          ),
+        ),
+        _buildStatusCard(
+          context,
+          "Provider Status",
+          provider.isActive ? "Active" : "Inactive",
+          provider.isActive,
+        ),
+        _buildStatusCard(
+          context,
+          "Provider Registration",
+          provider.isRegistered ? "Registered" : "Not Registered",
+          provider.isRegistered,
+        ),
+        PersonalInfoCard(
+          isLabel: true,
+          label: "Work Radius",
+          title: "${provider.workRadius} km",
+          iconPath: 'assets/icons/moyo_icon_info_card_phone.svg',
+        ),
+        if (provider.education != null)
+          PersonalInfoCard(
+            isLabel: true,
+            label: "Education",
+            title: provider.education!,
+            iconPath: 'assets/icons/moyo_icon_info_card_full_name.svg',
+          ),
+        if (provider.adharNo != null)
+          PersonalInfoCard(
+            isLabel: true,
+            label: "Aadhaar Number",
+            title: provider.adharNo!,
+            iconPath: 'assets/icons/moyo_icon_info_card_phone.svg',
+          ),
+        if (provider.panNo != null)
+          PersonalInfoCard(
+            isLabel: true,
+            label: "PAN Number",
+            title: provider.panNo!,
+            iconPath: 'assets/icons/moyo_icon_info_card_phone.svg',
+          ),
+        if (provider.isBlocked)
+          _buildStatusCard(context, "Provider Status", "Blocked", false),
       ],
     );
   }

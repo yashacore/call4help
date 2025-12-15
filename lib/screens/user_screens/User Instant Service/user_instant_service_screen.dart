@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -9,17 +10,20 @@ import '../../../constants/colorConstant/color_constant.dart';
 import '../../../providers/user_navigation_provider.dart';
 import '../../SubCategory/SubcategoryResponse.dart';
 import 'UserInstantServiceProvider.dart';
+import 'UserLocationPickerScreen.dart';
 
 class UserInstantServiceScreen extends StatefulWidget {
   final int categoryId;
   final String? subcategoryName;
   final String? categoryName;
+  final String? serviceType;
 
   const UserInstantServiceScreen({
     super.key,
     required this.categoryId,
     this.subcategoryName,
     this.categoryName,
+    this.serviceType,
   });
 
   @override
@@ -28,14 +32,67 @@ class UserInstantServiceScreen extends StatefulWidget {
 }
 
 class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
+  bool _isInitialized = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = context.read<UserInstantServiceProvider>();
-      provider.fetchSubcategories(widget.categoryId);
-      provider.getCurrentLocation();
+      _initializeScreen();
     });
+  }
+
+  // ✅ FIX: Separate initialization method
+  Future<void> _initializeScreen() async {
+    if (_isInitialized) return;
+
+    final provider = context.read<UserInstantServiceProvider>();
+
+    // Reset provider state first
+    provider.reset();
+
+    // Fetch subcategories
+    await provider.fetchSubcategories(widget.categoryId);
+
+    if (provider.subcategoryResponse != null &&
+        provider.subcategoryResponse!.subcategories.isNotEmpty) {
+      Subcategory? subcategoryToSelect;
+
+      if (widget.subcategoryName != null) {
+        try {
+          subcategoryToSelect = provider.subcategoryResponse!.subcategories
+              .firstWhere(
+                (sub) => sub.name == widget.subcategoryName,
+                orElse: () => provider.subcategoryResponse!.subcategories.first,
+              );
+        } catch (e) {
+          subcategoryToSelect =
+              provider.subcategoryResponse!.subcategories.first;
+        }
+      } else {
+        subcategoryToSelect = provider.subcategoryResponse!.subcategories.first;
+      }
+
+      // ✅ FIX: Use the new method that doesn't trigger notifyListeners
+      provider.setSelectedSubcategoryInitial(subcategoryToSelect);
+    }
+
+    // Get location
+    await provider.getCurrentLocation();
+
+    _isInitialized = true;
+  }
+
+  @override
+  void didUpdateWidget(UserInstantServiceScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // ✅ FIX: Reset when category changes
+    if (oldWidget.categoryId != widget.categoryId) {
+      _isInitialized = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _initializeScreen();
+      });
+    }
   }
 
   @override
@@ -71,7 +128,8 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      provider.fetchSubcategories(widget.categoryId);
+                      _isInitialized = false;
+                      _initializeScreen();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: ColorConstant.moyoOrange,
@@ -93,28 +151,13 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
             );
           }
 
-          // Find the specific subcategory or use the first one
-          Subcategory? selectedSubcategory;
-          if (widget.subcategoryName != null) {
-            try {
-              selectedSubcategory = provider.subcategoryResponse!.subcategories
-                  .firstWhere(
-                    (sub) => sub.name == widget.subcategoryName,
-                    orElse: () =>
-                        provider.subcategoryResponse!.subcategories.first,
-                  );
-            } catch (e) {
-              selectedSubcategory =
-                  provider.subcategoryResponse!.subcategories.first;
-            }
-          } else {
-            selectedSubcategory =
-                provider.subcategoryResponse!.subcategories.first;
+          if (provider.selectedSubcategory == null) {
+            return Center(
+              child: CircularProgressIndicator(color: ColorConstant.moyoOrange),
+            );
           }
 
-          if (provider.selectedSubcategory == null) {
-            provider.setSelectedSubcategory(selectedSubcategory);
-          }
+          final selectedSubcategory = provider.selectedSubcategory!;
 
           return Stack(
             children: [
@@ -124,7 +167,6 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   child: Column(
                     spacing: 16,
                     children: [
-                      // Dynamic fields from API
                       if (selectedSubcategory.fields.isNotEmpty)
                         ...selectedSubcategory.fields.map((field) {
                           if (field.fieldType == 'select' &&
@@ -154,46 +196,31 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                           }
                           return SizedBox.shrink();
                         }).toList(),
+                      _locationPickerField(context),
 
-                      // Conditional fields based on billing type
                       if (selectedSubcategory.billingType.toLowerCase() ==
                           'time')
                         _timeBillingFields(context, selectedSubcategory),
 
-                      if (selectedSubcategory.billingType.toLowerCase() ==
-                          'project')
+                      if (widget.serviceType == 'later')
                         _projectBillingFields(context),
 
-                      // Budget field (common for all types)
-                      _moyoTextField(
-                        context,
-                        title: "Your Budget",
-                        hint:
-                            "Minimum Service Price is ₹ ${selectedSubcategory.hourlyRate}",
-                        icon: Icon(Icons.currency_rupee),
-                        keyboardType: TextInputType.number,
-                        fieldName: "budget",
-                        isRequired: true,
-                      ),
-
-                      // Payment method (common for all types)
+                      _budgetTextField(context),
                       _paymentMethodField(context),
 
-                      // Only show tenure for time billing
                       if (selectedSubcategory.billingType.toLowerCase() ==
                           'time')
                         _tenureField(context),
 
-                      // Pre-requisites (common for all types)
                       _preRequisiteIncludesExcludes(context),
                       _preRequisiteItems(context),
 
-                      // Find service providers button
                       _findServiceproviders(
                         context,
                         onPress: () async {
-                          if (provider.validateForm()) {
-                            // Show loading dialog
+                          if (provider.validateForm(
+                            serviceType: widget.serviceType,
+                          )) {
                             showDialog(
                               context: context,
                               barrierDismissible: false,
@@ -204,18 +231,16 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                               ),
                             );
 
-                            // Create service
                             final success = await provider.createService(
                               categoryName: widget.categoryName ?? 'General',
-                              subcategoryName: selectedSubcategory!.name,
+                              subcategoryName: selectedSubcategory.name,
                               billingtype: selectedSubcategory.billingType,
+                              serviceType: widget.serviceType,
                             );
 
-                            // Close loading dialog
                             Navigator.pop(context);
 
                             if (success) {
-                              // Show success message
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -225,7 +250,6 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                                 ),
                               );
 
-                              // Navigate to service providers
                               context
                                       .read<UserNavigationProvider>()
                                       .currentIndex =
@@ -235,7 +259,6 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                                 '/UserCustomBottomNav',
                               );
                             } else {
-                              // Show error message
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -250,7 +273,9 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  provider.getValidationError() ??
+                                  provider.getValidationError(
+                                        serviceType: widget.serviceType,
+                                      ) ??
                                       'Please fill all required fields',
                                 ),
                                 backgroundColor: Colors.red,
@@ -265,7 +290,6 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                 ),
               ),
 
-              // Loading overlay when creating service
               if (provider.isCreatingService)
                 Container(
                   color: Colors.black.withOpacity(0.3),
@@ -297,17 +321,200 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
     );
   }
 
-  // Add these methods at the end of _UserInstantServiceScreenState class (before the closing brace)
+  Widget _budgetTextField(BuildContext context) {
+    return Consumer<UserInstantServiceProvider>(
+      builder: (context, provider, child) {
+        final budgetValue = provider.getFormValue('budget')?.toString() ?? '';
+        final errorText = budgetValue.isNotEmpty
+            ? provider.validateBudget(budgetValue)
+            : null;
+
+        return Column(
+          spacing: 6,
+          children: [
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Text(
+                    "Your Budget",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Text(
+                    " *",
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleMedium?.copyWith(color: Colors.red),
+                  ),
+                ],
+              ),
+            ),
+            TextField(
+              key: ValueKey('budget_${provider.selectedSubcategory?.id}'),
+              keyboardType: TextInputType.number,
+              controller: TextEditingController(text: budgetValue)
+                ..selection = TextSelection.fromPosition(
+                  TextPosition(offset: budgetValue.length),
+                ),
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                fontSize: 18,
+                color: Color(0xFF000000),
+                fontWeight: FontWeight.w400,
+              ),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Color(0xFFFFFFFF),
+                alignLabelWithHint: true,
+                hintText: provider.getBudgetHint(),
+                hintStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Color(0xFF686868),
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
+                prefixIcon: Icon(Icons.currency_rupee),
+                errorText: errorText,
+                errorMaxLines: 2,
+                errorStyle: TextStyle(fontSize: 12),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(
+                    color: errorText != null
+                        ? Colors.red
+                        : ColorConstant.moyoOrange.withAlpha(0),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(
+                    color: errorText != null
+                        ? Colors.red
+                        : ColorConstant.moyoOrange,
+                  ),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.red, width: 2),
+                ),
+              ),
+              maxLines: 1,
+              onChanged: (value) {
+                provider.updateFormValue('budget', value);
+              },
+            ),
+            if (provider.getBudgetRange() != null)
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text(
+                  'Base amount: ₹${provider.getBudgetRange()!['base']!.toStringAsFixed(0)} | Range: ₹${provider.getBudgetRange()!['min']!.toStringAsFixed(0)} - ₹${provider.getBudgetRange()!['max']!.toStringAsFixed(0)}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.grey[600],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _locationPickerField(BuildContext context) {
+    return Consumer<UserInstantServiceProvider>(
+      builder: (context, provider, child) {
+        return Column(
+          spacing: 6,
+          children: [
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Text(
+                    "Service Location",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Text(
+                    " *",
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleMedium?.copyWith(color: Colors.red),
+                  ),
+                ],
+              ),
+            ),
+            InkWell(
+              onTap: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserLocationPickerScreen(
+                      initialLatitude: provider.latitude,
+                      initialLongitude: provider.longitude,
+                    ),
+                  ),
+                );
+
+                if (result != null) {
+                  provider.setLocation(
+                    result['latitude'],
+                    result['longitude'],
+                    result['address'],
+                  );
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: provider.location != null
+                        ? ColorConstant.moyoOrange
+                        : Colors.grey.shade300,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.location_on, color: ColorConstant.moyoOrange),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        provider.location ?? 'Tap to select location',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: provider.location != null
+                                  ? Colors.black
+                                  : Color(0xFF686868),
+                            ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget _timeBillingFields(BuildContext context, Subcategory subcategory) {
     return Consumer<UserInstantServiceProvider>(
       builder: (context, provider, child) {
-        final selectedMode = provider.selectedServiceMode ?? 'hrs';
+        final selectedMode = provider.selectedServiceMode;
 
         return Column(
           spacing: 16,
           children: [
-            // Service Mode Selection (hrs or day)
             Column(
               spacing: 6,
               children: [
@@ -330,62 +537,67 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
                       Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            provider.setServiceMode('hrs');
-                          },
-                          child: Row(
-                            children: [
-                              Radio<String>(
-                                value: 'hrs',
-                                groupValue: selectedMode,
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    provider.setServiceMode(value);
-                                  }
-                                },
-                                activeColor: ColorConstant.moyoOrange,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
+                        child: GestureDetector(
+                          onTap: () => provider.setServiceMode('hrs'),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 14),
+                            decoration: BoxDecoration(
+                              color: selectedMode == 'hrs'
+                                  ? ColorConstant.moyoOrange
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: Text(
                                 'Hourly',
-                                style: Theme.of(context).textTheme.titleMedium,
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(
+                                      color: selectedMode == 'hrs'
+                                          ? Colors.white
+                                          : Colors.black87,
+                                      fontWeight: selectedMode == 'hrs'
+                                          ? FontWeight.w600
+                                          : FontWeight.w400,
+                                    ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
+                      SizedBox(width: 4),
                       Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            provider.setServiceMode('day');
-                          },
-                          child: Row(
-                            children: [
-                              Radio<String>(
-                                value: 'day',
-                                groupValue: selectedMode,
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    provider.setServiceMode(value);
-                                  }
-                                },
-                                activeColor: ColorConstant.moyoOrange,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
+                        child: GestureDetector(
+                          onTap: () => provider.setServiceMode('day'),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 14),
+                            decoration: BoxDecoration(
+                              color: selectedMode == 'day'
+                                  ? ColorConstant.moyoOrange
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: Text(
                                 'Daily',
-                                style: Theme.of(context).textTheme.titleMedium,
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(
+                                      color: selectedMode == 'day'
+                                          ? Colors.white
+                                          : Colors.black87,
+                                      fontWeight: selectedMode == 'day'
+                                          ? FontWeight.w600
+                                          : FontWeight.w400,
+                                    ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -395,10 +607,10 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
               ],
             ),
 
-            // Show fields based on selected mode
             if (selectedMode == 'hrs') ...[
               _durationFields(context),
-              _scheduleDateTimeFields(context),
+              if (widget.serviceType != 'instant')
+                _scheduleDateTimeFields(context),
             ] else if (selectedMode == 'day') ...[
               _serviceDaysField(context),
               _startEndDateFields(context),
@@ -437,6 +649,8 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
   Widget _serviceDaysField(BuildContext context) {
     return Consumer<UserInstantServiceProvider>(
       builder: (context, provider, child) {
+        final currentDays = provider.serviceDays?.toString() ?? '';
+
         return Column(
           spacing: 6,
           children: [
@@ -465,6 +679,13 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
+                key: ValueKey(
+                  'service_days_${provider.selectedSubcategory?.id}',
+                ),
+                controller: TextEditingController(text: currentDays)
+                  ..selection = TextSelection.fromPosition(
+                    TextPosition(offset: currentDays.length),
+                  ),
                 keyboardType: TextInputType.number,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   fontSize: 18,
@@ -510,29 +731,12 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
         return Column(
           spacing: 12,
           children: [
-            // Start Date
-            InkWell(
-              onTap: () async {
-                final DateTime? picked = await showDatePicker(
-                  context: context,
-                  initialDate: provider.startDate ?? DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime.now().add(Duration(days: 365)),
-                  builder: (context, child) {
-                    return Theme(
-                      data: Theme.of(context).copyWith(
-                        colorScheme: ColorScheme.light(
-                          primary: ColorConstant.moyoOrange,
-                        ),
-                      ),
-                      child: child!,
-                    );
-                  },
-                );
-                if (picked != null) {
-                  provider.setStartDate(picked);
-                }
-              },
+            GestureDetector(
+              onTap: () => _selectDate(
+                context,
+                provider.startDate ?? DateTime.now(),
+                (picked) => provider.setStartDate(picked),
+              ),
               child: Column(
                 spacing: 6,
                 children: [
@@ -559,6 +763,11 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: provider.startDate != null
+                            ? ColorConstant.moyoOrange
+                            : Colors.grey.shade300,
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -585,7 +794,6 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
               ),
             ),
 
-            // End Date (Auto-calculated)
             Column(
               spacing: 6,
               children: [
@@ -635,6 +843,31 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
     );
   }
 
+  void _selectDate(
+    BuildContext context,
+    DateTime initialDate,
+    Function(DateTime) onDateSelected,
+  ) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(primary: ColorConstant.moyoOrange),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked != initialDate) {
+      onDateSelected(picked);
+    }
+  }
+
   Widget _paymentMethodField(BuildContext context) {
     return Consumer<UserInstantServiceProvider>(
       builder: (context, provider, child) {
@@ -662,75 +895,101 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                 ],
               ),
             ),
+
             Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
                   Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        provider.updateFormValue('payment_method', 'online');
-                      },
-                      child: Row(
-                        children: [
-                          Radio<String>(
-                            value: 'online',
-                            groupValue: selectedMethod,
-                            onChanged: (value) {
-                              if (value != null) {
-                                provider.updateFormValue(
-                                  'payment_method',
-                                  value,
-                                );
-                              }
-                            },
-                            activeColor: ColorConstant.moyoOrange,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            'Pay Online',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ],
+                    child: GestureDetector(
+                      onTap: () =>
+                          provider.updateFormValue('payment_method', 'online'),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: selectedMethod == 'online'
+                              ? ColorConstant.moyoOrange
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.payment,
+                              color: selectedMethod == 'online'
+                                  ? Colors.white
+                                  : Colors.black54,
+                              size: 20,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'Pay Online',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    color: selectedMethod == 'online'
+                                        ? Colors.white
+                                        : Colors.black87,
+                                    fontWeight: selectedMethod == 'online'
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
+                  SizedBox(width: 4),
                   Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        provider.updateFormValue('payment_method', 'cash');
-                      },
-                      child: Row(
-                        children: [
-                          Radio<String>(
-                            value: 'cash',
-                            groupValue: selectedMethod,
-                            onChanged: (value) {
-                              if (value != null) {
-                                provider.updateFormValue(
-                                  'payment_method',
-                                  value,
-                                );
-                              }
-                            },
-                            activeColor: ColorConstant.moyoOrange,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            'Cash',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ],
+                    child: GestureDetector(
+                      onTap: () =>
+                          provider.updateFormValue('payment_method', 'cash'),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: selectedMethod == 'cash'
+                              ? ColorConstant.moyoOrange
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.money,
+                              color: selectedMethod == 'cash'
+                                  ? Colors.white
+                                  : Colors.black54,
+                              size: 20,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'Cash',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    color: selectedMethod == 'cash'
+                                        ? Colors.white
+                                        : Colors.black87,
+                                    fontWeight: selectedMethod == 'cash'
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
+
+            // ✅ COMPLETED: Cash warning container
             if (selectedMethod == 'cash')
               Container(
                 width: double.infinity,
@@ -743,11 +1002,24 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                     color: ColorConstant.moyoOrange.withOpacity(0.3),
                   ),
                 ),
-                child: Text(
-                  'The cash mode can only be limited upto 2000rs',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: ColorConstant.moyoOrange,
-                  ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      color: ColorConstant.moyoOrange,
+                      size: 20,
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'The cash mode can only be limited upto 2000rs',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: ColorConstant.moyoOrange,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
           ],
@@ -838,8 +1110,9 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
     String? fieldName,
   }) {
     return Column(
-      spacing: 6,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Title with required indicator
         Container(
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16),
@@ -859,24 +1132,46 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
             ],
           ),
         ),
+        SizedBox(height: 6),
+
+        // Dropdown Field
         Consumer<UserInstantServiceProvider>(
           builder: (context, provider, child) {
             final currentValue = provider.getFormValue(fieldName ?? '');
-            final validValue = options?.contains(currentValue) == true
+
+            // ✅ FIX: Clean and validate options list
+            final cleanOptions =
+                options
+                    ?.where((value) => value.trim().isNotEmpty)
+                    .map((e) => e.trim())
+                    .toList() ??
+                [];
+
+            // ✅ FIX: Only use currentValue if it exists in options
+            final validValue = cleanOptions.contains(currentValue)
                 ? currentValue
                 : null;
 
             return DropdownButtonFormField<String>(
               value: validValue,
+              isExpanded: true,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                fontSize: 16,
+                fontSize: 18,
                 color: Color(0xFF000000),
                 fontWeight: FontWeight.w400,
               ),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Color(0xFFFFFFFF),
-                alignLabelWithHint: true,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                hintText: 'Select an option...',
+                hintStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Color(0xFF686868),
+                  fontWeight: FontWeight.w400,
+                ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
@@ -887,29 +1182,53 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(color: ColorConstant.moyoOrange),
                 ),
-              ),
-              hint: Text(
-                'Select an option...',
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Color(0xFF686868),
-                  fontWeight: FontWeight.w400,
+                errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.red, width: 2),
                 ),
               ),
-              items:
-                  options?.where((value) => value.trim().isNotEmpty).map((
-                    String value,
-                  ) {
-                    return DropdownMenuItem(
-                      value: value,
-                      child: Text(value.trim()),
-                    );
-                  }).toList() ??
-                  [],
-              onChanged: (value) {
-                if (fieldName != null && value != null) {
-                  provider.updateFormValue(fieldName, value);
-                }
-              },
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                color: ColorConstant.moyoOrange,
+              ),
+              // ✅ FIX: Handle empty options list
+              items: cleanOptions.isEmpty
+                  ? [
+                      DropdownMenuItem(
+                        value: null,
+                        enabled: false,
+                        child: Text('No options available'),
+                      ),
+                    ]
+                  : cleanOptions.map((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(
+                          value,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      );
+                    }).toList(),
+              onChanged: cleanOptions.isEmpty
+                  ? null
+                  : (value) {
+                      if (fieldName != null && value != null) {
+                        provider.updateFormValue(fieldName, value);
+                      }
+                    },
+              validator: isRequired
+                  ? (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select an option';
+                      }
+                      return null;
+                    }
+                  : null,
             );
           },
         ),
@@ -1089,9 +1408,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                           ),
                         ),
                       ),
-                      items: ['hour', 'day', 'week', 'month'].map((
-                        String value,
-                      ) {
+                      items: ['hour'].map((String value) {
                         return DropdownMenuItem(
                           value: value,
                           child: Text(value.toUpperCase()),
@@ -1124,6 +1441,9 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
   }
 
   Widget _scheduleDateTimeFields(BuildContext context) {
+    if (widget.serviceType == 'instant') {
+      return SizedBox.shrink();
+    }
     return Consumer<UserInstantServiceProvider>(
       builder: (context, provider, child) {
         return Column(

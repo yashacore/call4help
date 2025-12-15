@@ -37,19 +37,14 @@ class SplashProvider with ChangeNotifier {
       // Check if customer auth token exists (main token)
       final authToken = prefs.getString('auth_token');
 
+      print(authToken);
       if (authToken == null || authToken.isEmpty) {
         // No session found, go to login
         return '/login';
       }
 
       // ADD THIS NEW CHECK - Check email verification status
-      final isEmailVerified = prefs.getBool('is_email_verified') ?? false;
 
-      if (!isEmailVerified) {
-        // Email not verified, go to login
-        print('Email not verified, navigating to login');
-        return '/login';
-      }
 
       // Get user role (defaults to customer if not set)
       final userRole = prefs.getString('user_role') ?? 'customer';

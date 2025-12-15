@@ -15,6 +15,7 @@ class UserServiceListCard extends StatelessWidget {
   final String status;
 
   final VoidCallback? onPress;
+  final VoidCallback? onInvoicePress;
 
   const UserServiceListCard({
     super.key,
@@ -28,10 +29,12 @@ class UserServiceListCard extends StatelessWidget {
     this.providerCount,
     this.status = "No status",
     this.onPress,
+    this.onInvoicePress,
   });
 
   @override
   Widget build(BuildContext context) {
+    print(priceBy);
     return InkWell(
       onTap: onPress,
       child: Padding(
@@ -101,8 +104,6 @@ class UserServiceListCard extends StatelessWidget {
                           CachedNetworkImage(
                             imageUrl: dp!,
                             fit: BoxFit.cover,
-                            // width: 80,
-                            // height: 80,
                             placeholder: (context, url) => Image.asset(
                               'assets/images/moyo_image_placeholder.png',
                             ),
@@ -125,7 +126,7 @@ class UserServiceListCard extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  "₹ ${price ?? "No price"} /-",
+                                  "₹ ${priceBy ?? "No price"} /-",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.roboto(
@@ -133,9 +134,9 @@ class UserServiceListCard extends StatelessWidget {
                                         .textTheme
                                         .titleMedium
                                         ?.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 18,
-                                        ),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 18,
+                                    ),
                                     color: Color(0xFF1D1B20),
                                   ),
                                 ),
@@ -150,8 +151,8 @@ class UserServiceListCard extends StatelessWidget {
                                       .textTheme
                                       .labelLarge
                                       ?.copyWith(
-                                        color: ColorConstant.moyoOrange,
-                                      ),
+                                    color: ColorConstant.moyoOrange,
+                                  ),
                                 ),
                               ),
                             ],
@@ -174,7 +175,7 @@ class UserServiceListCard extends StatelessWidget {
                                     ),
                                   ),
                                   child: Text(
-                                    priceBy ?? "N/A",
+                                    category ?? "N/A",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.roboto(
@@ -182,8 +183,8 @@ class UserServiceListCard extends StatelessWidget {
                                           .textTheme
                                           .bodyMedium
                                           ?.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                          ),
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                       color: ColorConstant.moyoOrange,
                                     ),
                                   ),
@@ -191,7 +192,6 @@ class UserServiceListCard extends StatelessWidget {
                               ),
                               Container(
                                 alignment: Alignment.center,
-                                // width: 47,
                                 child: Row(
                                   spacing: 6,
                                   children: [
@@ -205,8 +205,8 @@ class UserServiceListCard extends StatelessWidget {
                                               .textTheme
                                               .bodyMedium
                                               ?.copyWith(
-                                                fontWeight: FontWeight.w500,
-                                              ),
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                           color: ColorConstant.moyoOrange,
                                         ),
                                       ),
@@ -218,6 +218,24 @@ class UserServiceListCard extends StatelessWidget {
 
                                     /// Status Chip
                                     currentStatusChip(context, status),
+
+                                    /// Invoice Button (only visible when completed)
+                                    if (status == 'completed')
+                                      InkWell(
+                                        onTap: onInvoicePress,
+                                        child: Container(
+                                          padding: EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: ColorConstant.moyoOrange,
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Icon(
+                                            Icons.receipt_long,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
                                   ],
                                 ),
                               ),
