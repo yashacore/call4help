@@ -191,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Spacer(),
                         Image.asset(
-                          "assets/icons/app_icon_radius.png.png",
+                          "assets/images/logo.png",
                           height: 100.h,
                         ),
                         SizedBox(height: 20.h),

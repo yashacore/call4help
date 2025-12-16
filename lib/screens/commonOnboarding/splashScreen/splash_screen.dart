@@ -64,24 +64,20 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: _isVideoInitialized && _videoController != null
-          ? SizedBox.expand(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: _videoController!.value.size.width,
-                  height: _videoController!.value.size.height,
-                  child: VideoPlayer(_videoController!),
-                ),
-              ),
-            )
-          : Center(
-              child: Image.asset(
-                "assets/icons/app_icon_radius.png.png",
-                width: 150,
-                height: 150,
-              ),
-            ),
+      body: Center(
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle
+          ),
+          child: Image.asset(
+            "assets/images/logo.png",
+            width: 150,
+            height: 150,
+          ),
+        ),
+      ),
     );
+
   }
 }
