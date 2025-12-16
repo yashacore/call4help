@@ -43,8 +43,8 @@ class StartWorkProvider extends ChangeNotifier {
         }),
       );
 
-      print('Start Work Response - Status: ${response.statusCode}');
-      print('Start Work Response - Body: ${response.body}');
+      debugPrint('Start Work Response - Status: ${response.statusCode}');
+      debugPrint('Start Work Response - Body: ${response.body}');
 
       if (response.statusCode == 200) {
         // ✅ success case
@@ -100,8 +100,8 @@ class StartWorkProvider extends ChangeNotifier {
         }),
       );
 
-      print('End Work Response - Status: ${response.statusCode}');
-      print('End Work Response - Body: ${response.body}');
+      debugPrint('End Work Response - Status: ${response.statusCode}');
+      debugPrint('End Work Response - Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);

@@ -12,9 +12,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print("=== 🔔 BACKGROUND Message Received (Top-Level Handler) ===");
-  print("Title: ${message.notification?.title}");
-  print("Body: ${message.notification?.body}");
+  debugPrint("=== 🔔 BACKGROUND Message Received (Top-Level Handler) ===");
+  debugPrint("Title: ${message.notification?.title}");
+  debugPrint("Body: ${message.notification?.body}");
 
   // Background mein bhi local notification show karo with custom sound
   await NotificationService.showLocalNotificationStatic(message);
@@ -35,7 +35,7 @@ class NotificationService {
 
   // ================== INITIALIZATION ==================
   static Future<void> initializeNotifications() async {
-    print("=== 🔔 Initializing Notifications ===");
+    debugPrint("=== 🔔 Initializing Notifications ===");
 
     // 🔥 IMPORTANT: Background handler ko register karo SABSE PEHLE
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
@@ -61,7 +61,7 @@ class NotificationService {
     // 7. Setup Token Refresh Listener
     setupTokenRefreshListener();
 
-    print("=== ✅ Notification Initialization Complete ===");
+    debugPrint("=== ✅ Notification Initialization Complete ===");
   }
 
   // Setup Local Notifications Plugin
@@ -83,11 +83,11 @@ class NotificationService {
     await _flutterLocalNotificationsPlugin.initialize(
       initSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) async {
-        print("📱 Notification tapped: ${response.payload}");
+        debugPrint("📱 Notification tapped: ${response.payload}");
         _handleNotificationTap(response.payload);
       },
     );
-    print("✅ Local notifications initialized");
+    debugPrint("✅ Local notifications initialized");
   }
 
   // Create Android Notification Channel with Custom Sound
@@ -97,8 +97,8 @@ class NotificationService {
     );
 
     final channel = AndroidNotificationChannel(
-      'moyo_high_importance_custom',
-      'Moyo Custom Notifications',
+      'call4hep_high_importance_custom',
+      'call4hep Custom Notifications',
       description: 'Notifications with custom sound',
       importance: Importance.max,
       playSound: true,
@@ -115,8 +115,8 @@ class NotificationService {
         >()
         ?.createNotificationChannel(channel);
 
-    print("✅ Channel created with custom sound: ${channel.id}");
-    print("🔊 Sound file: $_customSoundFileName");
+    debugPrint("✅ Channel created with custom sound: ${channel.id}");
+    debugPrint("🔊 Sound file: $_customSoundFileName");
   }
 
   // Set Foreground Notification Options for iOS
@@ -126,7 +126,7 @@ class NotificationService {
       badge: true,
       sound: true,
     );
-    print("✅ iOS foreground options set");
+    debugPrint("✅ iOS foreground options set");
   }
 
   // ================== MESSAGE HANDLERS ==================
@@ -134,10 +134,10 @@ class NotificationService {
   // Handle Foreground Messages (App is Open)
   static void _setupForegroundMessageHandler() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("=== 🔔 FOREGROUND Message Received ===");
-      print("Title: ${message.notification?.title}");
-      print("Body: ${message.notification?.body}");
-      print("Data: ${message.data}");
+      debugPrint("=== 🔔 FOREGROUND Message Received ===");
+      debugPrint("Title: ${message.notification?.title}");
+      debugPrint("Body: ${message.notification?.body}");
+      debugPrint("Data: ${message.data}");
 
       // Show local notification when app is in foreground
       _showLocalNotification(message);
@@ -147,9 +147,9 @@ class NotificationService {
   // Handle Background Message Taps (App in Background)
   static void _setupBackgroundMessageHandler() {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("=== 🔔 App Opened from BACKGROUND ===");
-      print("Title: ${message.notification?.title}");
-      print("Data: ${message.data}");
+      debugPrint("=== 🔔 App Opened from BACKGROUND ===");
+      debugPrint("Title: ${message.notification?.title}");
+      debugPrint("Data: ${message.data}");
       _handleNotificationTap(jsonEncode(message.data));
     });
   }
@@ -159,8 +159,8 @@ class NotificationService {
     RemoteMessage? initialMessage = await _firebaseMessaging
         .getInitialMessage();
     if (initialMessage != null) {
-      print("=== 🔔 App Opened from TERMINATED State ===");
-      print("Title: ${initialMessage.notification?.title}");
+      debugPrint("=== 🔔 App Opened from TERMINATED State ===");
+      debugPrint("Title: ${initialMessage.notification?.title}");
       // Delay navigation to ensure app is fully initialized
       Future.delayed(const Duration(milliseconds: 500), () {
         _handleNotificationTap(jsonEncode(initialMessage.data));
@@ -170,11 +170,11 @@ class NotificationService {
 
   // Show Local Notification with Custom Sound (Instance method)
   static Future<void> _showLocalNotification(RemoteMessage message) async {
-    print("=== 📲 Showing notification with custom sound ===");
+    debugPrint("=== 📲 Showing notification with custom sound ===");
 
     final androidDetails = AndroidNotificationDetails(
-      'moyo_high_importance_custom',
-      'Moyo Custom Notifications',
+      'call4hep_high_importance_custom',
+      'call4hep Custom Notifications',
       channelDescription: 'Notifications with custom sound',
       importance: Importance.max,
       priority: Priority.high,
@@ -209,12 +209,12 @@ class NotificationService {
       payload: jsonEncode(message.data),
     );
 
-    print("✅ Notification shown with custom sound");
+    debugPrint("✅ Notification shown with custom sound");
   }
 
   // 🔥 STATIC METHOD: Background handler ke liye (Plugin initialize karne ke baad)
   static Future<void> showLocalNotificationStatic(RemoteMessage message) async {
-    print("=== 📲 [BACKGROUND] Showing notification with custom sound ===");
+    debugPrint("=== 📲 [BACKGROUND] Showing notification with custom sound ===");
 
     // Plugin ko initialize karo agar background se call ho raha hai
     const androidSettings = AndroidInitializationSettings(
@@ -229,8 +229,8 @@ class NotificationService {
       _customSoundFileName,
     );
     final channel = AndroidNotificationChannel(
-      'moyo_high_importance_custom',
-      'Moyo Custom Notifications',
+      'call4hep_high_importance_custom',
+      'call4hep Custom Notifications',
       description: 'Notifications with custom sound',
       importance: Importance.max,
       playSound: true,
@@ -248,8 +248,8 @@ class NotificationService {
 
     // Notification details
     final androidDetails = AndroidNotificationDetails(
-      'moyo_high_importance_custom',
-      'Moyo Custom Notifications',
+      'call4hep_high_importance_custom',
+      'call4hep Custom Notifications',
       channelDescription: 'Notifications with custom sound',
       importance: Importance.max,
       priority: Priority.high,
@@ -284,17 +284,17 @@ class NotificationService {
       payload: jsonEncode(message.data),
     );
 
-    print("✅ [BACKGROUND] Notification shown with custom sound");
+    debugPrint("✅ [BACKGROUND] Notification shown with custom sound");
   }
 
   // Handle Notification Tap with proper navigation
   static void _handleNotificationTap(String? payload) {
     if (payload == null || payload.isEmpty) {
-      print("⚠️ Empty payload received");
+      debugPrint("⚠️ Empty payload received");
       return;
     }
 
-    print("🔔 Handling notification tap with payload: $payload");
+    debugPrint("🔔 Handling notification tap with payload: $payload");
 
     try {
       final Map<String, dynamic> data = jsonDecode(payload);
@@ -303,7 +303,7 @@ class NotificationService {
         String serviceId = data["serviceId"].toString();
         String role = data["role"].toString();
 
-        print("📍 Role: $role, ServiceId: $serviceId");
+        debugPrint("📍 Role: $role, ServiceId: $serviceId");
 
         final context = navigatorKey.currentContext;
 
@@ -322,11 +322,11 @@ class NotificationService {
             );
           }
         } else {
-          print("❌ Navigator context not available");
+          debugPrint("❌ Navigator context not available");
         }
       }
     } catch (e) {
-      print("❌ Error parsing payload: $e");
+      debugPrint("❌ Error parsing payload: $e");
     }
   }
 
@@ -348,7 +348,7 @@ class NotificationService {
         (route) => false, // Remove all previous routes
       );
     } catch (e) {
-      print("❌ Error navigating: $e");
+      debugPrint("❌ Error navigating: $e");
     }
   }
 
@@ -357,23 +357,23 @@ class NotificationService {
   static Future<bool> requestNotificationPermission(
     BuildContext context,
   ) async {
-    print("=== 📢 Requesting Notification Permission ===");
+    debugPrint("=== 📢 Requesting Notification Permission ===");
 
     final prefs = await SharedPreferences.getInstance();
     final hasAsked = prefs.getBool('notification_permission_asked') ?? false;
 
     final settings = await _firebaseMessaging.getNotificationSettings();
-    print("Current permission: ${settings.authorizationStatus}");
+    debugPrint("Current permission: ${settings.authorizationStatus}");
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print("✅ Permission already granted");
+      debugPrint("✅ Permission already granted");
       await _getAndSaveToken();
       return true;
     }
 
     if (settings.authorizationStatus == AuthorizationStatus.denied &&
         hasAsked) {
-      print("❌ Permission previously denied");
+      debugPrint("❌ Permission previously denied");
       return false;
     }
 
@@ -475,7 +475,7 @@ class NotificationService {
     );
 
     if (result == true) {
-      print("User agreed, requesting system permission...");
+      debugPrint("User agreed, requesting system permission...");
 
       final settings = await _firebaseMessaging.requestPermission(
         alert: true,
@@ -489,15 +489,15 @@ class NotificationService {
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized ||
           settings.authorizationStatus == AuthorizationStatus.provisional) {
-        print('✅ System permission granted');
+        debugPrint('✅ System permission granted');
         return true;
       } else {
-        print('❌ System permission denied');
+        debugPrint('❌ System permission denied');
         return false;
       }
     }
 
-    print("User clicked 'Not Now'");
+    debugPrint("User clicked 'Not Now'");
     return false;
   }
 
@@ -520,15 +520,15 @@ class NotificationService {
     try {
       final token = await _firebaseMessaging.getToken();
       if (token != null) {
-        print("🔑 FCM Token: $token");
+        debugPrint("🔑 FCM Token: $token");
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('fcm_token', token);
-        print("✅ Token saved locally");
+        debugPrint("✅ Token saved locally");
       } else {
-        print("❌ Failed to get FCM token");
+        debugPrint("❌ Failed to get FCM token");
       }
     } catch (e) {
-      print("❌ Error getting token: $e");
+      debugPrint("❌ Error getting token: $e");
     }
   }
 
@@ -538,25 +538,25 @@ class NotificationService {
       final cachedToken = prefs.getString('fcm_token');
 
       if (cachedToken != null) {
-        print("📱 Using cached token");
+        debugPrint("📱 Using cached token");
         return cachedToken;
       }
 
       final token = await _firebaseMessaging.getToken();
       if (token != null) {
         await prefs.setString('fcm_token', token);
-        print("🔑 Fresh token retrieved");
+        debugPrint("🔑 Fresh token retrieved");
       }
       return token;
     } catch (e) {
-      print("❌ Error getting token: $e");
+      debugPrint("❌ Error getting token: $e");
       return null;
     }
   }
 
   static void setupTokenRefreshListener() {
     _firebaseMessaging.onTokenRefresh.listen((newToken) async {
-      print("🔄 Token refreshed: $newToken");
+      debugPrint("🔄 Token refreshed: $newToken");
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('fcm_token', newToken);
     });
@@ -565,11 +565,11 @@ class NotificationService {
   // ================== TEST METHODS ==================
 
   static Future<void> showTestNotification() async {
-    print("=== 🧪 Showing Test Notification ===");
+    debugPrint("=== 🧪 Showing Test Notification ===");
 
     final androidDetails = AndroidNotificationDetails(
-      'moyo_high_importance_custom',
-      'Moyo Custom Notifications',
+      'call4hep_high_importance_custom',
+      'call4hep Custom Notifications',
       channelDescription: 'Notifications with custom sound',
       importance: Importance.max,
       priority: Priority.high,
@@ -598,7 +598,7 @@ class NotificationService {
       notificationDetails,
     );
 
-    print("✅ Test notification triggered");
+    debugPrint("✅ Test notification triggered");
   }
 
   static Future<void> deleteOldChannel() async {
@@ -606,8 +606,8 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >()
-        ?.deleteNotificationChannel('moyo_high_importance');
+        ?.deleteNotificationChannel('call4hep_high_importance');
 
-    print("🗑️ Old channel deleted");
+    debugPrint("🗑️ Old channel deleted");
   }
 }

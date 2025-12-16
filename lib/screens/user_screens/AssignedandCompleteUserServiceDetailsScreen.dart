@@ -10,9 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'dart:math' show cos, sqrt, asin;
 import '../../NATS Service/NatsService.dart';
-import '../../widgets/user_interested_provider_list_card.dart';
 import '../provider_screens/navigation/ServiceTimerScreen.dart';
-import 'navigation/user_service_tab_body/ServiceModel.dart';
 import 'navigation/user_service_tab_body/ServiceProvider.dart';
 import 'BookProviderProvider.dart';
 
@@ -45,7 +43,7 @@ class _AssignedandCompleteUserServiceDetailsScreenState
   bool _isMapReady = false;
 
   static const String GOOGLE_MAPS_API_KEY =
-      'AIzaSyBqTGBtJYtoRpvJFpF6tls1jcwlbiNcEVI';
+      'AIzaSyAkV6lz1n4MNS_lJaje3oIEXa2DN4QMz6U';
 
   @override
   void initState() {
@@ -152,7 +150,7 @@ class _AssignedandCompleteUserServiceDetailsScreenState
         }
       }
     } catch (e) {
-      print('Error fetching location details: $e');
+      debugPrint('Error fetching location details: $e');
     }
   }
 
@@ -200,7 +198,7 @@ class _AssignedandCompleteUserServiceDetailsScreenState
 
       return [origin, destination];
     } catch (e) {
-      print('Error fetching directions: $e');
+      debugPrint('Error fetching directions: $e');
       return [origin, destination];
     }
   }
@@ -412,7 +410,7 @@ class _AssignedandCompleteUserServiceDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.moyoScaffoldGradient,
+      backgroundColor: ColorConstant.call4hepScaffoldGradient,
       appBar: UserOnlyTitleAppbar(title: "Service Details"),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -449,7 +447,7 @@ class _AssignedandCompleteUserServiceDetailsScreenState
 
                 // Extract provider ID with null checks
                 final providerId = user?['assigned_provider_id']?.toString();
-                print("object123456789$providerId");
+                debugPrint("object123456789$providerId");
 
                 return SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),

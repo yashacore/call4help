@@ -91,7 +91,7 @@ class FAQProvider with ChangeNotifier {
       _errorMessage = 'Error loading FAQs: ${e.toString()}';
       _faqs = [];
       if (kDebugMode) {
-        print('FAQ Error: $e');
+        debugPrint('FAQ Error: $e');
       }
     } finally {
       _isLoading = false;

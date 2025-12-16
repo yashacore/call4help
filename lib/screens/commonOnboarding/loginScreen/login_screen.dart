@@ -1,4 +1,3 @@
-import 'package:first_flutter/baseControllers/NavigationController/navigation_controller.dart';
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/constants/imgConstant/img_constant.dart';
 import 'package:first_flutter/constants/utils/app_text_style.dart';
@@ -9,10 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../NotificationService.dart';
-import '../../provider_screens/LegalDocumentScreen.dart';
 import '../../provider_screens/TermsandConditions.dart';
-import '../otpScreen/EmailVerificationScreen.dart';
-import 'MobileVerificationScreen.dart';
 import 'login_screen_provider.dart';
 import 'package:first_flutter/screens/commonOnboarding/otpScreen/otp_screen_provider.dart';
 
@@ -72,40 +68,40 @@ class _LoginScreenState extends State<LoginScreen> {
     final provider = context.read<OtpScreenProvider>();
 
     try {
-      print('=== Setting up notifications ===');
+      debugPrint('=== Setting up notifications ===');
 
       final permissionGranted =
           await NotificationService.requestNotificationPermission(context);
 
       if (permissionGranted) {
-        print('✓ Notification permission granted');
+        debugPrint('✓ Notification permission granted');
 
         final deviceToken = await NotificationService.getDeviceToken();
 
         if (deviceToken != null && deviceToken.isNotEmpty) {
-          print('✓ Device token obtained: ${deviceToken.substring(0, 20)}...');
+          debugPrint('✓ Device token obtained: ${deviceToken.substring(0, 20)}...');
 
           final updated = await provider.updateDeviceToken(
             deviceToken: deviceToken,
           );
 
           if (updated) {
-            print('✓ Device token updated successfully');
+            debugPrint('✓ Device token updated successfully');
           } else {
-            print('⚠ Failed to update device token on server');
+            debugPrint('⚠ Failed to update device token on server');
           }
         } else {
-          print('⚠ No device token available');
+          debugPrint('⚠ No device token available');
         }
       } else {
-        print('✗ User declined notification permission');
+        debugPrint('✗ User declined notification permission');
       }
     } catch (e) {
-      print('Error in notification setup: $e');
+      debugPrint('Error in notification setup: $e');
     }
 
     if (mounted) {
-      print('=== Navigating to home screen ===');
+      debugPrint('=== Navigating to home screen ===');
       Navigator.pushNamedAndRemoveUntil(
         context,
         "/UserCustomBottomNav",
@@ -190,9 +186,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Spacer(),
-                        Image.asset(
-                          "assets/images/logo.png",
-                          height: 100.h,
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white
+                          ),
+                          child: Image.asset(
+                            "assets/images/logo.png",
+                            height: 100.h,
+                          ),
                         ),
                         SizedBox(height: 20.h),
                         // Phone number TextField
@@ -220,7 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 36.h,
                                 child: TextField(
                                   cursorColor: Colors.white,
-                                  style: AppTextStyle.robotoMedium.copyWith(
+                                  style: AppTextStyle.interMedium.copyWith(
                                     color: Colors.white,
                                     fontSize: 15.sp,
                                   ),
@@ -230,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   decoration: InputDecoration(
                                     hintText: "Phone Number",
                                     counterText: "",
-                                    hintStyle: AppTextStyle.robotoMedium
+                                    hintStyle: AppTextStyle.interMedium
                                         .copyWith(
                                           color: Colors.white,
                                           fontSize: 15.sp,
@@ -290,7 +292,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Expanded(
                               child: RichText(
                                 text: TextSpan(
-                                  style: AppTextStyle.robotoRegular.copyWith(
+                                  style: AppTextStyle.interRegular.copyWith(
                                     color: Colors.white70,
                                     fontSize: 12.sp,
                                   ),
@@ -362,7 +364,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 )
                               : Text(
                                   "Continue",
-                                  style: AppTextStyle.robotoMedium.copyWith(
+                                  style: AppTextStyle.interMedium.copyWith(
                                     fontSize: 16.sp,
                                     color: Colors.white,
                                   ),
@@ -411,7 +413,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               SizedBox(width: 8.w),
                               Text(
                                 "Continue with Google",
-                                style: AppTextStyle.robotoMedium.copyWith(
+                                style: AppTextStyle.interMedium.copyWith(
                                   color: _isTermsAccepted
                                       ? Colors.white
                                       : Colors.grey,

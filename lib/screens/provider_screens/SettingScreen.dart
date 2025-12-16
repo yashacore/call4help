@@ -12,7 +12,6 @@ import '../../constants/colorConstant/color_constant.dart';
 import '../commonOnboarding/splashScreen/splash_screen_provider.dart';
 import '../user_screens/Profile/FAQScreen.dart';
 import 'ContactFormScreen.dart';
-import 'LegalDocumentScreen.dart';
 import 'SettingsProvider.dart';
 import 'TermsandConditions.dart';
 
@@ -216,7 +215,7 @@ class _SettingScreenState extends State<SettingScreen>
                 AppSettings.openAppSettings(type: AppSettingsType.settings);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.moyoOrange,
+                backgroundColor: ColorConstant.call4hepOrange,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),
                 ),
@@ -239,7 +238,7 @@ class _SettingScreenState extends State<SettingScreen>
         appVersion = '${packageInfo.version} (${packageInfo.buildNumber})';
       });
     } catch (e) {
-      print('Error loading app version: $e');
+      debugPrint('Error loading app version: $e');
     }
   }
 
@@ -251,7 +250,7 @@ class _SettingScreenState extends State<SettingScreen>
         selectedDistanceUnit = prefs.getString('distanceUnit') ?? 'Kilometers';
       });
     } catch (e) {
-      print('Error loading preferences: $e');
+      debugPrint('Error loading preferences: $e');
     }
   }
 
@@ -266,7 +265,7 @@ class _SettingScreenState extends State<SettingScreen>
         await prefs.setDouble(key, value);
       }
     } catch (e) {
-      print('Error saving preference: $e');
+      debugPrint('Error saving preference: $e');
     }
   }
 
@@ -288,7 +287,7 @@ class _SettingScreenState extends State<SettingScreen>
 
   void _shareApp() {
     Share.share(
-      'Check out this amazing app! Download now: https://play.google.com/store/apps/details?id=com.acore.moyo&pcampaignid=web_share',
+      'Check out this amazing app! Download now: https://play.google.com/store/apps/details?id=com.acore.call4hep&pcampaignid=web_share',
       subject: 'Check out this app!',
     );
     _showSnackBar('Sharing app...');
@@ -296,7 +295,7 @@ class _SettingScreenState extends State<SettingScreen>
 
   Future<void> _rateApp() async {
     final url = Uri.parse(
-      'https://play.google.com/store/apps/details?id=com.acore.moyo&pcampaignid=web_share',
+      'https://play.google.com/store/apps/details?id=com.acore.call4hep&pcampaignid=web_share',
     );
     try {
       if (await canLaunchUrl(url)) {
@@ -423,7 +422,7 @@ class _SettingScreenState extends State<SettingScreen>
                                       _handleNotificationPermission(value);
                                     },
                                     activeColor: ColorConstant.white,
-                                    activeTrackColor: ColorConstant.moyoOrange,
+                                    activeTrackColor: ColorConstant.call4hepOrange,
                                   ),
                                 ],
                               ),
@@ -464,7 +463,7 @@ class _SettingScreenState extends State<SettingScreen>
                                       _handleLocationPermission(value);
                                     },
                                     activeColor: ColorConstant.white,
-                                    activeTrackColor: ColorConstant.moyoOrange,
+                                    activeTrackColor: ColorConstant.call4hepOrange,
                                   ),
                                 ],
                               ),
@@ -518,7 +517,7 @@ class _SettingScreenState extends State<SettingScreen>
                                           vertical: 6.h,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: ColorConstant.moyoOrange
+                                          color: ColorConstant.call4hepOrange
                                               .withOpacity(0.1),
                                           borderRadius: BorderRadius.circular(
                                             8.r,
@@ -529,7 +528,7 @@ class _SettingScreenState extends State<SettingScreen>
                                           style: TextStyle(
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.bold,
-                                            color: ColorConstant.moyoOrange,
+                                            color: ColorConstant.call4hepOrange,
                                           ),
                                         ),
                                       ),
@@ -549,12 +548,12 @@ class _SettingScreenState extends State<SettingScreen>
                                   SliderTheme(
                                     data: SliderThemeData(
                                       activeTrackColor:
-                                          ColorConstant.moyoOrange,
+                                          ColorConstant.call4hepOrange,
                                       inactiveTrackColor: ColorConstant
-                                          .moyoOrange
+                                          .call4hepOrange
                                           .withOpacity(0.3),
-                                      thumbColor: ColorConstant.moyoOrange,
-                                      overlayColor: ColorConstant.moyoOrange
+                                      thumbColor: ColorConstant.call4hepOrange,
+                                      overlayColor: ColorConstant.call4hepOrange
                                           .withOpacity(0.2),
                                       trackHeight: 4.h,
                                       thumbShape: RoundSliderThumbShape(
@@ -691,7 +690,7 @@ class _SettingScreenState extends State<SettingScreen>
                                           Icon(
                                             Icons.info_outline,
                                             size: 16.sp,
-                                            color: ColorConstant.moyoOrange,
+                                            color: ColorConstant.call4hepOrange,
                                           ),
                                         ],
                                       ),
@@ -853,7 +852,7 @@ class _SettingScreenState extends State<SettingScreen>
                       child: Center(
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            ColorConstant.moyoOrange,
+                            ColorConstant.call4hepOrange,
                           ),
                         ),
                       ),
@@ -878,7 +877,7 @@ class _SettingScreenState extends State<SettingScreen>
         padding: EdgeInsets.symmetric(vertical: 12.h),
         child: Row(
           children: [
-            Icon(icon, color: ColorConstant.moyoOrange, size: 20.sp),
+            Icon(icon, color: ColorConstant.call4hepOrange, size: 20.sp),
             SizedBox(width: 12.w),
             Expanded(
               child: Text(
@@ -971,7 +970,7 @@ class _SettingScreenState extends State<SettingScreen>
       );
       await splashProvider.clearSession();
 
-      print('User logged out successfully');
+      debugPrint('User logged out successfully');
 
       if (mounted) {
         Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);

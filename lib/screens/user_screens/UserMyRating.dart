@@ -71,7 +71,7 @@ class _UserMyRatingState extends State<UserMyRating> {
         return;
       }
 
-      print(providerId);
+      debugPrint(providerId as String?);
       final response = await http.get(
         Uri.parse('$base_url/bid/api/user/user/$providerId'),
         headers: {'Authorization': 'Bearer $token'},
@@ -120,7 +120,7 @@ class _UserMyRatingState extends State<UserMyRating> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              ColorConstant.moyoOrangeFade.withOpacity(0.3),
+              ColorConstant.call4hepOrangeFade.withOpacity(0.3),
               ColorConstant.scaffoldGray,
             ],
           ),
@@ -129,7 +129,7 @@ class _UserMyRatingState extends State<UserMyRating> {
           child: isLoading
               ? Center(
                   child: CircularProgressIndicator(
-                    color: ColorConstant.moyoOrange,
+                    color: ColorConstant.call4hepOrange,
                   ),
                 )
               : errorMessage != null
@@ -141,7 +141,7 @@ class _UserMyRatingState extends State<UserMyRating> {
   }
 
   Widget _buildErrorWidget() {
-    print(errorMessage);
+    debugPrint(errorMessage);
     return Center(
       child: Padding(
         padding: EdgeInsets.all(24.w),
@@ -165,7 +165,7 @@ class _UserMyRatingState extends State<UserMyRating> {
                 fetchData();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.moyoOrange,
+                backgroundColor: ColorConstant.call4hepOrange,
                 foregroundColor: ColorConstant.white,
                 padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
                 shape: RoundedRectangleBorder(
@@ -223,14 +223,14 @@ class _UserMyRatingState extends State<UserMyRating> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    ColorConstant.moyoOrange,
-                    ColorConstant.moyoScaffoldGradient,
+                    ColorConstant.call4hepOrange,
+                    ColorConstant.call4hepScaffoldGradient,
                   ],
                 ),
                 borderRadius: BorderRadius.circular(24.r),
                 boxShadow: [
                   BoxShadow(
-                    color: ColorConstant.moyoOrange.withOpacity(0.3),
+                    color: ColorConstant.call4hepOrange.withOpacity(0.3),
                     blurRadius: 20,
                     offset: Offset(0, 10),
                   ),
@@ -378,7 +378,7 @@ class _UserMyRatingState extends State<UserMyRating> {
                         ? Icons.star_rounded
                         : Icons.star_outline_rounded,
                     color: index < stars
-                        ? ColorConstant.moyoOrange
+                        ? ColorConstant.call4hepOrange
                         : ColorConstant.onSurface.withOpacity(0.3),
                     size: 20.sp,
                   );
@@ -562,16 +562,16 @@ class _UserMyRatingState extends State<UserMyRating> {
           ),
         ),
         SizedBox(width: 4.w),
-        Icon(Icons.star, size: 16.sp, color: ColorConstant.moyoOrange),
+        Icon(Icons.star, size: 16.sp, color: ColorConstant.call4hepOrange),
         SizedBox(width: 12.w),
         Expanded(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(4.r),
             child: LinearProgressIndicator(
               value: percentage,
-              backgroundColor: ColorConstant.moyoOrangeFade.withOpacity(0.3),
+              backgroundColor: ColorConstant.call4hepOrangeFade.withOpacity(0.3),
               valueColor: AlwaysStoppedAnimation<Color>(
-                ColorConstant.moyoOrange,
+                ColorConstant.call4hepOrange,
               ),
               minHeight: 8.h,
             ),

@@ -28,7 +28,7 @@ class _UserNotificationListScreenState
       final prefs = await SharedPreferences.getInstance();
       _userToken = prefs.getString('auth_token');
 
-      print(_userToken);
+      debugPrint(_userToken);
       if (_userToken != null && _userToken!.isNotEmpty) {
         Provider.of<UserNotificationProvider>(
           context,
@@ -67,7 +67,7 @@ class _UserNotificationListScreenState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Notification marked as read'),
-            backgroundColor: ColorConstant.moyoGreen,
+            backgroundColor: ColorConstant.call4hepGreen,
             duration: Duration(seconds: 2),
           ),
         );
@@ -93,7 +93,7 @@ class _UserNotificationListScreenState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('All notifications marked as read'),
-            backgroundColor: ColorConstant.moyoGreen,
+            backgroundColor: ColorConstant.call4hepGreen,
             duration: Duration(seconds: 2),
           ),
         );
@@ -126,7 +126,7 @@ class _UserNotificationListScreenState
                 fontWeight: FontWeight.w600,
               ),
             ),
-            backgroundColor: ColorConstant.moyoOrange,
+            backgroundColor: ColorConstant.call4hepOrange,
             elevation: 0,
             iconTheme: IconThemeData(color: ColorConstant.white),
             actions: [
@@ -163,7 +163,7 @@ class _UserNotificationListScreenState
               if (provider.isLoading) {
                 return Center(
                   child: CircularProgressIndicator(
-                    color: ColorConstant.moyoOrange,
+                    color: ColorConstant.call4hepOrange,
                     strokeWidth: 3.sp,
                   ),
                 );
@@ -192,7 +192,7 @@ class _UserNotificationListScreenState
                       ElevatedButton(
                         onPressed: _initializeTokenAndFetch,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorConstant.moyoOrange,
+                          backgroundColor: ColorConstant.call4hepOrange,
                           padding: EdgeInsets.symmetric(
                             horizontal: 32.sp,
                             vertical: 12.sp,
@@ -254,12 +254,12 @@ class _UserNotificationListScreenState
                       decoration: BoxDecoration(
                         color: isRead
                             ? ColorConstant.white
-                            : ColorConstant.moyoOrangeFade,
+                            : ColorConstant.call4hepOrangeFade,
                         borderRadius: BorderRadius.circular(12.sp),
                         border: isRead
                             ? null
                             : Border.all(
-                                color: ColorConstant.moyoOrange.withOpacity(
+                                color: ColorConstant.call4hepOrange.withOpacity(
                                   0.3,
                                 ),
                                 width: 1,
@@ -279,15 +279,15 @@ class _UserNotificationListScreenState
                           height: 48.sp,
                           decoration: BoxDecoration(
                             color: isRead
-                                ? ColorConstant.moyoGreen.withOpacity(0.2)
-                                : ColorConstant.moyoOrange.withOpacity(0.3),
+                                ? ColorConstant.call4hepGreen.withOpacity(0.2)
+                                : ColorConstant.call4hepOrange.withOpacity(0.3),
                             borderRadius: BorderRadius.circular(12.sp),
                           ),
                           child: Icon(
                             Icons.notifications_active,
                             color: isRead
-                                ? ColorConstant.moyoGreen
-                                : ColorConstant.moyoOrange,
+                                ? ColorConstant.call4hepGreen
+                                : ColorConstant.call4hepOrange,
                             size: 24.sp,
                           ),
                         ),
@@ -324,7 +324,7 @@ class _UserNotificationListScreenState
                                 'Distance: ${(notification['data']['distance_km'] ?? 0).toStringAsFixed(1)} km',
                                 style: TextStyle(
                                   fontSize: 12.sp,
-                                  color: ColorConstant.moyoOrange,
+                                  color: ColorConstant.call4hepOrange,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -334,14 +334,14 @@ class _UserNotificationListScreenState
                         trailing: isRead
                             ? Icon(
                                 Icons.check_circle,
-                                color: ColorConstant.moyoGreen,
+                                color: ColorConstant.call4hepGreen,
                                 size: 20.sp,
                               )
                             : Container(
                                 width: 12.sp,
                                 height: 12.sp,
                                 decoration: BoxDecoration(
-                                  color: ColorConstant.moyoOrange,
+                                  color: ColorConstant.call4hepOrange,
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(

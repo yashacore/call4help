@@ -53,7 +53,7 @@ class ProviderProfileProvider extends ChangeNotifier {
         throw Exception('No authentication token found');
       }
 
-      print(token);
+      debugPrint(token);
 
       final response = await http.get(
         Uri.parse('$base_url/api/provider/profile'),
@@ -79,7 +79,7 @@ class ProviderProfileProvider extends ChangeNotifier {
       }
     } catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
-      print('Error loading provider profile: $e');
+      debugPrint('Error loading provider profile: $e');
     } finally {
       _isLoading = false;
       notifyListeners();

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -107,7 +106,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
         builder: (context, provider, child) {
           if (provider.isLoading) {
             return Center(
-              child: CircularProgressIndicator(color: ColorConstant.moyoOrange),
+              child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
             );
           }
 
@@ -133,7 +132,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                       _initializeScreen();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorConstant.moyoOrange,
+                      backgroundColor: ColorConstant.call4hepOrange,
                     ),
                     child: Text('Retry', style: TextStyle(color: Colors.white)),
                   ),
@@ -154,7 +153,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
 
           if (provider.selectedSubcategory == null) {
             return Center(
-              child: CircularProgressIndicator(color: ColorConstant.moyoOrange),
+              child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
             );
           }
 
@@ -172,7 +171,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                         ...selectedSubcategory.fields.map((field) {
                           if (field.fieldType == 'select' &&
                               field.options!.isNotEmpty) {
-                            return _moyoDropDownField(
+                            return _call4hepDropDownField(
                               context,
                               title: field.fieldName,
                               options: field.options,
@@ -180,7 +179,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                               fieldName: field.fieldName,
                             );
                           } else if (field.fieldType == 'number') {
-                            return _moyoTextField(
+                            return _call4hepTextField(
                               context,
                               title: field.fieldName,
                               isRequired: field.isRequired,
@@ -188,7 +187,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                               keyboardType: TextInputType.number,
                             );
                           } else if (field.fieldType == 'text') {
-                            return _moyoTextField(
+                            return _call4hepTextField(
                               context,
                               title: field.fieldName,
                               isRequired: field.isRequired,
@@ -254,7 +253,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                               barrierDismissible: false,
                               builder: (context) => Center(
                                 child: CircularProgressIndicator(
-                                  color: ColorConstant.moyoOrange,
+                                  color: ColorConstant.call4hepOrange,
                                 ),
                               ),
                             );
@@ -329,7 +328,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             CircularProgressIndicator(
-                              color: ColorConstant.moyoOrange,
+                              color: ColorConstant.call4hepOrange,
                             ),
                             SizedBox(height: 16),
                             Text(
@@ -409,7 +408,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   borderSide: BorderSide(
                     color: errorText != null
                         ? Colors.red
-                        : ColorConstant.moyoOrange.withAlpha(0),
+                        : ColorConstant.call4hepOrange.withAlpha(0),
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
@@ -417,7 +416,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   borderSide: BorderSide(
                     color: errorText != null
                         ? Colors.red
-                        : ColorConstant.moyoOrange,
+                        : ColorConstant.call4hepOrange,
                   ),
                 ),
                 errorBorder: OutlineInputBorder(
@@ -503,13 +502,13 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: provider.location != null
-                        ? ColorConstant.moyoOrange
+                        ? ColorConstant.call4hepOrange
                         : Colors.grey.shade300,
                   ),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.location_on, color: ColorConstant.moyoOrange),
+                    Icon(Icons.location_on, color: ColorConstant.call4hepOrange),
                     SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -579,7 +578,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                             padding: EdgeInsets.symmetric(vertical: 14),
                             decoration: BoxDecoration(
                               color: selectedMode == 'hrs'
-                                  ? ColorConstant.moyoOrange
+                                  ? ColorConstant.call4hepOrange
                                   : Colors.transparent,
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -608,7 +607,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                             padding: EdgeInsets.symmetric(vertical: 14),
                             decoration: BoxDecoration(
                               color: selectedMode == 'day'
-                                  ? ColorConstant.moyoOrange
+                                  ? ColorConstant.call4hepOrange
                                   : Colors.transparent,
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -731,12 +730,12 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide(
-                      color: ColorConstant.moyoOrange.withAlpha(50),
+                      color: ColorConstant.call4hepOrange.withAlpha(50),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: ColorConstant.moyoOrange),
+                    borderSide: BorderSide(color: ColorConstant.call4hepOrange),
                   ),
                 ),
                 onChanged: (value) {
@@ -793,7 +792,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: provider.startDate != null
-                            ? ColorConstant.moyoOrange
+                            ? ColorConstant.call4hepOrange
                             : Colors.grey.shade300,
                       ),
                     ),
@@ -801,7 +800,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                       children: [
                         Icon(
                           Icons.calendar_today,
-                          color: ColorConstant.moyoOrange,
+                          color: ColorConstant.call4hepOrange,
                         ),
                         SizedBox(width: 12),
                         Text(
@@ -884,7 +883,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: ColorConstant.moyoOrange),
+            colorScheme: ColorScheme.light(primary: ColorConstant.call4hepOrange),
           ),
           child: child!,
         );
@@ -952,7 +951,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                         padding: EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           color: selectedMethod == 'online'
-                              ? ColorConstant.moyoOrange
+                              ? ColorConstant.call4hepOrange
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -998,7 +997,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                         padding: EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           color: selectedMethod == 'cash'
-                              ? ColorConstant.moyoOrange
+                              ? ColorConstant.call4hepOrange
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -1058,14 +1057,14 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   color: Colors.orange.shade50,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: ColorConstant.moyoOrange.withOpacity(0.3),
+                    color: ColorConstant.call4hepOrange.withOpacity(0.3),
                   ),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.warning_amber_rounded,
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                       size: 20,
                     ),
                     SizedBox(width: 8),
@@ -1073,7 +1072,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                       child: Text(
                         'The cash mode can only be limited upto 2000rs',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: ColorConstant.moyoOrange,
+                          color: ColorConstant.call4hepOrange,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -1087,7 +1086,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
     );
   }
 
-  Widget _moyoTextField(
+  Widget _call4hepTextField(
     BuildContext context, {
     String? title,
     String? hint,
@@ -1140,12 +1139,12 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
-                    color: ColorConstant.moyoOrange.withAlpha(0),
+                    color: ColorConstant.call4hepOrange.withAlpha(0),
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: ColorConstant.moyoOrange),
+                  borderSide: BorderSide(color: ColorConstant.call4hepOrange),
                 ),
               ),
               maxLines: 1,
@@ -1161,7 +1160,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
     );
   }
 
-  Widget _moyoDropDownField(
+  Widget _call4hepDropDownField(
     BuildContext context, {
     String? title,
     List<String>? options,
@@ -1234,12 +1233,12 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
-                    color: ColorConstant.moyoOrange.withAlpha(0),
+                    color: ColorConstant.call4hepOrange.withAlpha(0),
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: ColorConstant.moyoOrange),
+                  borderSide: BorderSide(color: ColorConstant.call4hepOrange),
                 ),
                 errorBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -1252,7 +1251,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
               ),
               icon: Icon(
                 Icons.keyboard_arrow_down,
-                color: ColorConstant.moyoOrange,
+                color: ColorConstant.call4hepOrange,
               ),
               // ✅ FIX: Handle empty options list
               items: cleanOptions.isEmpty
@@ -1301,7 +1300,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
       decoration: BoxDecoration(
         color: Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: ColorConstant.moyoOrange, width: 1),
+        border: Border.all(color: ColorConstant.call4hepOrange, width: 1),
       ),
       child: Column(
         children: [
@@ -1314,7 +1313,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
               Text(
                 "Service Includes",
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: ColorConstant.moyoOrange,
+                  color: ColorConstant.call4hepOrange,
                 ),
               ),
             ],
@@ -1336,7 +1335,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
               Text(
                 "Service Excludes",
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: ColorConstant.moyoOrange,
+                  color: ColorConstant.call4hepOrange,
                 ),
               ),
             ],
@@ -1427,13 +1426,13 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: ColorConstant.moyoOrange.withAlpha(50),
+                            color: ColorConstant.call4hepOrange.withAlpha(50),
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: ColorConstant.moyoOrange,
+                            color: ColorConstant.call4hepOrange,
                           ),
                         ),
                       ),
@@ -1457,13 +1456,13 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: ColorConstant.moyoOrange.withAlpha(50),
+                            color: ColorConstant.call4hepOrange.withAlpha(50),
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: ColorConstant.moyoOrange,
+                            color: ColorConstant.call4hepOrange,
                           ),
                         ),
                       ),
@@ -1490,7 +1489,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
   }
 
   Widget _tenureField(BuildContext context) {
-    return _moyoDropDownField(
+    return _call4hepDropDownField(
       context,
       title: "Service Tenure",
       options: ['one_time', 'weekly', 'monthly'],
@@ -1520,7 +1519,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                     return Theme(
                       data: Theme.of(context).copyWith(
                         colorScheme: ColorScheme.light(
-                          primary: ColorConstant.moyoOrange,
+                          primary: ColorConstant.call4hepOrange,
                         ),
                       ),
                       child: child!,
@@ -1562,7 +1561,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                       children: [
                         Icon(
                           Icons.calendar_today,
-                          color: ColorConstant.moyoOrange,
+                          color: ColorConstant.call4hepOrange,
                         ),
                         SizedBox(width: 12),
                         Text(
@@ -1592,7 +1591,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                     return Theme(
                       data: Theme.of(context).copyWith(
                         colorScheme: ColorScheme.light(
-                          primary: ColorConstant.moyoOrange,
+                          primary: ColorConstant.call4hepOrange,
                         ),
                       ),
                       child: child!,
@@ -1634,7 +1633,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                       children: [
                         Icon(
                           Icons.access_time,
-                          color: ColorConstant.moyoOrange,
+                          color: ColorConstant.call4hepOrange,
                         ),
                         SizedBox(width: 12),
                         Text(
@@ -1760,7 +1759,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: ColorConstant.moyoOrange,
+            color: ColorConstant.call4hepOrange,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -1774,7 +1773,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Color(0xFFFFFFFF),
                     fontWeight: FontWeight.w500,

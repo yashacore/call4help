@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../widgets/provider_service_list_card.dart';
 import '../../confirm_provider_service_details_screen.dart';
-import '../../provider_service_details_screen.dart';
 
 class ProviderServiceApi {
   static const String baseUrl =
@@ -18,7 +17,7 @@ class ProviderServiceApi {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('provider_auth_token') ?? '';
 
-      print('Token: $token');
+      debugPrint('Token: $token');
 
       final response = await http.get(
         Uri.parse('$baseUrl/provider-service-history'),
@@ -28,8 +27,8 @@ class ProviderServiceApi {
         },
       );
 
-      print('Response token: ${token}');
-      print('Response Body: ${response.body}');
+      debugPrint('Response token: ${token}');
+      debugPrint('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -57,7 +56,7 @@ class ProviderServiceApi {
         );
       }
     } catch (e) {
-      print('Error in getProviderServiceHistory: $e');
+      debugPrint('Error in getProviderServiceHistory: $e');
       throw Exception('Error: $e');
     }
   }
@@ -499,12 +498,12 @@ class _ProviderConfirmedServiceState extends State<ProviderConfirmedService> {
               .where((service) => _shouldShowInConfirmedList(service))
               .toList();
 
-          // Debug: Print all statuses
-          print('Total services: ${provider.services.length}');
+          // Debug: debugPrint all statuses
+          debugPrint('Total services: ${provider.services.length}');
           for (var service in provider.services) {
-            print('Service ${service.id}: status = ${service.status}');
+            debugPrint('Service ${service.id}: status = ${service.status}');
           }
-          print('Confirmed services count: ${confirmedServices.length}');
+          debugPrint('Confirmed services count: ${confirmedServices.length}');
 
           if (confirmedServices.isEmpty) {
             return Center(

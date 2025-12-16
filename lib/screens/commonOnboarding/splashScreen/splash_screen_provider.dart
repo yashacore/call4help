@@ -20,7 +20,7 @@ class SplashProvider with ChangeNotifier {
       final navigationRoute = await _determineNavigationRoute();
       onComplete(navigationRoute);
     } catch (e) {
-      print('Error checking session: $e');
+      debugPrint('Error checking session: $e');
       // On error, navigate to login for safety
       onComplete('/login');
     } finally {
@@ -37,7 +37,7 @@ class SplashProvider with ChangeNotifier {
       // Check if customer auth token exists (main token)
       final authToken = prefs.getString('auth_token');
 
-      print(authToken);
+      debugPrint(authToken);
       if (authToken == null || authToken.isEmpty) {
         // No session found, go to login
         return '/login';
@@ -49,7 +49,7 @@ class SplashProvider with ChangeNotifier {
       // Get user role (defaults to customer if not set)
       final userRole = prefs.getString('user_role') ?? 'customer';
 
-      print('Current user role: $userRole');
+      debugPrint('Current user role: $userRole');
 
       if (userRole == 'provider') {
         // User last used provider mode
@@ -57,21 +57,21 @@ class SplashProvider with ChangeNotifier {
 
         if (providerToken != null && providerToken.isNotEmpty) {
           // Valid provider session, go to provider dashboard
-          print('Navigating to Provider Dashboard');
+          debugPrint('Navigating to Provider Dashboard');
           return '/ProviderCustomBottomNav';
         } else {
           // Provider token missing, fall back to customer mode
           await prefs.setString('user_role', 'customer');
-          print('Provider token missing, falling back to Customer Dashboard');
+          debugPrint('Provider token missing, falling back to Customer Dashboard');
           return '/UserCustomBottomNav';
         }
       } else {
         // User last used customer mode, go to customer dashboard
-        print('Navigating to Customer Dashboard');
+        debugPrint('Navigating to Customer Dashboard');
         return '/UserCustomBottomNav';
       }
     } catch (e) {
-      print('Error in _determineNavigationRoute: $e');
+      debugPrint('Error in _determineNavigationRoute: $e');
       return '/login';
     }
   }
@@ -96,9 +96,9 @@ class SplashProvider with ChangeNotifier {
       await prefs.remove('referral_code');
       await prefs.remove('is_email_verified');
 
-      print('Session cleared successfully');
+      debugPrint('Session cleared successfully');
     } catch (e) {
-      print('Error clearing session: $e');
+      debugPrint('Error clearing session: $e');
     }
   }
 
@@ -120,7 +120,7 @@ class SplashProvider with ChangeNotifier {
         'isEmailVerified': prefs.getBool('is_email_verified'),
       };
     } catch (e) {
-      print('Error getting user session: $e');
+      debugPrint('Error getting user session: $e');
       return null;
     }
   }
@@ -137,7 +137,7 @@ class SplashProvider with ChangeNotifier {
         'userRole': prefs.getString('user_role'),
       };
     } catch (e) {
-      print('Error getting provider session: $e');
+      debugPrint('Error getting provider session: $e');
       return null;
     }
   }
@@ -148,7 +148,7 @@ class SplashProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('user_role') ?? 'customer';
     } catch (e) {
-      print('Error getting current role: $e');
+      debugPrint('Error getting current role: $e');
       return 'customer';
     }
   }

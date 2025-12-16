@@ -12,10 +12,10 @@ class UserOnlyTitleAppbar extends StatelessWidget
   Widget build(BuildContext context) {
     return AppBar(
       foregroundColor: Colors.white,
-      backgroundColor: ColorConstant.moyoOrange,
+      backgroundColor: ColorConstant.call4hepOrange,
       title: Text(
         title,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w500,
             color: ColorConstant.white,

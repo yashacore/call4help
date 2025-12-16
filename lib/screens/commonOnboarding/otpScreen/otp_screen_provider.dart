@@ -75,7 +75,7 @@ class OtpScreenProvider extends ChangeNotifier {
         throw Exception(errorData['message'] ?? 'OTP verification failed');
       }
     } catch (e) {
-      print('Error verifying OTP: $e');
+      debugPrint('Error verifying OTP: $e');
       rethrow;
     }
   }
@@ -116,8 +116,8 @@ class OtpScreenProvider extends ChangeNotifier {
         body: jsonEncode({'mobile': mobile, 'otp': otp}),
       );
 
-      print('Verify mobile OTP response status: ${response.statusCode}');
-      print('Verify mobile OTP response body: ${response.body}');
+      debugPrint('Verify mobile OTP response status: ${response.statusCode}');
+      debugPrint('Verify mobile OTP response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -136,8 +136,8 @@ class OtpScreenProvider extends ChangeNotifier {
             return null;
           }
 
-          print("Existing token found: ${existingToken.substring(0, 20)}...");
-          print("Updating mobile in user data...");
+          debugPrint("Existing token found: ${existingToken.substring(0, 20)}...");
+          debugPrint("Updating mobile in user data...");
 
           // Update only mobile-related data, keep the existing Google token
           await prefs.setString('user_mobile', mobile);
@@ -171,8 +171,8 @@ class OtpScreenProvider extends ChangeNotifier {
           // Save updated user data
           await prefs.setString('user_data', jsonEncode(existingUserData));
 
-          print("Mobile verified and updated successfully");
-          print("Updated user data: $existingUserData");
+          debugPrint("Mobile verified and updated successfully");
+          debugPrint("Updated user data: $existingUserData");
 
           isLoading = false;
           notifyListeners();
@@ -199,7 +199,7 @@ class OtpScreenProvider extends ChangeNotifier {
         return null;
       }
     } catch (e) {
-      print('Error verifying mobile OTP: $e');
+      debugPrint('Error verifying mobile OTP: $e');
       errorMessage = e.toString().replaceAll('Exception: ', '');
       isLoading = false;
       notifyListeners();
@@ -231,7 +231,7 @@ class OtpScreenProvider extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      print('Error saving auth data: $e');
+      debugPrint('Error saving auth data: $e');
       return false;
     }
   }
@@ -239,7 +239,7 @@ class OtpScreenProvider extends ChangeNotifier {
   /// Update user device token
   Future<bool> updateDeviceToken({required String deviceToken}) async {
     if (deviceToken.isEmpty) {
-      print('Device token is empty');
+      debugPrint('Device token is empty');
       return false;
     }
 
@@ -251,7 +251,7 @@ class OtpScreenProvider extends ChangeNotifier {
       final token = prefs.getString('auth_token');
 
       if (token == null || token.isEmpty) {
-        print('Authentication token not found');
+        debugPrint('Authentication token not found');
         isUpdatingDeviceToken = false;
         notifyListeners();
         return false;
@@ -259,8 +259,8 @@ class OtpScreenProvider extends ChangeNotifier {
 
       final url = Uri.parse('$base_url/api/auth/user-device-token');
 
-      print('Updating device token...');
-      print('Using token: ${token.substring(0, 20)}...');
+      debugPrint('Updating device token...');
+      debugPrint('Using token: ${token.substring(0, 20)}...');
 
       final response = await http.post(
         url,
@@ -271,8 +271,8 @@ class OtpScreenProvider extends ChangeNotifier {
         body: jsonEncode({'deviceToken': deviceToken}),
       );
 
-      print('Update device token response status: ${response.statusCode}');
-      print('Update device token response body: ${response.body}');
+      debugPrint('Update device token response status: ${response.statusCode}');
+      debugPrint('Update device token response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -284,23 +284,23 @@ class OtpScreenProvider extends ChangeNotifier {
 
           isUpdatingDeviceToken = false;
           notifyListeners();
-          print('Device token updated successfully');
+          debugPrint('Device token updated successfully');
           return true;
         } else {
-          print('Unexpected response: ${responseData['message']}');
+          debugPrint('Unexpected response: ${responseData['message']}');
           isUpdatingDeviceToken = false;
           notifyListeners();
           return false;
         }
       } else {
         final errorData = jsonDecode(response.body);
-        print('Failed to update device token: ${errorData['message']}');
+        debugPrint('Failed to update device token: ${errorData['message']}');
         isUpdatingDeviceToken = false;
         notifyListeners();
         return false;
       }
     } catch (e) {
-      print('Error updating device token: $e');
+      debugPrint('Error updating device token: $e');
       isUpdatingDeviceToken = false;
       notifyListeners();
       return false;
@@ -404,8 +404,8 @@ class OtpScreenProvider extends ChangeNotifier {
 
       final url = Uri.parse('$base_url/api/auth/send-email-otp');
 
-      print('Sending email OTP to: $email');
-      print('Using token: ${token.substring(0, 20)}...');
+      debugPrint('Sending email OTP to: $email');
+      debugPrint('Using token: ${token.substring(0, 20)}...');
 
       final response = await http.post(
         url,
@@ -416,8 +416,8 @@ class OtpScreenProvider extends ChangeNotifier {
         body: jsonEncode({'email': email}),
       );
 
-      print('Send email OTP response status: ${response.statusCode}');
-      print('Send email OTP response body: ${response.body}');
+      debugPrint('Send email OTP response status: ${response.statusCode}');
+      debugPrint('Send email OTP response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -442,7 +442,7 @@ class OtpScreenProvider extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      print('Error sending email OTP: $e');
+      debugPrint('Error sending email OTP: $e');
       emailErrorMessage = "Network error. Please check your connection.";
       isEmailOtpLoading = false;
       notifyListeners();
@@ -485,9 +485,9 @@ class OtpScreenProvider extends ChangeNotifier {
 
       final url = Uri.parse('$base_url/api/auth/verify-email-otp');
 
-      print('Verifying email OTP for: $email');
-      print('OTP: $otp');
-      print('Using token: ${token.substring(0, 20)}...');
+      debugPrint('Verifying email OTP for: $email');
+      debugPrint('OTP: $otp');
+      debugPrint('Using token: ${token.substring(0, 20)}...');
 
       final response = await http.post(
         url,
@@ -498,8 +498,8 @@ class OtpScreenProvider extends ChangeNotifier {
         body: jsonEncode({'email': email, 'otp': otp}),
       );
 
-      print('Verify email OTP response status: ${response.statusCode}');
-      print('Verify email OTP response body: ${response.body}');
+      debugPrint('Verify email OTP response status: ${response.statusCode}');
+      debugPrint('Verify email OTP response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -538,7 +538,7 @@ class OtpScreenProvider extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      print('Error verifying email OTP: $e');
+      debugPrint('Error verifying email OTP: $e');
       emailErrorMessage = "Network error. Please check your connection.";
       isEmailOtpVerifying = false;
       notifyListeners();
@@ -590,7 +590,7 @@ class OtpScreenProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('auth_token');
     } catch (e) {
-      print('Error getting token: $e');
+      debugPrint('Error getting token: $e');
       return null;
     }
   }
@@ -601,7 +601,7 @@ class OtpScreenProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getInt('user_id');
     } catch (e) {
-      print('Error getting user ID: $e');
+      debugPrint('Error getting user ID: $e');
       return null;
     }
   }
@@ -616,7 +616,7 @@ class OtpScreenProvider extends ChangeNotifier {
       }
       return null;
     } catch (e) {
-      print('Error getting user data: $e');
+      debugPrint('Error getting user data: $e');
       return null;
     }
   }
@@ -627,7 +627,7 @@ class OtpScreenProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getBool('is_registered') ?? false;
     } catch (e) {
-      print('Error checking registration: $e');
+      debugPrint('Error checking registration: $e');
       return false;
     }
   }
@@ -638,7 +638,7 @@ class OtpScreenProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getBool('is_email_verified') ?? false;
     } catch (e) {
-      print('Error checking email verification: $e');
+      debugPrint('Error checking email verification: $e');
       return false;
     }
   }
@@ -660,7 +660,7 @@ class OtpScreenProvider extends ChangeNotifier {
       await prefs.remove('device_token');
       return true;
     } catch (e) {
-      print('Error clearing auth data: $e');
+      debugPrint('Error clearing auth data: $e');
       return false;
     }
   }

@@ -14,7 +14,7 @@ class UserTabBar extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       child: TabBar(
         controller: controller,
-        indicatorColor: ColorConstant.moyoOrange,
+        indicatorColor: ColorConstant.call4hepOrange,
         labelColor: ColorConstant.black,
         indicatorSize: TabBarIndicatorSize.tab,
         tabs: [

@@ -80,7 +80,7 @@ class _UserAppbarState extends State<UserAppbar> {
         }
       }
     } catch (e) {
-      print('Error fetching notifications: $e');
+      debugPrint('Error fetching notifications: $e');
     }
   }
 
@@ -130,7 +130,7 @@ class _UserAppbarState extends State<UserAppbar> {
         }
       }
     } catch (e) {
-      print('Error checking block status: $e');
+      debugPrint('Error checking block status: $e');
     }
   }
 
@@ -155,14 +155,14 @@ class _UserAppbarState extends State<UserAppbar> {
             return AlertDialog(
               title: Text(
                 'Account Blocked',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontWeight: FontWeight.bold,
                   color: Colors.red,
                 ),
               ),
               content: Text(
                 'Your account has been blocked. You cannot access the app anymore. Please contact support for more information.',
-                style: GoogleFonts.roboto(),
+                style: GoogleFonts.inter(),
               ),
               actions: [
                 TextButton(
@@ -175,9 +175,9 @@ class _UserAppbarState extends State<UserAppbar> {
                   },
                   child: Text(
                     'OK',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontWeight: FontWeight.bold,
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                     ),
                   ),
                 ),
@@ -187,7 +187,7 @@ class _UserAppbarState extends State<UserAppbar> {
         );
       }
     } catch (e) {
-      print('Error handling blocked user: $e');
+      debugPrint('Error handling blocked user: $e');
     }
   }
 
@@ -242,7 +242,7 @@ class _UserAppbarState extends State<UserAppbar> {
         currentAddress = completeAddress;
       });
     } catch (e) {
-      print('Error getting address: $e');
+      debugPrint('Error getting address: $e');
     }
   }
 
@@ -285,20 +285,20 @@ class _UserAppbarState extends State<UserAppbar> {
               }),
             );
 
-      print('Location Update Response: ${response.body}');
-      print('Location Update Response: ${latitude.toString()}');
-      print('Location Update Response: ${longitude.toString()}');
+      debugPrint('Location Update Response: ${response.body}');
+      debugPrint('Location Update Response: ${latitude.toString()}');
+      debugPrint('Location Update Response: ${longitude.toString()}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Location updated successfully');
+        debugPrint('Location updated successfully');
         final responseData = json.decode(response.body);
-        print('Message: ${responseData['message']}');
+        debugPrint('Message: ${responseData['message']}');
       } else {
-        print('Failed to update location: ${response.statusCode}');
-        print('Error: ${response.body}');
+        debugPrint('Failed to update location: ${response.statusCode}');
+        debugPrint('Error: ${response.body}');
       }
     } catch (e) {
-      print('Error updating location: $e');
+      debugPrint('Error updating location: $e');
     }
   }
 
@@ -368,7 +368,7 @@ class _UserAppbarState extends State<UserAppbar> {
     return AppBar(
       foregroundColor: Colors.white,
       automaticallyImplyLeading: false,
-      backgroundColor: ColorConstant.moyoOrange,
+      backgroundColor: ColorConstant.call4hepOrange,
       title: Consumer<UserProfileProvider>(
         builder: (context, profileProvider, child) {
           return Row(
@@ -417,7 +417,7 @@ class _UserAppbarState extends State<UserAppbar> {
                       'Welcome, ${profileProvider.fullName}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.titleSmall
                             ?.copyWith(
                               fontWeight: FontWeight.w600,
@@ -436,7 +436,7 @@ class _UserAppbarState extends State<UserAppbar> {
                             currentAddress,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.inter(
                               textStyle: Theme.of(context).textTheme.labelMedium
                                   ?.copyWith(
                                     fontWeight: FontWeight.w600,
@@ -496,7 +496,7 @@ class _UserAppbarState extends State<UserAppbar> {
                           color: Colors.red,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: ColorConstant.moyoOrange,
+                            color: ColorConstant.call4hepOrange,
                             width: 2,
                           ),
                         ),
@@ -507,7 +507,7 @@ class _UserAppbarState extends State<UserAppbar> {
                         child: Center(
                           child: Text(
                             unreadCount > 99 ? '99+' : '$unreadCount',
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.inter(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -552,7 +552,7 @@ class _UserAppbarState extends State<UserAppbar> {
                           color: Colors.red,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: ColorConstant.moyoOrange,
+                            color: ColorConstant.call4hepOrange,
                             width: 2,
                           ),
                         ),
@@ -563,7 +563,7 @@ class _UserAppbarState extends State<UserAppbar> {
                         child: Center(
                           child: Text(
                             unreadCount > 99 ? '99+' : '$unreadCount',
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.inter(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,

@@ -300,7 +300,7 @@ class NatsService {
           .request(subject, requestBytes)
           .timeout(timeout);
 
-      final responseStr = _bytesToString(response?.data);
+      final responseStr = _bytesToString(response.data);
       debugPrint('📨 Response received: $responseStr');
       return responseStr;
     } catch (e) {
@@ -328,7 +328,7 @@ class NatsService {
           .timeout(timeout);
 
       debugPrint('📨 Response received (bytes)');
-      return response?.data;
+      return response.data;
     } catch (e) {
       debugPrint('❌ Request Error: $e');
       return null;

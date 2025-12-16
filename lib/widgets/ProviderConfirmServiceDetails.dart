@@ -18,7 +18,6 @@ import '../screens/provider_screens/navigation/ProviderChats/ProviderChatScreen.
 import '../screens/user_screens/WidgetProviders/ServiceAPI.dart';
 import '../screens/provider_screens/ServiceArrivalProvider.dart';
 import '../screens/user_screens/navigation/ProviderSOSEmergencyScreen.dart';
-import '../screens/user_screens/navigation/SOSEmergencyScreen.dart';
 
 class ProviderConfirmServiceDetails extends StatelessWidget {
   final String? serviceId;
@@ -99,7 +98,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
           ),
           title: Text(
             'Add Note',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 20.sp,
               fontWeight: FontWeight.w700,
               color: Color(0xFF1D1B20),
@@ -111,7 +110,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
             children: [
               Text(
                 'Please add a note for this service (e.g., payment method)',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   color: Color(0xFF7A7A7A),
                 ),
@@ -123,7 +122,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                 maxLength: 200,
                 decoration: InputDecoration(
                   hintText: 'Enter note...',
-                  hintStyle: GoogleFonts.roboto(color: Color(0xFFBDBDBD)),
+                  hintStyle: GoogleFonts.inter(color: Color(0xFFBDBDBD)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.r),
                     borderSide: BorderSide(color: Color(0xFFE6E6E6)),
@@ -135,7 +134,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.r),
                     borderSide: BorderSide(
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                       width: 2.w,
                     ),
                   ),
@@ -143,7 +142,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                   fillColor: Colors.white,
                   contentPadding: EdgeInsets.all(12.w),
                 ),
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   color: Color(0xFF1D1B20),
                 ),
@@ -160,7 +159,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
               ),
               child: Text(
                 'Cancel',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
                   color: Color(0xFF7A7A7A),
@@ -177,7 +176,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                 Navigator.of(context).pop(note);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.moyoGreen,
+                backgroundColor: ColorConstant.call4hepGreen,
                 padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),
@@ -185,7 +184,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
               ),
               child: Text(
                 'Confirm',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
@@ -244,7 +243,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
               ),
               title: Text(
                 'Re-Bid Service',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFF1D1B20),
@@ -256,7 +255,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                 children: [
                   Text(
                     'Enter your new bid amount and note',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       color: Color(0xFF7A7A7A),
                     ),
@@ -264,7 +263,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                   SizedBox(height: 16.h),
                   Text(
                     'Amount *',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF1D1B20),
@@ -279,7 +278,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       hintText: 'Enter amount',
                       prefixText: '₹ ',
                       errorText: amountError,
-                      hintStyle: GoogleFonts.roboto(color: Color(0xFFBDBDBD)),
+                      hintStyle: GoogleFonts.inter(color: Color(0xFFBDBDBD)),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.r),
                         borderSide: BorderSide(color: Color(0xFFE6E6E6)),
@@ -291,7 +290,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.r),
                         borderSide: BorderSide(
-                          color: ColorConstant.moyoOrange,
+                          color: ColorConstant.call4hepOrange,
                           width: 2.w,
                         ),
                       ),
@@ -299,7 +298,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       fillColor: Colors.white,
                       contentPadding: EdgeInsets.all(12.w),
                     ),
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       color: Color(0xFF1D1B20),
                     ),
@@ -307,7 +306,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                   SizedBox(height: 16.h),
                   Text(
                     'Note',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF1D1B20),
@@ -320,7 +319,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                     maxLength: 200,
                     decoration: InputDecoration(
                       hintText: 'Enter note...',
-                      hintStyle: GoogleFonts.roboto(color: Color(0xFFBDBDBD)),
+                      hintStyle: GoogleFonts.inter(color: Color(0xFFBDBDBD)),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.r),
                         borderSide: BorderSide(color: Color(0xFFE6E6E6)),
@@ -332,7 +331,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.r),
                         borderSide: BorderSide(
-                          color: ColorConstant.moyoOrange,
+                          color: ColorConstant.call4hepOrange,
                           width: 2.w,
                         ),
                       ),
@@ -340,7 +339,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       fillColor: Colors.white,
                       contentPadding: EdgeInsets.all(12.w),
                     ),
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       color: Color(0xFF1D1B20),
                     ),
@@ -360,7 +359,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                   ),
                   child: Text(
                     'Cancel',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
                       color: Color(0xFF7A7A7A),
@@ -414,7 +413,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                   ),
                   child: Text(
                     'Submit Re-Bid',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -434,7 +433,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('auth_token');
     } catch (e) {
-      print('Error getting auth token: $e');
+      debugPrint('Error getting auth token: $e');
       return null;
     }
   }
@@ -457,7 +456,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
         },
       );
 
-      print("object");
+      debugPrint("object");
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         bool isRegister = data['profile']['provider']['isregistered'] ?? false;
@@ -477,13 +476,13 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.warning_amber_rounded,
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                       size: 28.sp,
                     ),
                     SizedBox(width: 8.w),
                     Text(
                       'Profile Incomplete',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF1D1B20),
@@ -493,7 +492,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                 ),
                 content: Text(
                   'Please complete your profile to accept services. You will be redirected to the profile edit screen.',
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.inter(
                     fontSize: 14.sp,
                     color: Color(0xFF7A7A7A),
                   ),
@@ -511,7 +510,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                     ),
                     child: Text(
                       'Cancel',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF7A7A7A),
@@ -523,7 +522,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       Navigator.of(context).pop(true);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorConstant.moyoOrange,
+                      backgroundColor: ColorConstant.call4hepOrange,
                       padding: EdgeInsets.symmetric(
                         horizontal: 24.w,
                         vertical: 12.h,
@@ -534,7 +533,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                     ),
                     child: Text(
                       'Complete Profile',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
@@ -611,7 +610,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                 SizedBox(height: 16.h),
                 Text(
                   'Accepting service...',
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.inter(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),
@@ -716,13 +715,13 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.warning_amber_rounded,
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                       size: 28.sp,
                     ),
                     SizedBox(width: 8.w),
                     Text(
                       'Profile Incomplete',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF1D1B20),
@@ -732,7 +731,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                 ),
                 content: Text(
                   'Please complete your profile to re-bid on services. You will be redirected to the profile edit screen.',
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.inter(
                     fontSize: 14.sp,
                     color: Color(0xFF7A7A7A),
                   ),
@@ -750,7 +749,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                     ),
                     child: Text(
                       'Cancel',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF7A7A7A),
@@ -762,7 +761,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       Navigator.of(context).pop(true);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorConstant.moyoOrange,
+                      backgroundColor: ColorConstant.call4hepOrange,
                       padding: EdgeInsets.symmetric(
                         horizontal: 24.w,
                         vertical: 12.h,
@@ -773,7 +772,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                     ),
                     child: Text(
                       'Complete Profile',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
@@ -848,7 +847,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                 SizedBox(height: 16.h),
                 Text(
                   'Submitting re-bid...',
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.inter(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),
@@ -925,7 +924,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: ColorConstant.moyoGreen,
+        backgroundColor: ColorConstant.call4hepGreen,
         duration: Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
       ),
@@ -951,9 +950,9 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Current status: $status");
-    print("isprovider: $isProvider");
-    print("serviceId: $serviceId");
+    debugPrint("Current status: $status");
+    debugPrint("isprovider: $isProvider");
+    debugPrint("serviceId: $serviceId");
 
     final statusLower = status.toLowerCase();
 
@@ -1028,14 +1027,14 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
           Expanded(
             child: InkWell(
               onTap: () {
-                print("Accept button tapped");
+                debugPrint("Accept button tapped");
                 _handleAcceptService(context);
               },
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: ColorConstant.moyoGreen,
+                  color: ColorConstant.call4hepGreen,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -1048,7 +1047,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.labelLarge
                             ?.copyWith(
                               color: Color(0xFFFFFFFF),
@@ -1064,7 +1063,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
           Expanded(
             child: InkWell(
               onTap: () {
-                print("ReBid button tapped");
+                debugPrint("ReBid button tapped");
                 _handleReBidService(context);
               },
               child: Container(
@@ -1084,7 +1083,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.labelLarge
                             ?.copyWith(
                               color: Color(0xFFFFFFFF),
@@ -1111,7 +1110,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
           context,
           text: "Open",
           backgroundColor: Color(0xFFE8F5E9),
-          textColor: ColorConstant.moyoGreen,
+          textColor: ColorConstant.call4hepGreen,
         );
 
       case 'pending':
@@ -1159,7 +1158,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
           context,
           text: "Completed",
           backgroundColor: Color(0xFFE6F7C0),
-          textColor: ColorConstant.moyoGreen,
+          textColor: ColorConstant.call4hepGreen,
         );
 
       case 'cancelled':
@@ -1216,7 +1215,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
         text,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           textStyle: Theme.of(
             context,
           ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
@@ -1248,7 +1247,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
               "$category > $subCategory",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.inter(
                 textStyle: Theme.of(
                   context,
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -1258,7 +1257,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
           ),
           Text(
             date ?? "No date",
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: Colors.black.withAlpha(100),
               ),
@@ -1303,7 +1302,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                     "SOS",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       textStyle: Theme.of(context).textTheme.titleMedium
                           ?.copyWith(fontWeight: FontWeight.w500),
                       color: Color(0xFFFFFFFF),
@@ -1328,7 +1327,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 16,
                 children: [
-                  SvgPicture.asset("assets/icons/moyo_call_action.svg"),
+                  SvgPicture.asset("assets/icons/call4hep_call_action.svg"),
                   InkWell(
                     onTap: () {
                       // Navigate to chat screen
@@ -1348,7 +1347,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                     },
                     borderRadius: BorderRadius.circular(50),
                     child: SvgPicture.asset(
-                      "assets/icons/moyo_message_action.svg",
+                      "assets/icons/call4hep_message_action.svg",
                     ),
                   ),
                 ],
@@ -1387,7 +1386,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
               Icon(Icons.timer, color: Color(0xFF1976D2), size: 18),
               Text(
                 arrivalProvider.formattedTime,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                     fontFeatures: [FontFeature.tabularFigures()],
@@ -1419,8 +1418,8 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 3, vertical: 6),
         decoration: BoxDecoration(
-          color: ColorConstant.moyoGreen,
-          border: Border.all(color: ColorConstant.moyoGreen, width: 1),
+          color: ColorConstant.call4hepGreen,
+          border: Border.all(color: ColorConstant.call4hepGreen, width: 1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -1434,7 +1433,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.inter(
                 textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: Color(0xFFFFFFFF),
                   fontWeight: FontWeight.w500,
@@ -1453,8 +1452,8 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
         decoration: BoxDecoration(
-          color: ColorConstant.moyoOrange,
-          border: Border.all(color: ColorConstant.moyoGreen, width: 1),
+          color: ColorConstant.call4hepOrange,
+          border: Border.all(color: ColorConstant.call4hepGreen, width: 1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -1468,7 +1467,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.inter(
                 textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: Color(0xFFFFFFFF),
                   fontWeight: FontWeight.w500,
@@ -1528,7 +1527,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                           name ?? "No Name",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             textStyle: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   fontWeight: FontWeight.w700,
@@ -1558,10 +1557,10 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
                           "⭐ ${rating ?? '0.0'}",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             textStyle: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(fontWeight: FontWeight.w500),
-                            color: ColorConstant.moyoOrange,
+                            color: ColorConstant.call4hepOrange,
                           ),
                         ),
                       ),
@@ -1591,18 +1590,18 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: ColorConstant.moyoOrangeFade,
+                color: ColorConstant.call4hepOrangeFade,
                 borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
               child: Text(
                 durationType ?? "No Duration",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-                  color: ColorConstant.moyoOrange,
+                  color: ColorConstant.call4hepOrange,
                 ),
               ),
             ),
@@ -1614,13 +1613,13 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
               spacing: 6,
               children: [
                 SvgPicture.asset(
-                  "assets/icons/moyo_material-symbols_timer-outline.svg",
+                  "assets/icons/call4hep_material-symbols_timer-outline.svg",
                 ),
                 Text(
                   duration ?? "No Duration",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.inter(
                     textStyle: Theme.of(
                       context,
                     ).textTheme.labelLarge?.copyWith(color: Color(0xFF000000)),
@@ -1634,7 +1633,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
               "₹ ${price ?? "No Price"} /-",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.inter(
                 textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: Color(0xFF000000),
                   fontWeight: FontWeight.w700,
@@ -1656,7 +1655,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
         textAlign: TextAlign.start,
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Color(0xFF7A7A7A),
             fontWeight: FontWeight.w500,
@@ -1678,14 +1677,14 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
             (e) => Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: ColorConstant.moyoOrangeFade,
+                color: ColorConstant.call4hepOrangeFade,
                 borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
               child: Text(
                 e,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
@@ -1708,7 +1707,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
         textAlign: TextAlign.start,
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Color(0xFF000000),
             fontWeight: FontWeight.w500,
@@ -1736,13 +1735,13 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              SvgPicture.asset("assets/icons/moyo_close-filled.svg"),
+              SvgPicture.asset("assets/icons/call4hep_close-filled.svg"),
               Text(
                 "Cancel the service",
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Color(0xFFFF0000),
                     fontWeight: FontWeight.w500,
@@ -1774,13 +1773,13 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              SvgPicture.asset("assets/icons/moyo_task-complete.svg"),
+              SvgPicture.asset("assets/icons/call4hep_task-complete.svg"),
               Text(
                 "Task Complete",
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Color(0xFFFFFFFF),
                     fontWeight: FontWeight.w500,
@@ -1803,8 +1802,8 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: ColorConstant.moyoOrange,
-            border: Border.all(color: ColorConstant.moyoOrange, width: 1),
+            color: ColorConstant.call4hepOrange,
+            border: Border.all(color: ColorConstant.call4hepOrange, width: 1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -1812,13 +1811,13 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              SvgPicture.asset("assets/icons/moyo_white_star.svg"),
+              SvgPicture.asset("assets/icons/call4hep_white_star.svg"),
               Text(
                 "Rate Service",
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Color(0xFFFFFFFF),
                     fontWeight: FontWeight.w500,

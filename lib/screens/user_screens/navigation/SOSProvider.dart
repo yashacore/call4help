@@ -52,7 +52,7 @@ class SOSProvider extends ChangeNotifier {
 
       _isLoading = false;
 
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
 

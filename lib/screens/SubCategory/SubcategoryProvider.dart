@@ -49,8 +49,8 @@ class SubcategoryProvider with ChangeNotifier {
         },
       );
 
-      print(categoryId);
-      print(response.body);
+      debugPrint(categoryId as String?);
+      debugPrint(response.body);
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         final subcategoryResponse = SubcategoryResponse.fromJson(jsonData);
@@ -95,7 +95,7 @@ class SubcategoryProvider with ChangeNotifier {
         },
       );
 
-      print('Silent refresh: ${response.body}');
+      debugPrint('Silent refresh: ${response.body}');
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         final subcategoryResponse = SubcategoryResponse.fromJson(jsonData);
@@ -140,7 +140,7 @@ class SubcategoryProvider with ChangeNotifier {
         body: json.encode({'is_subcategory': false}),
       );
 
-      print('Uncheck response: ${response.body}');
+      debugPrint('Uncheck response: ${response.body}');
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);

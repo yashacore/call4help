@@ -165,7 +165,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                         "${widget.category} > ${widget.subCategory}",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.inter(
                           textStyle: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.w600),
                           color: Color(0xFF1D1B20),
@@ -174,7 +174,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                     ),
                     Text(
                       widget.date ?? "No date",
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.labelLarge
                             ?.copyWith(color: Colors.black.withAlpha(100)),
                       ),
@@ -231,7 +231,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                                   "₹ ${widget.price ?? "No price"} /-",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.inter(
                                     textStyle: Theme.of(context)
                                         .textTheme
                                         .titleMedium
@@ -248,12 +248,12 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.end,
-                                style: GoogleFonts.roboto(
+                                style: GoogleFonts.inter(
                                   textStyle: Theme.of(context)
                                       .textTheme
                                       .labelLarge
                                       ?.copyWith(
-                                        color: ColorConstant.moyoOrange,
+                                        color: ColorConstant.call4hepOrange,
                                       ),
                                 ),
                               ),
@@ -270,7 +270,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: ColorConstant.moyoOrangeFade,
+                                    color: ColorConstant.call4hepOrangeFade,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(50),
                                     ),
@@ -279,14 +279,14 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                                     widget.priceBy ?? "N/A",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.inter(
                                       textStyle: Theme.of(context)
                                           .textTheme
                                           .bodyMedium
                                           ?.copyWith(
                                             fontWeight: FontWeight.w500,
                                           ),
-                                      color: ColorConstant.moyoOrange,
+                                      color: ColorConstant.call4hepOrange,
                                     ),
                                   ),
                                 ),
@@ -301,20 +301,20 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                                         "${widget.providerCount ?? "No Count"}",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.roboto(
+                                        style: GoogleFonts.inter(
                                           textStyle: Theme.of(context)
                                               .textTheme
                                               .bodyMedium
                                               ?.copyWith(
                                                 fontWeight: FontWeight.w500,
                                               ),
-                                          color: ColorConstant.moyoOrange,
+                                          color: ColorConstant.call4hepOrange,
                                         ),
                                       ),
                                     if (widget.status == "No status")
                                       Icon(
                                         Icons.work_outline,
-                                        color: ColorConstant.moyoOrange,
+                                        color: ColorConstant.call4hepOrange,
                                       ),
                                     currentStatusChip(context, widget.status),
                                   ],
@@ -344,7 +344,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                       height: 4,
                       decoration: BoxDecoration(
                         color: _progress > 0.3
-                            ? ColorConstant.moyoGreen
+                            ? ColorConstant.call4hepGreen
                             : Colors.red,
                       ),
                     ),
@@ -366,7 +366,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
           context,
           text: "Open",
           backgroundColor: Color(0xFFE8F5E9),
-          textColor: ColorConstant.moyoGreen,
+          textColor: ColorConstant.call4hepGreen,
         );
 
       case 'pending':
@@ -414,7 +414,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
           context,
           text: "Completed",
           backgroundColor: Color(0xFFE6F7C0),
-          textColor: ColorConstant.moyoGreen,
+          textColor: ColorConstant.call4hepGreen,
         );
 
       case 'cancelled':
@@ -454,7 +454,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
         text,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           textStyle: Theme.of(
             context,
           ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),

@@ -109,7 +109,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
               Expanded(
                 child: Text(
                   'Uncheck Skill?',
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.inter(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),
@@ -119,14 +119,14 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
           ),
           content: Text(
             'Are you sure you want to uncheck "$skillName"? This will mark it as not selected.',
-            style: GoogleFonts.roboto(fontSize: 16, color: Colors.grey[700]),
+            style: GoogleFonts.inter(fontSize: 16, color: Colors.grey[700]),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 'Cancel',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey[600],
@@ -139,7 +139,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                 await _uncheckSkill(skillId, skillName);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.moyoOrange,
+                backgroundColor: ColorConstant.call4hepOrange,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -148,7 +148,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
               ),
               child: Text(
                 'Continue',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -257,7 +257,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
     return Scaffold(
       backgroundColor: ColorConstant.scaffoldGray,
       appBar: AppBar(
-        backgroundColor: ColorConstant.moyoOrange,
+        backgroundColor: ColorConstant.call4hepOrange,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -265,7 +265,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
         ),
         title: Text(
           'Select from ${widget.categoryName}',
-          style: GoogleFonts.roboto(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontWeight: FontWeight.w600,
             fontSize: 20,
@@ -276,7 +276,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
         builder: (context, subcategoryProvider, skillProvider, child) {
           if (subcategoryProvider.isLoading) {
             return Center(
-              child: CircularProgressIndicator(color: ColorConstant.moyoOrange),
+              child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
             );
           }
 
@@ -292,7 +292,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                     Text(
                       subcategoryProvider.errorMessage ?? 'An error occurred',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.roboto(fontSize: 16),
+                      style: GoogleFonts.inter(fontSize: 16),
                     ),
                     SizedBox(height: 24),
                     ElevatedButton.icon(
@@ -304,7 +304,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                       icon: Icon(Icons.refresh),
                       label: Text('Retry'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorConstant.moyoOrange,
+                        backgroundColor: ColorConstant.call4hepOrange,
                         foregroundColor: Colors.white,
                       ),
                     ),
@@ -318,7 +318,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
             return Center(
               child: Text(
                 'No subcategories available',
-                style: GoogleFonts.roboto(fontSize: 16),
+                style: GoogleFonts.inter(fontSize: 16),
               ),
             );
           }
@@ -386,19 +386,19 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) => Icon(
                                       Icons.restaurant,
-                                      color: ColorConstant.moyoOrange,
+                                      color: ColorConstant.call4hepOrange,
                                       size: 30,
                                     ),
                                     errorWidget: (context, url, error) =>
                                         Icon(
                                           Icons.restaurant,
-                                          color: ColorConstant.moyoOrange,
+                                          color: ColorConstant.call4hepOrange,
                                           size: 30,
                                         ),
                                   )
                                       : Icon(
                                     Icons.restaurant,
-                                    color: ColorConstant.moyoOrange,
+                                    color: ColorConstant.call4hepOrange,
                                     size: 30,
                                   ),
                                 ),
@@ -408,7 +408,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                               Expanded(
                                 child: Text(
                                   subcategory.name,
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.inter(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
                                     color: ColorConstant.black,
@@ -443,13 +443,13 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                     color: isAlreadyChecked
                                         ? Colors.green
                                         : isSelected
-                                        ? ColorConstant.moyoOrange
+                                        ? ColorConstant.call4hepOrange
                                         : Colors.white,
                                     border: Border.all(
                                       color: isAlreadyChecked
                                           ? Colors.green
                                           : isSelected
-                                          ? ColorConstant.moyoOrange
+                                          ? ColorConstant.call4hepOrange
                                           : Colors.grey[400]!,
                                       width: 2,
                                     ),
@@ -497,7 +497,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                     Expanded(
                                       child: RichText(
                                         text: TextSpan(
-                                          style: GoogleFonts.roboto(
+                                          style: GoogleFonts.inter(
                                             fontSize: 13,
                                             color: Colors.grey[700],
                                             fontWeight: FontWeight.w500,
@@ -508,7 +508,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                               text: 'Max 5MB',
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                color: ColorConstant.moyoOrange,
+                                                color: ColorConstant.call4hepOrange,
                                               ),
                                             ),
                                             TextSpan(text: ')'),
@@ -524,7 +524,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                               // Year of Experience
                               Text(
                                 'Year Of Experience',
-                                style: GoogleFonts.roboto(
+                                style: GoogleFonts.inter(
                                   fontSize: 14,
                                   color: Colors.grey[700],
                                   fontWeight: FontWeight.w500,
@@ -553,12 +553,12 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
                                           hintText: '0',
-                                          hintStyle: GoogleFonts.roboto(
+                                          hintStyle: GoogleFonts.inter(
                                             fontSize: 18,
                                             color: Colors.grey[400],
                                           ),
                                         ),
-                                        style: GoogleFonts.roboto(
+                                        style: GoogleFonts.inter(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -600,7 +600,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                         children: [
                                           Text(
                                             'Add Attachment',
-                                            style: GoogleFonts.roboto(
+                                            style: GoogleFonts.inter(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600,
                                               color: ColorConstant.black,
@@ -608,7 +608,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                           ),
                                           Text(
                                             'PDF, PNG, JPG, JPEG • Max 5MB',
-                                            style: GoogleFonts.roboto(
+                                            style: GoogleFonts.inter(
                                               fontSize: 12,
                                               color: Colors.grey[600],
                                               fontWeight: FontWeight.w500,
@@ -635,7 +635,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                       Container(
                                         padding: EdgeInsets.all(8),
                                         decoration: BoxDecoration(
-                                          color: ColorConstant.moyoOrange,
+                                          color: ColorConstant.call4hepOrange,
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: Icon(
@@ -651,7 +651,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                           children: [
                                             Text(
                                               _getFileName(attachments[index]),
-                                              style: GoogleFonts.roboto(
+                                              style: GoogleFonts.inter(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
                                               ),
@@ -660,7 +660,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                             ),
                                             Text(
                                               _getFileSize(attachments[index]),
-                                              style: GoogleFonts.roboto(
+                                              style: GoogleFonts.inter(
                                                 fontSize: 12,
                                                 color: Colors.grey[600],
                                               ),
@@ -693,7 +693,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                       ? null
                                       : () => _submitSkill(index, subcategory),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: ColorConstant.moyoOrange,
+                                    backgroundColor: ColorConstant.call4hepOrange,
                                     foregroundColor: Colors.white,
                                     padding: EdgeInsets.symmetric(vertical: 16),
                                     shape: RoundedRectangleBorder(
@@ -714,7 +714,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                   )
                                       : Text(
                                     'Submit',
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.inter(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600,
                                     ),

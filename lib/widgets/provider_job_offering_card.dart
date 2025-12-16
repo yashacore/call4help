@@ -186,8 +186,8 @@ class ProviderJobOfferingCard extends StatelessWidget {
                     Switch(
                       value: isChecked,
                       onChanged: onToggle,
-                      activeColor: ColorConstant.moyoGreen,
-                      activeTrackColor: ColorConstant.moyoGreen.withOpacity(0.5),
+                      activeColor: ColorConstant.call4hepGreen,
+                      activeTrackColor: ColorConstant.call4hepGreen.withOpacity(0.5),
                     ),
                   ],
                 ),

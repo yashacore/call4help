@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:first_flutter/baseControllers/APis.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -106,8 +107,7 @@ class ServiceAPI {
       // Parse response
       final Map<String, dynamic> responseData = json.decode(response.body);
 
-      print(response.body);
-      print(requestBody);
+      debugPrint(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return AcceptServiceResponse.fromJson(responseData);
       } else {

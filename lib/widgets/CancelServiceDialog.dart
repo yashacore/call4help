@@ -61,8 +61,8 @@ class CancelServiceAPI {
             },
           );
 
-      print('Cancel Service Response Status: ${response.statusCode}');
-      print('Cancel Service Response Body: ${response.body}');
+      debugPrint('Cancel Service Response Status: ${response.statusCode}');
+      debugPrint('Cancel Service Response Body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = jsonDecode(response.body);
@@ -78,7 +78,7 @@ class CancelServiceAPI {
         );
       }
     } catch (e) {
-      print('Error cancelling service: $e');
+      debugPrint('Error cancelling service: $e');
       if (e.toString().contains('Exception:')) {
         rethrow;
       }
@@ -233,7 +233,7 @@ class _CancelServiceBottomSheetState extends State<CancelServiceBottomSheet> {
                 Expanded(
                   child: Text(
                     'Cancel Service',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF1D1B20),
@@ -263,7 +263,7 @@ class _CancelServiceBottomSheetState extends State<CancelServiceBottomSheet> {
                 children: [
                   Text(
                     'Please select a reason for cancellation:',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       color: Color(0xFF7A7A7A),
                     ),
@@ -275,7 +275,7 @@ class _CancelServiceBottomSheetState extends State<CancelServiceBottomSheet> {
                     return RadioListTile<String>(
                       title: Text(
                         reason,
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.inter(
                           fontSize: 14.sp,
                           color: Color(0xFF1D1B20),
                         ),
@@ -305,7 +305,7 @@ class _CancelServiceBottomSheetState extends State<CancelServiceBottomSheet> {
                       enabled: !isLoading,
                       decoration: InputDecoration(
                         hintText: 'Please specify the reason...',
-                        hintStyle: GoogleFonts.roboto(color: Color(0xFFBDBDBD)),
+                        hintStyle: GoogleFonts.inter(color: Color(0xFFBDBDBD)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.r),
                           borderSide: BorderSide(color: Color(0xFFE6E6E6)),
@@ -325,7 +325,7 @@ class _CancelServiceBottomSheetState extends State<CancelServiceBottomSheet> {
                         fillColor: Colors.white,
                         contentPadding: EdgeInsets.all(12.w),
                       ),
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 14.sp,
                         color: Color(0xFF1D1B20),
                       ),
@@ -365,7 +365,7 @@ class _CancelServiceBottomSheetState extends State<CancelServiceBottomSheet> {
                     ),
                     child: Text(
                       'Keep Service',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                         color: isLoading
@@ -401,7 +401,7 @@ class _CancelServiceBottomSheetState extends State<CancelServiceBottomSheet> {
                           )
                         : Text(
                             'Cancel Service',
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.inter(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,

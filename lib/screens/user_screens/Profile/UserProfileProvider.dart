@@ -44,7 +44,7 @@ class UserProfileProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('auth_token');
     } catch (e) {
-      print('Error getting auth token: $e');
+      debugPrint('Error getting auth token: $e');
       return null;
     }
   }
@@ -72,8 +72,8 @@ class UserProfileProvider with ChangeNotifier {
         },
       );
 
-      print('Profile API Response: ${response.statusCode}');
-      print('Profile API Body: ${response.body}');
+      debugPrint('Profile API Response: ${response.statusCode}');
+      debugPrint('Profile API Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -96,7 +96,7 @@ class UserProfileProvider with ChangeNotifier {
     } catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       _userProfile = null;
-      print('Error loading user profile: $e');
+      debugPrint('Error loading user profile: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -136,7 +136,7 @@ class UserProfileProvider with ChangeNotifier {
       }
     } catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
-      print('Error updating profile: $e');
+      debugPrint('Error updating profile: $e');
       return false;
     } finally {
       _isLoading = false;

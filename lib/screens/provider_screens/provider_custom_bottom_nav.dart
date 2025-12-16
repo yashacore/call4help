@@ -1,3 +1,4 @@
+import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/screens/RoleSwitch/provider_go_to_customer.dart';
 import 'package:first_flutter/widgets/user_appbar.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class ProviderCustomBottomNav extends StatelessWidget {
         currentIndex: context.watch<ProviderNavigationProvider>().currentIndex,
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
-        selectedItemColor: Colors.orange,
+        selectedItemColor: ColorConstant.appColor,
 
         selectedLabelStyle:
             // Theme.of(context).textTheme.labelMedium,
@@ -70,7 +71,7 @@ class ProviderCustomBottomNav extends StatelessWidget {
     final bool isActive =
         context.watch<ProviderNavigationProvider>().currentIndex == index;
 
-    // print(
+    // debugPrint(
     //   "Current index is ${context.watch<ProviderNavigationProvider>().currentIndex}. and isActive = $isActive",
     // );
     return BottomNavigationBarItem(
@@ -78,10 +79,10 @@ class ProviderCustomBottomNav extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(6, 16, 6, 16),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isActive ? Color(0xFFFEE4D3) : Colors.transparent,
-          border: isActive ? Border.all(color: Colors.orange, width: 2) : null,
+          color: isActive ? Colors.grey.shade300 : Colors.transparent,
+          border: isActive ? Border.all(color:  ColorConstant.appColor, width: 2) : null,
         ),
-        child: Icon(icon, color: isActive ? Colors.orange : Colors.black87),
+        child: Icon(icon, color: isActive ? ColorConstant.appColor : Colors.black87),
       ),
       label: label,
     );

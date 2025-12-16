@@ -113,11 +113,11 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(color: ColorConstant.moyoOrange),
+              CircularProgressIndicator(color: ColorConstant.call4hepOrange),
               SizedBox(height: 16.h),
               Text(
                 'Triggering SOS...',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF1D1B20),
@@ -184,7 +184,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
               SizedBox(height: 16.h),
               Text(
                 'Error',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFF1D1B20),
@@ -193,7 +193,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
               SizedBox(height: 8.h),
               Text(
                 message,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   color: Color(0xFF7A7A7A),
@@ -206,7 +206,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstant.moyoOrange,
+                    backgroundColor: ColorConstant.call4hepOrange,
                     padding: EdgeInsets.symmetric(vertical: 14.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
@@ -215,7 +215,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                   ),
                   child: Text(
                     'Close',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -272,7 +272,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                   children: [
                     Text(
                       'Customer Support',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF1D1B20),
@@ -309,11 +309,11 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(color: ColorConstant.moyoOrange),
+            CircularProgressIndicator(color: ColorConstant.call4hepOrange),
             SizedBox(height: 16.h),
             Text(
               'Loading contacts...',
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.inter(
                 fontSize: 14.sp,
                 color: Color(0xFF7A7A7A),
               ),
@@ -338,7 +338,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
               SizedBox(height: 16.h),
               Text(
                 provider.errorMessage ?? 'An error occurred',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   color: Color(0xFF7A7A7A),
                 ),
@@ -353,7 +353,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorConstant.moyoOrange,
+                  backgroundColor: ColorConstant.call4hepOrange,
                   padding: EdgeInsets.symmetric(
                     horizontal: 24.w,
                     vertical: 12.h,
@@ -364,7 +364,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                 ),
                 child: Text(
                   'Retry',
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.inter(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -392,7 +392,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
               SizedBox(height: 16.h),
               Text(
                 'No emergency contacts available',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   color: Color(0xFF7A7A7A),
                 ),
@@ -434,12 +434,12 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
               width: 48.w,
               height: 48.w,
               decoration: BoxDecoration(
-                color: ColorConstant.moyoOrangeFade,
+                color: ColorConstant.call4hepOrangeFade,
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
                 Icons.support_agent,
-                color: ColorConstant.moyoOrange,
+                color: ColorConstant.call4hepOrange,
                 size: 24.sp,
               ),
             ),
@@ -450,7 +450,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                 children: [
                   Text(
                     contact.title.isNotEmpty ? contact.title : 'Support',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF1D1B20),
@@ -461,17 +461,17 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                   SizedBox(height: 4.h),
                   Text(
                     contact.mobile.isNotEmpty ? contact.mobile : 'No number',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                     ),
                   ),
                   if (contact.message.isNotEmpty) ...[
                     SizedBox(height: 4.h),
                     Text(
                       contact.message,
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w400,
                         color: Color(0xFF7A7A7A),
@@ -483,7 +483,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                 ],
               ),
             ),
-            Icon(Icons.phone, color: ColorConstant.moyoGreen, size: 24.sp),
+            Icon(Icons.phone, color: ColorConstant.call4hepGreen, size: 24.sp),
           ],
         ),
       ),
@@ -552,7 +552,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
           SizedBox(width: 16.w),
           Text(
             'Emergency SOS',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 20.sp,
               fontWeight: FontWeight.w700,
               color: Color(0xFF1D1B20),
@@ -584,7 +584,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
           SizedBox(height: 24.h),
           Text(
             'Need Emergency Help?',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 28.sp,
               fontWeight: FontWeight.w700,
               color: Color(0xFF1D1B20),
@@ -594,7 +594,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
           SizedBox(height: 12.h),
           Text(
             'Contact our support team or emergency services immediately',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 15.sp,
               fontWeight: FontWeight.w400,
               color: Color(0xFF7A7A7A),
@@ -615,7 +615,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
         children: [
           Text(
             'Emergency Contacts',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 18.sp,
               fontWeight: FontWeight.w700,
               color: Color(0xFF1D1B20),
@@ -629,7 +629,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [ColorConstant.moyoOrange, Color(0xFFFF9F3A)],
+              colors: [ColorConstant.call4hepOrange, Color(0xFFFF9F3A)],
             ),
             title: 'Customer Support',
             subtitle: '24/7 Available Support',
@@ -713,7 +713,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                       children: [
                         Text(
                           title,
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
@@ -722,7 +722,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                         SizedBox(height: 4.h),
                         Text(
                           subtitle,
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
                             color: Colors.white.withOpacity(0.9),
@@ -736,7 +736,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
               SizedBox(height: 16.h),
               Text(
                 description,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   color: Colors.white.withOpacity(0.95),
@@ -764,7 +764,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                       title == 'Customer Support'
                           ? 'View Contacts'
                           : 'Call Now',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w700,
                         color: gradient.colors.first,
@@ -797,19 +797,19 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
               Container(
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
-                  color: ColorConstant.moyoOrangeFade,
+                  color: ColorConstant.call4hepOrangeFade,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
                   Icons.info_outline,
-                  color: ColorConstant.moyoOrange,
+                  color: ColorConstant.call4hepOrange,
                   size: 20.sp,
                 ),
               ),
               SizedBox(width: 12.w),
               Text(
                 'Service Information',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFF1D1B20),
@@ -861,7 +861,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, size: 18.sp, color: ColorConstant.moyoOrange),
+            Icon(icon, size: 18.sp, color: ColorConstant.call4hepOrange),
             SizedBox(width: 12.w),
             Expanded(
               child: Column(
@@ -869,7 +869,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                 children: [
                   Text(
                     label,
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
                       color: Color(0xFF7A7A7A),
@@ -878,7 +878,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                   SizedBox(height: 4.h),
                   Text(
                     value,
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF1D1B20),

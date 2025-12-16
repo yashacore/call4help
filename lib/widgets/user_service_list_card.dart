@@ -34,7 +34,7 @@ class UserServiceListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(priceBy);
+    debugPrint(priceBy);
     return InkWell(
       onTap: onPress,
       child: Padding(
@@ -63,7 +63,7 @@ class UserServiceListCard extends StatelessWidget {
                         "$category > $subCategory",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.inter(
                           textStyle: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.w600),
                           color: Color(0xFF1D1B20),
@@ -72,7 +72,7 @@ class UserServiceListCard extends StatelessWidget {
                     ),
                     Text(
                       date ?? "No date",
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.labelLarge
                             ?.copyWith(color: Colors.black.withAlpha(100)),
                       ),
@@ -129,7 +129,7 @@ class UserServiceListCard extends StatelessWidget {
                                   "₹ ${priceBy ?? "No price"} /-",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.inter(
                                     textStyle: Theme.of(context)
                                         .textTheme
                                         .titleMedium
@@ -146,12 +146,12 @@ class UserServiceListCard extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.end,
-                                style: GoogleFonts.roboto(
+                                style: GoogleFonts.inter(
                                   textStyle: Theme.of(context)
                                       .textTheme
                                       .labelLarge
                                       ?.copyWith(
-                                    color: ColorConstant.moyoOrange,
+                                    color: ColorConstant.call4hepOrange,
                                   ),
                                 ),
                               ),
@@ -169,7 +169,7 @@ class UserServiceListCard extends StatelessWidget {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: ColorConstant.moyoOrangeFade,
+                                    color: ColorConstant.call4hepOrangeFade,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(50),
                                     ),
@@ -178,14 +178,14 @@ class UserServiceListCard extends StatelessWidget {
                                     category ?? "N/A",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.inter(
                                       textStyle: Theme.of(context)
                                           .textTheme
                                           .bodyMedium
                                           ?.copyWith(
                                         fontWeight: FontWeight.w500,
                                       ),
-                                      color: ColorConstant.moyoOrange,
+                                      color: ColorConstant.call4hepOrange,
                                     ),
                                   ),
                                 ),
@@ -200,20 +200,20 @@ class UserServiceListCard extends StatelessWidget {
                                         "${providerCount ?? "No Count"}",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.roboto(
+                                        style: GoogleFonts.inter(
                                           textStyle: Theme.of(context)
                                               .textTheme
                                               .bodyMedium
                                               ?.copyWith(
                                             fontWeight: FontWeight.w500,
                                           ),
-                                          color: ColorConstant.moyoOrange,
+                                          color: ColorConstant.call4hepOrange,
                                         ),
                                       ),
                                     if (status == "No status")
                                       Icon(
                                         Icons.work_outline,
-                                        color: ColorConstant.moyoOrange,
+                                        color: ColorConstant.call4hepOrange,
                                       ),
 
                                     /// Status Chip
@@ -226,7 +226,7 @@ class UserServiceListCard extends StatelessWidget {
                                         child: Container(
                                           padding: EdgeInsets.all(6),
                                           decoration: BoxDecoration(
-                                            color: ColorConstant.moyoOrange,
+                                            color: ColorConstant.call4hepOrange,
                                             borderRadius: BorderRadius.circular(6),
                                           ),
                                           child: Icon(
@@ -267,7 +267,7 @@ class UserServiceListCard extends StatelessWidget {
             "Ongoing",
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               textStyle: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
@@ -286,11 +286,11 @@ class UserServiceListCard extends StatelessWidget {
             "Completed",
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               textStyle: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-              color: ColorConstant.moyoGreen,
+              color: ColorConstant.call4hepGreen,
             ),
           ),
         );
@@ -305,7 +305,7 @@ class UserServiceListCard extends StatelessWidget {
             "Cancelled",
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               textStyle: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),

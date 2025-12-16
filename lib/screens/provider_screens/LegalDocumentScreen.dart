@@ -66,7 +66,7 @@ class LegalDocumentProvider extends ChangeNotifier {
     _error = null;
     _isDocumentNotAvailable = false;
     notifyListeners();
-    print("$base_url/api/admin/legal/latest?type=$type&role=$role");
+    debugPrint("$base_url/api/admin/legal/latest?type=$type&role=$role");
     try {
       final url = role.isNotEmpty
           ? '$base_url/api/admin/legal/latest?type=$type&role=$role'
@@ -197,7 +197,7 @@ class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
               if (_provider.isLoading) {
                 return Center(
                   child: CircularProgressIndicator(
-                    color: ColorConstant.moyoOrange,
+                    color: ColorConstant.call4hepOrange,
                   ),
                 );
               }
@@ -273,7 +273,7 @@ class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
                         ElevatedButton(
                           onPressed: _loadDocument,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorConstant.moyoOrange,
+                            backgroundColor: ColorConstant.call4hepOrange,
                             padding: EdgeInsets.symmetric(
                               horizontal: 32.w,
                               vertical: 12.h,
@@ -350,8 +350,8 @@ class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
                                     ),
                                   ),
                                   selected: isSelected,
-                                  selectedColor: ColorConstant.moyoOrange,
-                                  backgroundColor: ColorConstant.moyoOrangeFade,
+                                  selectedColor: ColorConstant.call4hepOrange,
+                                  backgroundColor: ColorConstant.call4hepOrangeFade,
                                   onSelected: (selected) {
                                     if (selected) {
                                       setState(() {

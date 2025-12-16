@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
-import 'package:first_flutter/widgets/user_service_details.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -241,7 +240,7 @@ class _ProviderServiceDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.moyoScaffoldGradient,
+      backgroundColor: ColorConstant.call4hepScaffoldGradient,
       appBar: UserOnlyTitleAppbar(title: "Service Details"),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

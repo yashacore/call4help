@@ -2,62 +2,62 @@ import 'package:flutter/material.dart';
 
 class AppTextStyle {
 
-  static const TextStyle robotoBlack = TextStyle(
-    fontFamily: 'RobotoBlack',
+  static const TextStyle interBlack = TextStyle(
+    fontFamily: 'interBlack',
     fontSize: 20,
     color: Colors.black
   );
 
-  static const TextStyle robotoBold = TextStyle(
-    fontFamily: 'RobotoBold',
+  static const TextStyle interBold = TextStyle(
+    fontFamily: 'interBold',
     fontSize: 20,
     color: Colors.black
   );
 
-  static const TextStyle robotoExtraBold = TextStyle(
-    fontFamily: 'RobotoExtraBold',
+  static const TextStyle interExtraBold = TextStyle(
+    fontFamily: 'interExtraBold',
     fontSize: 20,
     color: Colors.black
   );
 
-  static const TextStyle robotoExtraBoldItalic = TextStyle(
-    fontFamily: 'RobotoExtraBoldItalic',
+  static const TextStyle interExtraBoldItalic = TextStyle(
+    fontFamily: 'interExtraBoldItalic',
     fontSize: 20,
     color: Colors.black
   );
 
-  static const TextStyle robotoLight = TextStyle(
-    fontFamily: 'RobotoLight',
+  static const TextStyle interLight = TextStyle(
+    fontFamily: 'interLight',
     fontSize: 20,
     color: Colors.black
   );
 
-  static const TextStyle robotoExtraLight = TextStyle(
-    fontFamily: 'RobotoExtraLight',
+  static const TextStyle interExtraLight = TextStyle(
+    fontFamily: 'interExtraLight',
     fontSize: 20,
     color: Colors.black
   );
 
-  static const TextStyle robotoMedium = TextStyle(
-    fontFamily: 'RobotoMedium',
+  static const TextStyle interMedium = TextStyle(
+    fontFamily: 'interMedium',
     fontSize: 20,
     color: Colors.black
   );
 
-  static const TextStyle robotoRegular = TextStyle(
-    fontFamily: 'RobotoRegular',
+  static const TextStyle interRegular = TextStyle(
+    fontFamily: 'interRegular',
     fontSize: 20,
     color: Colors.black
   );
 
-  static const TextStyle robotoSemiBold = TextStyle(
-    fontFamily: 'RobotoSemiBold',
+  static const TextStyle interSemiBold = TextStyle(
+    fontFamily: 'interSemiBold',
     fontSize: 20,
     color: Colors.black
   );
 
-  static const TextStyle robotoThin = TextStyle(
-    fontFamily: 'RobotoThin',
+  static const TextStyle interThin = TextStyle(
+    fontFamily: 'interThin',
     fontSize: 20,
     color: Colors.black
   );

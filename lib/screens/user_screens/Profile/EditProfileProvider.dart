@@ -121,8 +121,8 @@ class EditProfileProvider with ChangeNotifier {
         },
       );
 
-      print('Fetch profile response status: ${response.statusCode}');
-      print('Fetch profile response body: ${response.body}');
+      debugPrint('Fetch profile response status: ${response.statusCode}');
+      debugPrint('Fetch profile response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -177,7 +177,7 @@ class EditProfileProvider with ChangeNotifier {
     } catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       _isFetchingProfile = false;
-      print('Error fetching profile: $e');
+      debugPrint('Error fetching profile: $e');
       notifyListeners();
       return false;
     }
@@ -554,8 +554,8 @@ class EditProfileProvider with ChangeNotifier {
         body: jsonEncode({'mobile': mobile}),
       );
 
-      print('Send mobile OTP response status: ${response.statusCode}');
-      print('Send mobile OTP response body: ${response.body}');
+      debugPrint('Send mobile OTP response status: ${response.statusCode}');
+      debugPrint('Send mobile OTP response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -584,7 +584,7 @@ class EditProfileProvider with ChangeNotifier {
     } catch (e) {
       _mobileErrorMessage = "Network error. Please check your connection.";
       _isMobileOtpLoading = false;
-      print('Error sending mobile OTP: $e');
+      debugPrint('Error sending mobile OTP: $e');
       notifyListeners();
       return false;
     }
@@ -627,8 +627,8 @@ class EditProfileProvider with ChangeNotifier {
         body: jsonEncode({'mobile': mobile, 'otp': otp}),
       );
 
-      print('Verify mobile OTP response status: ${response.statusCode}');
-      print('Verify mobile OTP response body: ${response.body}');
+      debugPrint('Verify mobile OTP response status: ${response.statusCode}');
+      debugPrint('Verify mobile OTP response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -663,7 +663,7 @@ class EditProfileProvider with ChangeNotifier {
     } catch (e) {
       _mobileErrorMessage = "Network error. Please check your connection.";
       _isMobileOtpVerifying = false;
-      print('Error verifying mobile OTP: $e');
+      debugPrint('Error verifying mobile OTP: $e');
       notifyListeners();
       return false;
     }

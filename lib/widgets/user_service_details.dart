@@ -84,7 +84,7 @@ class UserServiceDetails extends StatelessWidget {
           ),
           title: Text(
             'Add Note',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 20.sp,
               fontWeight: FontWeight.w700,
               color: Color(0xFF1D1B20),
@@ -96,7 +96,7 @@ class UserServiceDetails extends StatelessWidget {
             children: [
               Text(
                 'Please add a note for this service (e.g., payment method)',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   color: Color(0xFF7A7A7A),
                 ),
@@ -108,7 +108,7 @@ class UserServiceDetails extends StatelessWidget {
                 maxLength: 200,
                 decoration: InputDecoration(
                   hintText: 'Enter note...',
-                  hintStyle: GoogleFonts.roboto(color: Color(0xFFBDBDBD)),
+                  hintStyle: GoogleFonts.inter(color: Color(0xFFBDBDBD)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.r),
                     borderSide: BorderSide(color: Color(0xFFE6E6E6)),
@@ -120,7 +120,7 @@ class UserServiceDetails extends StatelessWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.r),
                     borderSide: BorderSide(
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                       width: 2.w,
                     ),
                   ),
@@ -128,7 +128,7 @@ class UserServiceDetails extends StatelessWidget {
                   fillColor: Colors.white,
                   contentPadding: EdgeInsets.all(12.w),
                 ),
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   color: Color(0xFF1D1B20),
                 ),
@@ -145,7 +145,7 @@ class UserServiceDetails extends StatelessWidget {
               ),
               child: Text(
                 'Cancel',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
                   color: Color(0xFF7A7A7A),
@@ -162,7 +162,7 @@ class UserServiceDetails extends StatelessWidget {
                 Navigator.of(context).pop(note);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.moyoGreen,
+                backgroundColor: ColorConstant.call4hepGreen,
                 padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),
@@ -170,7 +170,7 @@ class UserServiceDetails extends StatelessWidget {
               ),
               child: Text(
                 'Confirm',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
@@ -199,7 +199,7 @@ class UserServiceDetails extends StatelessWidget {
           ),
           title: Text(
             'Re-Bid Service',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w700,
               color: Color(0xFF1D1B20),
@@ -211,7 +211,7 @@ class UserServiceDetails extends StatelessWidget {
             children: [
               Text(
                 'Enter your new bid amount and note',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14,
                   color: Color(0xFF7A7A7A),
                 ),
@@ -220,7 +220,7 @@ class UserServiceDetails extends StatelessWidget {
               // Amount TextField
               Text(
                 'Amount *',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF1D1B20),
@@ -233,7 +233,7 @@ class UserServiceDetails extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: 'Enter amount',
                   prefixText: '₹ ',
-                  hintStyle: GoogleFonts.roboto(color: Color(0xFFBDBDBD)),
+                  hintStyle: GoogleFonts.inter(color: Color(0xFFBDBDBD)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(color: Color(0xFFE6E6E6)),
@@ -245,7 +245,7 @@ class UserServiceDetails extends StatelessWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                       width: 2,
                     ),
                   ),
@@ -253,7 +253,7 @@ class UserServiceDetails extends StatelessWidget {
                   fillColor: Colors.white,
                   contentPadding: EdgeInsets.all(12),
                 ),
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14,
                   color: Color(0xFF1D1B20),
                 ),
@@ -262,7 +262,7 @@ class UserServiceDetails extends StatelessWidget {
               // Note TextField
               Text(
                 'Note',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF1D1B20),
@@ -275,7 +275,7 @@ class UserServiceDetails extends StatelessWidget {
                 maxLength: 200,
                 decoration: InputDecoration(
                   hintText: 'Enter note...',
-                  hintStyle: GoogleFonts.roboto(color: Color(0xFFBDBDBD)),
+                  hintStyle: GoogleFonts.inter(color: Color(0xFFBDBDBD)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(color: Color(0xFFE6E6E6)),
@@ -287,7 +287,7 @@ class UserServiceDetails extends StatelessWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                       width: 2,
                     ),
                   ),
@@ -295,7 +295,7 @@ class UserServiceDetails extends StatelessWidget {
                   fillColor: Colors.white,
                   contentPadding: EdgeInsets.all(12),
                 ),
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14,
                   color: Color(0xFF1D1B20),
                 ),
@@ -312,7 +312,7 @@ class UserServiceDetails extends StatelessWidget {
               ),
               child: Text(
                 'Cancel',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: Color(0xFF7A7A7A),
@@ -351,7 +351,7 @@ class UserServiceDetails extends StatelessWidget {
               ),
               child: Text(
                 'Submit Re-Bid',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
@@ -404,7 +404,7 @@ class UserServiceDetails extends StatelessWidget {
                 SizedBox(height: 16.h),
                 Text(
                   'Accepting service...',
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.inter(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),
@@ -481,7 +481,7 @@ class UserServiceDetails extends StatelessWidget {
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: ColorConstant.moyoGreen,
+        backgroundColor: ColorConstant.call4hepGreen,
         duration: Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
       ),
@@ -508,7 +508,7 @@ class UserServiceDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statusLower = status.toLowerCase();
-    print(statusLower);
+    debugPrint(statusLower);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
@@ -579,7 +579,7 @@ class UserServiceDetails extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: ColorConstant.moyoGreen,
+                  color: ColorConstant.call4hepGreen,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -592,7 +592,7 @@ class UserServiceDetails extends StatelessWidget {
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.labelLarge
                             ?.copyWith(
                               color: Color(0xFFFFFFFF),
@@ -625,7 +625,7 @@ class UserServiceDetails extends StatelessWidget {
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.labelLarge
                             ?.copyWith(
                               color: Color(0xFFFFFFFF),
@@ -680,7 +680,7 @@ class UserServiceDetails extends StatelessWidget {
                 SizedBox(height: 16.h),
                 Text(
                   'Submitting re-bid...',
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.inter(
                     fontSize: 16.h,
                     fontWeight: FontWeight.w500,
                   ),
@@ -759,7 +759,7 @@ class UserServiceDetails extends StatelessWidget {
           context,
           text: "Open",
           backgroundColor: Color(0xFFE8F5E9),
-          textColor: ColorConstant.moyoGreen,
+          textColor: ColorConstant.call4hepGreen,
         );
 
       case 'pending':
@@ -807,7 +807,7 @@ class UserServiceDetails extends StatelessWidget {
           context,
           text: "Completed",
           backgroundColor: Color(0xFFE6F7C0),
-          textColor: ColorConstant.moyoGreen,
+          textColor: ColorConstant.call4hepGreen,
         );
 
       case 'cancelled':
@@ -864,7 +864,7 @@ class UserServiceDetails extends StatelessWidget {
         text,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           textStyle: Theme.of(
             context,
           ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
@@ -896,7 +896,7 @@ class UserServiceDetails extends StatelessWidget {
               "$category > $subCategory",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.inter(
                 textStyle: Theme.of(
                   context,
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -906,7 +906,7 @@ class UserServiceDetails extends StatelessWidget {
           ),
           Text(
             date ?? "No date",
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: Colors.black.withAlpha(100),
               ),
@@ -950,7 +950,7 @@ class UserServiceDetails extends StatelessWidget {
                 "SOS",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
@@ -981,13 +981,13 @@ class UserServiceDetails extends StatelessWidget {
                     if (providerPhone != null && providerPhone.isNotEmpty) {
                       // Add your call functionality here
                       // Example: launch('tel:$providerPhone');
-                      print('Calling: $providerPhone');
+                      debugPrint('Calling: $providerPhone');
                     } else {
                       _showErrorSnackbar(context, 'Phone number not available');
                     }
                   },
                   borderRadius: BorderRadius.circular(50),
-                  child: SvgPicture.asset("assets/icons/moyo_call_action.svg"),
+                  child: SvgPicture.asset("assets/icons/call4hep_call_action.svg"),
                 ),
 
                 // Message/Chat Button
@@ -1010,7 +1010,7 @@ class UserServiceDetails extends StatelessWidget {
                   },
                   borderRadius: BorderRadius.circular(50),
                   child: SvgPicture.asset(
-                    "assets/icons/moyo_message_action.svg",
+                    "assets/icons/call4hep_message_action.svg",
                   ),
                 ),
               ],
@@ -1035,7 +1035,7 @@ class UserServiceDetails extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               textStyle: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
@@ -1115,7 +1115,7 @@ class UserServiceDetails extends StatelessWidget {
                           name ?? "No Name",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             textStyle: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   fontWeight: FontWeight.w700,
@@ -1145,10 +1145,10 @@ class UserServiceDetails extends StatelessWidget {
                           "⭐ ${rating ?? '0.0'}",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             textStyle: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(fontWeight: FontWeight.w500),
-                            color: ColorConstant.moyoOrange,
+                            color: ColorConstant.call4hepOrange,
                           ),
                         ),
                       ),
@@ -1178,18 +1178,18 @@ class UserServiceDetails extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: ColorConstant.moyoOrangeFade,
+                color: ColorConstant.call4hepOrangeFade,
                 borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
               child: Text(
                 durationType ?? "No Duration",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-                  color: ColorConstant.moyoOrange,
+                  color: ColorConstant.call4hepOrange,
                 ),
               ),
             ),
@@ -1201,13 +1201,13 @@ class UserServiceDetails extends StatelessWidget {
               spacing: 6,
               children: [
                 SvgPicture.asset(
-                  "assets/icons/moyo_material-symbols_timer-outline.svg",
+                  "assets/icons/call4hep_material-symbols_timer-outline.svg",
                 ),
                 Text(
                   duration ?? "No Duration",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.inter(
                     textStyle: Theme.of(
                       context,
                     ).textTheme.labelLarge?.copyWith(color: Color(0xFF000000)),
@@ -1221,7 +1221,7 @@ class UserServiceDetails extends StatelessWidget {
               "₹ ${price ?? "No Price"} /-",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.inter(
                 textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: Color(0xFF000000),
                   fontWeight: FontWeight.w700,
@@ -1243,7 +1243,7 @@ class UserServiceDetails extends StatelessWidget {
         textAlign: TextAlign.start,
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Color(0xFF7A7A7A),
             fontWeight: FontWeight.w500,
@@ -1265,14 +1265,14 @@ class UserServiceDetails extends StatelessWidget {
             (e) => Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: ColorConstant.moyoOrangeFade,
+                color: ColorConstant.call4hepOrangeFade,
                 borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
               child: Text(
                 e,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
@@ -1295,7 +1295,7 @@ class UserServiceDetails extends StatelessWidget {
         textAlign: TextAlign.start,
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Color(0xFF000000),
             fontWeight: FontWeight.w500,
@@ -1367,13 +1367,13 @@ class UserServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              SvgPicture.asset("assets/icons/moyo_close-filled.svg"),
+              SvgPicture.asset("assets/icons/call4hep_close-filled.svg"),
               Text(
                 "Cancel the service",
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Color(0xFFFF0000),
                     fontWeight: FontWeight.w500,
@@ -1405,13 +1405,13 @@ class UserServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              SvgPicture.asset("assets/icons/moyo_task-complete.svg"),
+              SvgPicture.asset("assets/icons/call4hep_task-complete.svg"),
               Text(
                 "Task Complete",
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Color(0xFFFFFFFF),
                     fontWeight: FontWeight.w500,
@@ -1486,8 +1486,8 @@ class UserServiceDetails extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: ColorConstant.moyoOrange,
-            border: Border.all(color: ColorConstant.moyoOrange, width: 1),
+            color: ColorConstant.call4hepOrange,
+            border: Border.all(color: ColorConstant.call4hepOrange, width: 1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -1495,13 +1495,13 @@ class UserServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              SvgPicture.asset("assets/icons/moyo_white_star.svg"),
+              SvgPicture.asset("assets/icons/call4hep_white_star.svg"),
               Text(
                 "Rate Service",
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Color(0xFFFFFFFF),
                     fontWeight: FontWeight.w500,

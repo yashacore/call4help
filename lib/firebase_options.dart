@@ -53,16 +53,16 @@ class DefaultFirebaseOptions {
     apiKey: 'AIzaSyBH_X1V6u5Af8FFJmMmN2kYkMx2Sh6SJ3Y',
     appId: '1:858073979116:android:3c7358f3a0e7452d372dc9',
     messagingSenderId: '858073979116',
-    projectId: 'moyo-159ed',
-    storageBucket: 'moyo-159ed.firebasestorage.app',
+    projectId: 'call4hep-159ed',
+    storageBucket: 'call4hep-159ed.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBU-9QrJBntM7m5f4FSz-PnYk79oYI3Pvk',
     appId: '1:858073979116:ios:6e76ee6438b34ba4372dc9',
     messagingSenderId: '858073979116',
-    projectId: 'moyo-159ed',
-    storageBucket: 'moyo-159ed.firebasestorage.app',
-    iosBundleId: 'com.acore.moyo',
+    projectId: 'call4hep-159ed',
+    storageBucket: 'call4hep-159ed.firebasestorage.app',
+    iosBundleId: 'com.acore.call4hep',
   );
 }

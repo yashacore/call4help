@@ -21,8 +21,8 @@ class SubcategoryService {
         headers: {'Content-Type': 'application/json'},
       );
 
-      print(categoryId);
-      print(response.body);
+      debugPrint(categoryId as String?);
+      debugPrint(response.body);
       debugPrint('Fetch Subcategories Response: ${response.body}');
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);

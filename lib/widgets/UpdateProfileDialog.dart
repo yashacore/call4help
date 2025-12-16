@@ -30,13 +30,13 @@ class UpdateProfileDialog extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
-                color: ColorConstant.moyoOrangeFade,
+                color: ColorConstant.call4hepOrangeFade,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.edit_note_rounded,
                 size: 60.sp,
-                color: ColorConstant.moyoOrange,
+                color: ColorConstant.call4hepOrange,
               ),
             ),
             SizedBox(height: 24.h),
@@ -73,7 +73,7 @@ class UpdateProfileDialog extends StatelessWidget {
                   Navigator.pushNamed(context, '/editProfile');
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorConstant.moyoOrange,
+                  backgroundColor: ColorConstant.call4hepOrange,
                   foregroundColor: ColorConstant.white,
                   padding: EdgeInsets.symmetric(vertical: 16.h),
                   shape: RoundedRectangleBorder(

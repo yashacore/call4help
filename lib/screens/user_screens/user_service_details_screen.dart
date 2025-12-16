@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:first_flutter/widgets/user_service_details.dart';
@@ -62,7 +61,7 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.moyoOrange,
+                backgroundColor: ColorConstant.call4hepOrange,
               ),
               child: const Text('Confirm'),
             ),
@@ -170,15 +169,15 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
     // Guard against null service
     if (_currentService == null) {
       return Scaffold(
-        backgroundColor: ColorConstant.moyoScaffoldGradient,
+        backgroundColor: ColorConstant.call4hepScaffoldGradient,
         appBar: UserOnlyTitleAppbar(title: "Service Details"),
         body: const Center(child: Text('Service data not available')),
       );
     }
-    print("Providerrrrrrrrrrr${_currentService?.assignedProviderId}");
+    debugPrint("Providerrrrrrrrrrr${_currentService?.assignedProviderId}");
 
     return Scaffold(
-      backgroundColor: ColorConstant.moyoScaffoldGradient,
+      backgroundColor: ColorConstant.call4hepScaffoldGradient,
       appBar: UserOnlyTitleAppbar(title: "Service Details"),
       body: Consumer2<ServiceProvider, BookProviderProvider>(
         builder: (context, serviceProvider, bookProviderProvider, child) {
@@ -291,7 +290,7 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
                         children: [
                           CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              ColorConstant.moyoOrange,
+                              ColorConstant.call4hepOrange,
                             ),
                           ),
                           const SizedBox(width: 16),

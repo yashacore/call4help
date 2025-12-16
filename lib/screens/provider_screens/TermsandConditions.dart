@@ -77,10 +77,10 @@ class LegalDocumentProvider extends ChangeNotifier {
 
       final response = await http.get(Uri.parse(url));
 
-      print(response.body);
-      print(response.statusCode);
-      print(type);
-      print(role);
+      debugPrint(response.body);
+      debugPrint(response.statusCode as String?);
+      debugPrint(type);
+      debugPrint(role);
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         if (jsonData['success'] == true && jsonData['data'] != null) {
@@ -92,7 +92,7 @@ class LegalDocumentProvider extends ChangeNotifier {
                   try {
                     return LegalDocument.fromJson(doc);
                   } catch (e) {
-                    print('Error parsing document: $e');
+                    debugPrint('Error parsing document: $e');
                     return null;
                   }
                 })
@@ -124,7 +124,7 @@ class LegalDocumentProvider extends ChangeNotifier {
     } catch (e) {
       _error = 'Network error: $e';
       _isDocumentNotAvailable = false;
-      print('Fetch document error: $e');
+      debugPrint('Fetch document error: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -221,7 +221,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
               if (_provider.isLoading) {
                 return Center(
                   child: CircularProgressIndicator(
-                    color: ColorConstant.moyoOrange,
+                    color: ColorConstant.call4hepOrange,
                   ),
                 );
               }
@@ -297,7 +297,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                         ElevatedButton(
                           onPressed: _loadDocument,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorConstant.moyoOrange,
+                            backgroundColor: ColorConstant.call4hepOrange,
                             padding: EdgeInsets.symmetric(
                               horizontal: 32.w,
                               vertical: 12.h,
@@ -374,8 +374,8 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                                     ),
                                   ),
                                   selected: isSelected,
-                                  selectedColor: ColorConstant.moyoOrange,
-                                  backgroundColor: ColorConstant.moyoOrangeFade,
+                                  selectedColor: ColorConstant.call4hepOrange,
+                                  backgroundColor: ColorConstant.call4hepOrangeFade,
                                   onSelected: (selected) {
                                     if (selected) {
                                       setState(() {

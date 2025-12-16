@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
-import 'package:first_flutter/baseControllers/APis.dart';
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
-import 'package:first_flutter/widgets/user_service_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -55,7 +53,7 @@ class _ConfirmProviderServiceDetailsScreenState
   static const double ARRIVAL_THRESHOLD_METERS = 100.0;
 
   static const String GOOGLE_MAPS_API_KEY =
-      'AIzaSyBqTGBtJYtoRpvJFpF6tls1jcwlbiNcEVI';
+      'AIzaSyAkV6lz1n4MNS_lJaje3oIEXa2DN4QMz6U';
 
   @override
   void initState() {
@@ -202,7 +200,7 @@ class _ConfirmProviderServiceDetailsScreenState
       setState(() {
         _isLoading = false;
       });
-      print('Error fetching location details: $e');
+      debugPrint('Error fetching location details: $e');
     }
   }
 
@@ -486,7 +484,7 @@ class _ConfirmProviderServiceDetailsScreenState
 
       return [origin, destination];
     } catch (e) {
-      print('Error fetching directions: $e');
+      debugPrint('Error fetching directions: $e');
       return [origin, destination];
     }
   }
@@ -722,7 +720,7 @@ class _ConfirmProviderServiceDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.moyoScaffoldGradient,
+      backgroundColor: ColorConstant.call4hepScaffoldGradient,
       appBar: UserOnlyTitleAppbar(title: "Service Details"),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

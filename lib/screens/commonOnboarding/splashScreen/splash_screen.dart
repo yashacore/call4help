@@ -21,7 +21,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    _initializeVideo();
 
     // Set a 3-second timer to navigate
     _timer = Timer(const Duration(seconds: 1), () {
@@ -36,22 +35,6 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  Future<void> _initializeVideo() async {
-    try {
-      _videoController = VideoPlayerController.asset('assets/moyosplash.mp4');
-      await _videoController!.initialize();
-
-      if (mounted) {
-        setState(() {
-          _isVideoInitialized = true;
-        });
-        _videoController!.play();
-        _videoController!.setLooping(false);
-      }
-    } catch (e) {
-      print('Error initializing video: $e');
-    }
-  }
 
   @override
   void dispose() {

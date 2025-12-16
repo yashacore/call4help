@@ -126,7 +126,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                 ListTile(
                   leading: Icon(
                     Icons.photo_camera,
-                    color: ColorConstant.moyoOrange,
+                    color: ColorConstant.call4hepOrange,
                   ),
                   title: Text('Camera'),
                   onTap: () {
@@ -137,7 +137,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                 ListTile(
                   leading: Icon(
                     Icons.photo_library,
-                    color: ColorConstant.moyoOrange,
+                    color: ColorConstant.call4hepOrange,
                   ),
                   title: Text('Gallery'),
                   onTap: () {
@@ -182,13 +182,13 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
     // Remove dashes from Aadhaar before sending
     String cleanAadhaar = _aadhaarController.text.replaceAll('-', '');
 
-    print('=== Starting Profile Update ===');
-    print('Aadhaar: $cleanAadhaar');
-    print('PAN: ${_panController.text.trim()}');
-    print('IsActive: $_isActive');
-    print('IsRegistered: $_isRegistered');
-    print('Has Aadhaar Image: ${_aadhaarImage != null}');
-    print('Has PAN Image: ${_panImage != null}');
+    debugPrint('=== Starting Profile Update ===');
+    debugPrint('Aadhaar: $cleanAadhaar');
+    debugPrint('PAN: ${_panController.text.trim()}');
+    debugPrint('IsActive: $_isActive');
+    debugPrint('IsRegistered: $_isRegistered');
+    debugPrint('Has Aadhaar Image: ${_aadhaarImage != null}');
+    debugPrint('Has PAN Image: ${_panImage != null}');
 
     final editProvider = context.read<EditProviderProfileProvider>();
     final profileProvider = context.read<ProviderProfileProvider>();
@@ -233,8 +233,8 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         }
       }
     } else {
-      print('=== Profile Update Failed ===');
-      print('Error: ${editProvider.errorMessage}');
+      debugPrint('=== Profile Update Failed ===');
+      debugPrint('Error: ${editProvider.errorMessage}');
       _showErrorSnackBar(
         editProvider.errorMessage ?? 'Failed to update profile',
       );
@@ -250,7 +250,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         builder: (context, profileProvider, editProvider, child) {
           if (profileProvider.isLoading) {
             return Center(
-              child: CircularProgressIndicator(color: ColorConstant.moyoOrange),
+              child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
             );
           }
 
@@ -310,7 +310,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                       label: editProvider.isLoading
                           ? "Saving..."
                           : "Save Changes",
-                      backgroundColor: ColorConstant.moyoOrange,
+                      backgroundColor: ColorConstant.call4hepOrange,
                       labelColor: Colors.white,
                       onTap: editProvider.isLoading
                           ? () {} // Empty function instead of null
@@ -379,7 +379,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         decoration: InputDecoration(
           labelText: "Aadhaar Number",
           hintText: "1234-5678-9012",
-          prefixIcon: Icon(Icons.credit_card, color: ColorConstant.moyoOrange),
+          prefixIcon: Icon(Icons.credit_card, color: ColorConstant.call4hepOrange),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
@@ -432,7 +432,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         decoration: InputDecoration(
           labelText: "PAN Number",
           hintText: "ABCDE1234F",
-          prefixIcon: Icon(Icons.badge, color: ColorConstant.moyoOrange),
+          prefixIcon: Icon(Icons.badge, color: ColorConstant.call4hepOrange),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
@@ -445,43 +445,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required IconData icon,
-    String? Function(String?)? validator,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextFormField(
-        controller: controller,
-        validator: validator,
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          prefixIcon: Icon(icon, color: ColorConstant.moyoOrange),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        ),
-      ),
-    );
-  }
+
 
   Widget _buildImagePicker({
     required String label,
@@ -522,7 +486,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                   icon: Icon(Icons.add_photo_alternate, size: 20),
                   label: Text(hasNewImage ? 'Change' : 'Upload'),
                   style: TextButton.styleFrom(
-                    foregroundColor: ColorConstant.moyoOrange,
+                    foregroundColor: ColorConstant.call4hepOrange,
                   ),
                 ),
               ],
@@ -547,7 +511,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Center(
                             child: CircularProgressIndicator(
-                              color: ColorConstant.moyoOrange,
+                              color: ColorConstant.call4hepOrange,
                             ),
                           ),
                           errorWidget: (context, url, error) => Center(
@@ -594,7 +558,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
           style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
         ),
         value: value,
-        activeColor: ColorConstant.moyoOrange,
+        activeColor: ColorConstant.call4hepOrange,
         onChanged: onChanged,
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),

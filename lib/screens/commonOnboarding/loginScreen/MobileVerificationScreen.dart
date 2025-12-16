@@ -169,13 +169,13 @@ class __MobileVerificationDialogContentState
                   Container(
                     padding: EdgeInsets.all(20.w),
                     decoration: BoxDecoration(
-                      color: ColorConstant.moyoOrange.withOpacity(0.1),
+                      color: ColorConstant.call4hepOrange.withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.phone_android,
                       size: 48.sp,
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                     ),
                   ),
                   SizedBox(height: 24.h),
@@ -206,7 +206,7 @@ class __MobileVerificationDialogContentState
                     editProvider.mobileController.text.trim(),
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                       fontSize: 16.sp,
                     ),
                     textAlign: TextAlign.center,
@@ -231,14 +231,14 @@ class __MobileVerificationDialogContentState
                           ? null
                           : _handleVerify,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorConstant.moyoOrange,
+                        backgroundColor: ColorConstant.call4hepOrange,
                         foregroundColor: ColorConstant.white,
                         padding: EdgeInsets.symmetric(vertical: 16.h),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         elevation: 0,
-                        disabledBackgroundColor: ColorConstant.moyoOrange
+                        disabledBackgroundColor: ColorConstant.call4hepOrange
                             .withOpacity(0.6),
                       ),
                       child: editProvider.isMobileOtpVerifying
@@ -283,7 +283,7 @@ class __MobileVerificationDialogContentState
                             'Resend',
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(
-                                  color: ColorConstant.moyoOrange,
+                                  color: ColorConstant.call4hepOrange,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14.sp,
                                   decoration: TextDecoration.underline,
@@ -338,7 +338,7 @@ class __MobileVerificationDialogContentState
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: _otpControllers[index].text.isNotEmpty
-              ? ColorConstant.moyoOrange
+              ? ColorConstant.call4hepOrange
               : Colors.grey.shade300,
           width: 2.w,
         ),

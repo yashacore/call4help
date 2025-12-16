@@ -27,26 +27,26 @@ class EditProviderProfileProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      print('=== Starting API Call ===');
+      debugPrint('=== Starting API Call ===');
 
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('provider_auth_token');
 
-      print('Token exists: ${token != null && token.isNotEmpty}');
+      debugPrint('Token exists: ${token != null && token.isNotEmpty}');
 
       if (token == null || token.isEmpty) {
         throw Exception('No authentication token found. Please login again.');
       }
 
       final url = '$base_url/api/provider/update-profile';
-      print('API URL: $url');
+      debugPrint('API URL: $url');
 
       // Create multipart request
       var request = http.MultipartRequest('PUT', Uri.parse(url));
 
       // Add headers
       request.headers['Authorization'] = 'Bearer $token';
-      print('Headers added: ${request.headers}');
+      debugPrint('Headers added: ${request.headers}');
 
       // Add text fields
       request.fields['adhar_no'] = adharNo;
@@ -54,19 +54,19 @@ class EditProviderProfileProvider extends ChangeNotifier {
       request.fields['isactive'] = isActive.toString();
       request.fields['isregistered'] = isRegistered.toString();
 
-      print('Fields added: ${request.fields}');
+      debugPrint('Fields added: ${request.fields}');
 
       // Add aadhaar photo if provided
       if (aadhaarPhoto != null) {
-        print('Checking Aadhaar photo...');
+        debugPrint('Checking Aadhaar photo...');
         bool exists = await aadhaarPhoto.exists();
-        print('Aadhaar photo exists: $exists');
+        debugPrint('Aadhaar photo exists: $exists');
 
         if (exists) {
           try {
             String fileName = path.basename(aadhaarPhoto.path);
             String extension = path.extension(aadhaarPhoto.path).toLowerCase();
-            print('Aadhaar file: $fileName, Extension: $extension');
+            debugPrint('Aadhaar file: $fileName, Extension: $extension');
 
             MediaType? contentType;
             if (extension == '.jpg' || extension == '.jpeg') {
@@ -82,10 +82,10 @@ class EditProviderProfileProvider extends ChangeNotifier {
               contentType = MediaType('image', 'jpeg');
             }
 
-            print('Content type: $contentType');
+            debugPrint('Content type: $contentType');
 
             var aadhaarBytes = await aadhaarPhoto.readAsBytes();
-            print('Aadhaar bytes length: ${aadhaarBytes.length}');
+            debugPrint('Aadhaar bytes length: ${aadhaarBytes.length}');
 
             var aadhaarFile = http.MultipartFile.fromBytes(
               'aadhaar_photo',
@@ -94,29 +94,29 @@ class EditProviderProfileProvider extends ChangeNotifier {
               contentType: contentType,
             );
             request.files.add(aadhaarFile);
-            print('Aadhaar photo added to request');
+            debugPrint('Aadhaar photo added to request');
           } catch (e) {
-            print('Error reading aadhaar photo: $e');
+            debugPrint('Error reading aadhaar photo: $e');
             throw Exception('Failed to read Aadhaar photo: $e');
           }
         } else {
-          print('Aadhaar photo file does not exist at path: ${aadhaarPhoto.path}');
+          debugPrint('Aadhaar photo file does not exist at path: ${aadhaarPhoto.path}');
         }
       } else {
-        print('No Aadhaar photo provided');
+        debugPrint('No Aadhaar photo provided');
       }
 
       // Add PAN photo if provided
       if (panPhoto != null) {
-        print('Checking PAN photo...');
+        debugPrint('Checking PAN photo...');
         bool exists = await panPhoto.exists();
-        print('PAN photo exists: $exists');
+        debugPrint('PAN photo exists: $exists');
 
         if (exists) {
           try {
             String fileName = path.basename(panPhoto.path);
             String extension = path.extension(panPhoto.path).toLowerCase();
-            print('PAN file: $fileName, Extension: $extension');
+            debugPrint('PAN file: $fileName, Extension: $extension');
 
             MediaType? contentType;
             if (extension == '.jpg' || extension == '.jpeg') {
@@ -132,10 +132,10 @@ class EditProviderProfileProvider extends ChangeNotifier {
               contentType = MediaType('image', 'jpeg');
             }
 
-            print('Content type: $contentType');
+            debugPrint('Content type: $contentType');
 
             var panBytes = await panPhoto.readAsBytes();
-            print('PAN bytes length: ${panBytes.length}');
+            debugPrint('PAN bytes length: ${panBytes.length}');
 
             var panFile = http.MultipartFile.fromBytes(
               'pan_photo',
@@ -144,36 +144,36 @@ class EditProviderProfileProvider extends ChangeNotifier {
               contentType: contentType,
             );
             request.files.add(panFile);
-            print('PAN photo added to request');
+            debugPrint('PAN photo added to request');
           } catch (e) {
-            print('Error reading pan photo: $e');
+            debugPrint('Error reading pan photo: $e');
             throw Exception('Failed to read PAN photo: $e');
           }
         } else {
-          print('PAN photo file does not exist at path: ${panPhoto.path}');
+          debugPrint('PAN photo file does not exist at path: ${panPhoto.path}');
         }
       } else {
-        print('No PAN photo provided');
+        debugPrint('No PAN photo provided');
       }
 
-      print('Total files in request: ${request.files.length}');
-      print('Sending request...');
+      debugPrint('Total files in request: ${request.files.length}');
+      debugPrint('Sending request...');
 
       // Send request
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
 
-      print('=== API Response ===');
-      print('Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
+      debugPrint('=== API Response ===');
+      debugPrint('Status Code: ${response.statusCode}');
+      debugPrint('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         try {
           final jsonData = json.decode(response.body);
-          print('Parsed JSON: $jsonData');
+          debugPrint('Parsed JSON: $jsonData');
 
           if (jsonData['message'] != null) {
-            print('Success: ${jsonData['message']}');
+            debugPrint('Success: ${jsonData['message']}');
             _errorMessage = null;
             _isLoading = false;
             notifyListeners();
@@ -182,7 +182,7 @@ class EditProviderProfileProvider extends ChangeNotifier {
             throw Exception('Unexpected response format: missing message field');
           }
         } catch (e) {
-          print('Error parsing response: $e');
+          debugPrint('Error parsing response: $e');
           throw Exception('Failed to parse server response: $e');
         }
       } else if (response.statusCode == 401) {
@@ -206,9 +206,9 @@ class EditProviderProfileProvider extends ChangeNotifier {
       }
     } catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
-      print('=== Error ===');
-      print('Error updating provider profile: $e');
-      print('Stack trace: ${StackTrace.current}');
+      debugPrint('=== Error ===');
+      debugPrint('Error updating provider profile: $e');
+      debugPrint('Stack trace: ${StackTrace.current}');
       _isLoading = false;
       notifyListeners();
       return false;

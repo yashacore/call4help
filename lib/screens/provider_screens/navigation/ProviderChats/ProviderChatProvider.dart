@@ -22,8 +22,8 @@ class ProviderChatProvider with ChangeNotifier {
 
   // Fetch chat history from NATS
   Future<bool> fetchChatHistory({required String chatId}) async {
-    print("=== FETCHING CHAT HISTORY ===");
-    print("Chat ID: $chatId");
+    debugPrint("=== FETCHING CHAT HISTORY ===");
+    debugPrint("Chat ID: $chatId");
 
     _isLoading = true;
     _error = null;
@@ -31,7 +31,7 @@ class ProviderChatProvider with ChangeNotifier {
 
     try {
       if (!_natsService.isConnected) {
-        print("NATS not connected, attempting to connect...");
+        debugPrint("NATS not connected, attempting to connect...");
         final connected = await _natsService.connect();
         if (!connected) {
           _error = 'Failed to connect to messaging service';
@@ -42,7 +42,7 @@ class ProviderChatProvider with ChangeNotifier {
       }
 
       final requestPayload = {'chat_id': int.parse(chatId)};
-      print("📩 Sending NATS request: $requestPayload");
+      debugPrint("📩 Sending NATS request: $requestPayload");
 
       final responseStr = await _natsService.request(
         'chat.history.request',
@@ -58,8 +58,8 @@ class ProviderChatProvider with ChangeNotifier {
       }
 
       final responseData = json.decode(responseStr);
-      print("✅ Received NATS Response:");
-      print(responseData);
+      debugPrint("✅ Received NATS Response:");
+      debugPrint(responseData);
 
       if (responseData['success'] == true && responseData['messages'] != null) {
         _messages.clear();
@@ -70,14 +70,14 @@ class ProviderChatProvider with ChangeNotifier {
             final chatMessage = ChatMessage.fromJson(msgData);
             _messages.add(chatMessage);
           } catch (e) {
-            print("Error parsing message: $e");
+            debugPrint("Error parsing message: $e");
           }
         }
 
         // Sort messages by timestamp (oldest first)
         _messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
-        print("✅ Loaded ${_messages.length} messages from history");
+        debugPrint("✅ Loaded ${_messages.length} messages from history");
         _isLoading = false;
         notifyListeners();
         return true;
@@ -88,9 +88,9 @@ class ProviderChatProvider with ChangeNotifier {
         return false;
       }
     } catch (e, stackTrace) {
-      print("=== EXCEPTION in fetchChatHistory ===");
-      print("Error: $e");
-      print("Stack Trace: $stackTrace");
+      debugPrint("=== EXCEPTION in fetchChatHistory ===");
+      debugPrint("Error: $e");
+      debugPrint("Stack Trace: $stackTrace");
       _error = 'Failed to load chat history: ${e.toString()}';
       _isLoading = false;
       notifyListeners();
@@ -101,18 +101,18 @@ class ProviderChatProvider with ChangeNotifier {
   // Subscribe to new messages via NATS
   Future<void> subscribeToMessages({required String chatId}) async {
     try {
-      print("=== Subscribing to chat messages ===");
-      print("Chat ID: $chatId");
+      debugPrint("=== Subscribing to chat messages ===");
+      debugPrint("Chat ID: $chatId");
 
       if (!_natsService.isConnected) {
-        print("NATS not connected, attempting to connect...");
+        debugPrint("NATS not connected, attempting to connect...");
         await _natsService.connect();
       }
 
       _chatSubscription = _natsService.subscribe('chat.message.$chatId', (message) {
         try {
           final msgData = json.decode(message);
-          print("📨 New message received: $msgData");
+          debugPrint("📨 New message received: $msgData");
 
           final chatMessage = ChatMessage.fromJson(msgData);
 
@@ -121,18 +121,18 @@ class ProviderChatProvider with ChangeNotifier {
             _messages.add(chatMessage);
             _messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
             notifyListeners();
-            print("✅ New message added to list: ${chatMessage.id}");
+            debugPrint("✅ New message added to list: ${chatMessage.id}");
           } else {
-            print("⚠️ Message already exists: ${chatMessage.id}");
+            debugPrint("⚠️ Message already exists: ${chatMessage.id}");
           }
         } catch (e) {
-          print("Error processing incoming message: $e");
+          debugPrint("Error processing incoming message: $e");
         }
       });
 
-      print("✅ Subscribed to chat messages");
+      debugPrint("✅ Subscribed to chat messages");
     } catch (e) {
-      print("❌ Subscription Error: $e");
+      debugPrint("❌ Subscription Error: $e");
     }
   }
 
@@ -142,9 +142,9 @@ class ProviderChatProvider with ChangeNotifier {
     required String providerId,
     int retryCount = 0,
   }) async {
-    print("=== INITIATE CHAT STARTED (Attempt ${retryCount + 1}) ===");
-    print("Service ID: $serviceId");
-    print("Provider ID: $providerId");
+    debugPrint("=== INITIATE CHAT STARTED (Attempt ${retryCount + 1}) ===");
+    debugPrint("Service ID: $serviceId");
+    debugPrint("Provider ID: $providerId");
 
     _isLoading = true;
     _error = null;
@@ -155,7 +155,7 @@ class ProviderChatProvider with ChangeNotifier {
       final token = prefs.getString('provider_auth_token');
 
       if (token == null) {
-        print("ERROR: Token not found!");
+        debugPrint("ERROR: Token not found!");
         _error = 'Authentication token not found';
         _isLoading = false;
         notifyListeners();
@@ -163,7 +163,7 @@ class ProviderChatProvider with ChangeNotifier {
       }
 
       if (serviceId.isEmpty || providerId.isEmpty) {
-        print("ERROR: Service ID or Provider ID is empty");
+        debugPrint("ERROR: Service ID or Provider ID is empty");
         _error = 'Invalid service or provider information';
         _isLoading = false;
         notifyListeners();
@@ -175,8 +175,8 @@ class ProviderChatProvider with ChangeNotifier {
         'user_id': int.tryParse(providerId) ?? providerId,
       };
 
-      print("Request URL: $base_url/bid/api/chat/provider/initiate");
-      print("Request Body: ${jsonEncode(requestBody)}");
+      debugPrint("Request URL: $base_url/bid/api/chat/provider/initiate");
+      debugPrint("Request Body: ${jsonEncode(requestBody)}");
 
       final response = await http.post(
         Uri.parse('$base_url/bid/api/chat/provider/initiate'),
@@ -192,13 +192,13 @@ class ProviderChatProvider with ChangeNotifier {
         },
       );
 
-      print("=== API RESPONSE ===");
-      print("Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
+      debugPrint("=== API RESPONSE ===");
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        print("Parsed Response Data: $data");
+        debugPrint("Parsed Response Data: $data");
 
         if (data['success'] == true && data['chat'] != null) {
           final chatData = data['chat'];
@@ -208,10 +208,10 @@ class ProviderChatProvider with ChangeNotifier {
             _chatId = chatData['chat_id'].toString();
           }
 
-          print("Chat ID: $_chatId");
+          debugPrint("Chat ID: $_chatId");
 
           if (_chatId == null || _chatId!.isEmpty) {
-            print("ERROR: Chat ID is empty or null");
+            debugPrint("ERROR: Chat ID is empty or null");
             _error = 'Invalid chat ID received';
             _isLoading = false;
             notifyListeners();
@@ -221,13 +221,13 @@ class ProviderChatProvider with ChangeNotifier {
           bool natsConnected = false;
           try {
             if (!_natsService.isConnected) {
-              print("Initializing NATS connection...");
+              debugPrint("Initializing NATS connection...");
               natsConnected = await _natsService.connect();
             } else {
               natsConnected = true;
             }
           } catch (e) {
-            print("NATS connection error (non-critical): $e");
+            debugPrint("NATS connection error (non-critical): $e");
             natsConnected = false;
           }
 
@@ -238,25 +238,25 @@ class ProviderChatProvider with ChangeNotifier {
                 await subscribeToMessages(chatId: _chatId!);
               }
             } catch (e) {
-              print("NATS operations error (non-critical): $e");
+              debugPrint("NATS operations error (non-critical): $e");
             }
           } else {
-            print("NATS not available - chat initiated without real-time updates");
+            debugPrint("NATS not available - chat initiated without real-time updates");
           }
 
-          print("SUCCESS: Chat initiated successfully!");
+          debugPrint("SUCCESS: Chat initiated successfully!");
           _isLoading = false;
           notifyListeners();
           return true;
         } else {
-          print("ERROR: Response success is false or chat is null");
+          debugPrint("ERROR: Response success is false or chat is null");
           _error = data['message'] ?? 'Failed to initiate chat';
           _isLoading = false;
           notifyListeners();
           return false;
         }
       } else if (response.statusCode == 500 && retryCount < 2) {
-        print("⚠️ Server error 500 - Retrying after 2 seconds...");
+        debugPrint("⚠️ Server error 500 - Retrying after 2 seconds...");
         await Future.delayed(Duration(seconds: 2));
         return await initiateChat(
           serviceId: serviceId,
@@ -264,7 +264,7 @@ class ProviderChatProvider with ChangeNotifier {
           retryCount: retryCount + 1,
         );
       } else {
-        print("ERROR: API returned error status code ${response.statusCode}");
+        debugPrint("ERROR: API returned error status code ${response.statusCode}");
         String errorMessage;
 
         switch (response.statusCode) {
@@ -298,7 +298,7 @@ class ProviderChatProvider with ChangeNotifier {
             errorMessage = errorData['error'];
           }
         } catch (e) {
-          print("Could not parse error response");
+          debugPrint("Could not parse error response");
         }
 
         _error = errorMessage;
@@ -307,9 +307,9 @@ class ProviderChatProvider with ChangeNotifier {
         return false;
       }
     } catch (e, stackTrace) {
-      print("=== EXCEPTION OCCURRED ===");
-      print("Error: $e");
-      print("Stack Trace: $stackTrace");
+      debugPrint("=== EXCEPTION OCCURRED ===");
+      debugPrint("Error: $e");
+      debugPrint("Stack Trace: $stackTrace");
 
       String errorMessage;
       if (e.toString().contains('timeout')) {
@@ -332,22 +332,22 @@ class ProviderChatProvider with ChangeNotifier {
   // Send message
   Future<bool> sendMessage({required String message}) async {
     if (_chatId == null) {
-      print("ERROR: Cannot send message, chatId is null");
+      debugPrint("ERROR: Cannot send message, chatId is null");
       _error = 'Chat not initialized';
       notifyListeners();
       return false;
     }
 
-    print("=== SEND MESSAGE STARTED ===");
-    print("Chat ID: $_chatId");
-    print("Message: $message");
+    debugPrint("=== SEND MESSAGE STARTED ===");
+    debugPrint("Chat ID: $_chatId");
+    debugPrint("Message: $message");
 
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('provider_auth_token');
 
       if (token == null) {
-        print("ERROR: Token not found!");
+        debugPrint("ERROR: Token not found!");
         _error = 'Authentication token not found';
         notifyListeners();
         return false;
@@ -355,8 +355,8 @@ class ProviderChatProvider with ChangeNotifier {
 
       final requestBody = {'chat_id': _chatId, 'message': message};
 
-      print("Request URL: $base_url/bid/api/chat/provider/send-message");
-      print("Request Body: ${jsonEncode(requestBody)}");
+      debugPrint("Request URL: $base_url/bid/api/chat/provider/send-message");
+      debugPrint("Request Body: ${jsonEncode(requestBody)}");
 
       final response = await http.post(
         Uri.parse('$base_url/bid/api/chat/provider/send-message'),
@@ -367,13 +367,13 @@ class ProviderChatProvider with ChangeNotifier {
         body: jsonEncode(requestBody),
       );
 
-      print("=== SEND MESSAGE RESPONSE ===");
-      print("Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
+      debugPrint("=== SEND MESSAGE RESPONSE ===");
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        print("Message sent successfully!");
+        debugPrint("Message sent successfully!");
 
         try {
           if (data['message'] != null) {
@@ -383,19 +383,19 @@ class ProviderChatProvider with ChangeNotifier {
             if (!exists) {
               _messages.add(chatMessage);
               _messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-              print("Message added to local list: ${chatMessage.id}");
+              debugPrint("Message added to local list: ${chatMessage.id}");
               notifyListeners();
             } else {
-              print("⚠️ Message already exists: ${chatMessage.id}");
+              debugPrint("⚠️ Message already exists: ${chatMessage.id}");
             }
           }
         } catch (e) {
-          print("Error parsing message: $e");
+          debugPrint("Error parsing message: $e");
         }
 
         return true;
       } else {
-        print("ERROR: Failed to send message");
+        debugPrint("ERROR: Failed to send message");
         try {
           final errorData = jsonDecode(response.body);
           _error = errorData['message'] ?? 'Failed to send message';
@@ -406,9 +406,9 @@ class ProviderChatProvider with ChangeNotifier {
         return false;
       }
     } catch (e, stackTrace) {
-      print("=== EXCEPTION in sendMessage ===");
-      print("Error: $e");
-      print("Stack Trace: $stackTrace");
+      debugPrint("=== EXCEPTION in sendMessage ===");
+      debugPrint("Error: $e");
+      debugPrint("Stack Trace: $stackTrace");
       _error = 'Network error: ${e.toString()}';
       notifyListeners();
       return false;
@@ -464,8 +464,8 @@ class ChatMessage {
   });
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
-    print("=== Parsing ChatMessage ===");
-    print("Raw JSON: $json");
+    debugPrint("=== Parsing ChatMessage ===");
+    debugPrint("Raw JSON: $json");
 
     // Parse ID - handle both direct int and nested structure
     String messageId = '';
@@ -476,7 +476,7 @@ class ChatMessage {
         messageId = json['id'].toString();
       }
     }
-    print("Parsed ID: $messageId");
+    debugPrint("Parsed ID: $messageId");
 
     // Parse message - handle both direct string and nested object with 'text' field
     String messageText = '';
@@ -489,7 +489,7 @@ class ChatMessage {
         messageText = json['message'];
       }
     }
-    print("Parsed Message: $messageText");
+    debugPrint("Parsed Message: $messageText");
 
     // Parse other fields
     final chatId = json['chat_id']?.toString() ?? '';
@@ -505,12 +505,12 @@ class ChatMessage {
         createdAt = DateTime.now();
       }
     } catch (e) {
-      print("Error parsing date: $e");
+      debugPrint("Error parsing date: $e");
       createdAt = DateTime.now();
     }
 
-    print("Created ChatMessage successfully");
-    print("Sender Type: $senderType");
+    debugPrint("Created ChatMessage successfully");
+    debugPrint("Sender Type: $senderType");
 
     return ChatMessage(
       id: messageId,

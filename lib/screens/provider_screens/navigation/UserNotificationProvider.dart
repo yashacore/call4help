@@ -29,7 +29,7 @@ class UserNotificationProvider extends ChangeNotifier {
         },
       );
 
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success'] == true && data['notifications'] != null) {
@@ -61,7 +61,7 @@ class UserNotificationProvider extends ChangeNotifier {
         },
       );
 
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 200) {
         final index = _notifications.indexWhere(
               (n) => n['id'] == notificationId,

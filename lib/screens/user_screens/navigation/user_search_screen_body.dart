@@ -88,11 +88,11 @@ class _UserSearchScreenBodyState extends State<UserSearchScreenBody> {
             : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: ColorConstant.moyoOrange.withAlpha(0)),
+          borderSide: BorderSide(color: ColorConstant.call4hepOrange.withAlpha(0)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: ColorConstant.moyoOrange),
+          borderSide: BorderSide(color: ColorConstant.call4hepOrange),
         ),
       ),
       maxLines: 1,
@@ -128,7 +128,7 @@ class _UserSearchScreenBodyState extends State<UserSearchScreenBody> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SvgPicture.asset(
-            'assets/icons/moyo_big_search.svg',
+            'assets/icons/call4hep_big_search.svg',
             color: Colors.grey[400],
           ),
           Text(
@@ -210,8 +210,8 @@ class _UserSearchScreenBodyState extends State<UserSearchScreenBody> {
     UserSearchData subcategory,
     String serviceType,
   ) async {
-    print(subcategory.id);
-    print(subcategory.categoryId);
+    // debugPrint(subcategory.id);
+    // debugPrint(subcategory.categoryId);
     final prefs = await SharedPreferences.getInstance();
     final isEmailVerified = prefs.getBool('is_email_verified') ?? false;
     final userMobile = prefs.getString('user_mobile') ?? '';
@@ -219,7 +219,7 @@ class _UserSearchScreenBodyState extends State<UserSearchScreenBody> {
     // ADD THIS CHECK:
     if (!isEmailVerified || userMobile.isEmpty) {
       // Email not verified OR mobile not provided, show dialog first
-      print(
+      debugPrint(
         'Email not verified or mobile missing, showing update profile dialog',
       );
 
@@ -233,7 +233,7 @@ class _UserSearchScreenBodyState extends State<UserSearchScreenBody> {
 
       if (!updatedEmailVerified || updatedMobile.isEmpty) {
         // Still not complete, don't proceed
-        print('Profile still incomplete after dialog');
+        debugPrint('Profile still incomplete after dialog');
         return;
       }
       // Both verified, continue to service screen below

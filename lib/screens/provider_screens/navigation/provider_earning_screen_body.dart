@@ -33,14 +33,14 @@ class _ProviderEarningScreenState extends State<ProviderEarningScreen> {
                 earningsProvider.earningsData == null) {
               return Center(
                 child: CircularProgressIndicator(
-                  color: ColorConstant.moyoOrange,
+                  color: ColorConstant.call4hepOrange,
                 ),
               );
             }
 
             if (earningsProvider.errorMessage != null &&
                 earningsProvider.earningsData == null) {
-              print(earningsProvider.errorMessage);
+              debugPrint(earningsProvider.errorMessage);
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -59,7 +59,7 @@ class _ProviderEarningScreenState extends State<ProviderEarningScreen> {
                     ElevatedButton(
                       onPressed: () => earningsProvider.fetchEarnings(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorConstant.moyoOrange,
+                        backgroundColor: ColorConstant.call4hepOrange,
                       ),
                       child: Text('Retry'),
                     ),
@@ -75,7 +75,7 @@ class _ProviderEarningScreenState extends State<ProviderEarningScreen> {
                   child: Container(
                     padding: EdgeInsets.all(18.w),
                     decoration: BoxDecoration(
-                      color: ColorConstant.moyoOrange,
+                      color: ColorConstant.call4hepOrange,
                       borderRadius: BorderRadius.circular(24.r),
                     ),
                     child: Column(
@@ -239,7 +239,7 @@ class _ProviderEarningScreenState extends State<ProviderEarningScreen> {
 
     return RefreshIndicator(
       onRefresh: () => provider.fetchEarnings(),
-      color: ColorConstant.moyoOrange,
+      color: ColorConstant.call4hepOrange,
       child: ListView.builder(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         itemCount: filteredServices.length,
@@ -534,7 +534,7 @@ class _ProviderEarningScreenState extends State<ProviderEarningScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: ColorConstant.moyoOrange,
+              primary: ColorConstant.call4hepOrange,
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),

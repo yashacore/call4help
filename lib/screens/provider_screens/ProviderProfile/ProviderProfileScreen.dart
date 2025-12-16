@@ -38,7 +38,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
           // Show loading indicator
           if (profileProvider.isLoading && !profileProvider.hasProfile) {
             return Center(
-              child: CircularProgressIndicator(color: ColorConstant.moyoOrange),
+              child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
             );
           }
 
@@ -51,7 +51,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
           // Show profile data
           return RefreshIndicator(
             onRefresh: () => profileProvider.refreshProfile(),
-            color: ColorConstant.moyoOrange,
+            color: ColorConstant.call4hepOrange,
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               child: Padding(
@@ -71,7 +71,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                     ButtonLarge(
                       isIcon: false,
                       label: "Edit Profile",
-                      backgroundColor: ColorConstant.moyoOrange,
+                      backgroundColor: ColorConstant.call4hepOrange,
                       labelColor: Colors.white,
                       onTap: () async {
                         final result = await Navigator.pushNamed(
@@ -128,7 +128,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
               icon: Icon(Icons.refresh),
               label: Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.moyoOrange,
+                backgroundColor: ColorConstant.call4hepOrange,
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               ),
@@ -147,7 +147,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(100),
         border: Border.all(
-          color: ColorConstant.moyoOrange.withOpacity(0.3),
+          color: ColorConstant.call4hepOrange.withOpacity(0.3),
           width: 2,
         ),
       ),
@@ -162,7 +162,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
               fit: BoxFit.cover,
               placeholder: (context, url) => Center(
                 child: CircularProgressIndicator(
-                  color: ColorConstant.moyoOrange,
+                  color: ColorConstant.call4hepOrange,
                   strokeWidth: 2,
                 ),
               ),
@@ -173,7 +173,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
             )
           else
             Image.asset(
-              'assets/images/moyo_image_placeholder.png',
+              'assets/images/moyo_service_placeholder.png',
               fit: BoxFit.cover,
             ),
         ],
@@ -203,41 +203,41 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
           isLabel: true,
           label: "Full Name",
           title: profileProvider.fullName,
-          iconPath: 'assets/icons/moyo_icon_info_card_full_name.svg',
+          iconPath: 'assets/icons/call4hep_icon_info_card_full_name.svg',
         ),
         if (profileProvider.providerProfile?.email != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Email",
             title: profileProvider.email,
-            iconPath: 'assets/icons/moyo_icon_info_card_email.svg',
+            iconPath: 'assets/icons/call4hep_icon_info_card_email.svg',
           ),
         PersonalInfoCard(
           isLabel: true,
           label: "Phone Number",
           title: profileProvider.mobile,
-          iconPath: 'assets/icons/moyo_icon_info_card_phone.svg',
+          iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
         ),
         if (profileProvider.providerProfile?.age != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Age",
             title: profileProvider.providerProfile!.age.toString(),
-            iconPath: 'assets/icons/moyo_icon_info_card_full_name.svg',
+            iconPath: 'assets/icons/call4hep_icon_info_card_full_name.svg',
           ),
         if (profileProvider.providerProfile?.gender != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Gender",
             title: profileProvider.providerProfile!.gender!,
-            iconPath: 'assets/icons/moyo_icon_info_card_full_name.svg',
+            iconPath: 'assets/icons/call4hep_icon_info_card_full_name.svg',
           ),
         if (profileProvider.providerProfile?.adharNo != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Aadhaar Number",
             title: profileProvider.providerProfile!.adharNo!,
-            iconPath: 'assets/icons/moyo_icon_info_card_full_name.svg',
+            iconPath: 'assets/icons/call4hep_icon_info_card_full_name.svg',
           ),
       ],
     );
@@ -266,35 +266,35 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
             isLabel: true,
             label: "Service",
             title: profileProvider.service,
-            iconPath: 'assets/icons/moyo_icon_info_card_phone.svg',
+            iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
           ),
         if (profileProvider.providerProfile?.experience != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Experience",
             title: profileProvider.experience,
-            iconPath: 'assets/icons/moyo_icon_info_card_phone.svg',
+            iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
           ),
         if (profileProvider.providerProfile?.education != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Education",
             title: profileProvider.education,
-            iconPath: 'assets/icons/moyo_icon_info_card_phone.svg',
+            iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
           ),
         if (profileProvider.providerProfile?.keySkills != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Key Skills",
             title: profileProvider.keySkills,
-            iconPath: 'assets/icons/moyo_icon_info_card_phone.svg',
+            iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
           ),
         if (profileProvider.providerProfile?.licenseCertified != null)
           PersonalInfoCard(
             isLabel: true,
             label: "License/Certification",
             title: profileProvider.providerProfile!.licenseCertified!,
-            iconPath: 'assets/icons/moyo_icon_info_card_phone.svg',
+            iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
           ),
         if (profileProvider.providerProfile?.latitude != null &&
             profileProvider.providerProfile?.longitude != null)
@@ -303,7 +303,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
             label: "Location",
             title:
                 '${profileProvider.providerProfile!.latitude}, ${profileProvider.providerProfile!.longitude}',
-            iconPath: 'assets/icons/moyo_icon_info_card_address.svg',
+            iconPath: 'assets/icons/call4hep_icon_info_card_address.svg',
           ),
       ],
     );
@@ -346,7 +346,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
             title: _formatDate(
               profileProvider.providerProfile!.providerCreatedAt,
             ),
-            iconPath: 'assets/icons/moyo_icon_info_card_full_name.svg',
+            iconPath: 'assets/icons/call4hep_icon_info_card_full_name.svg',
           ),
       ],
     );

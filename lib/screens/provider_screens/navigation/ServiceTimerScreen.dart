@@ -145,7 +145,7 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
 
       final requestData = jsonEncode({'service_id': widget.serviceId});
 
-      print('📞 Requesting "service.info.details": $requestData');
+      debugPrint('📞 Requesting "service.info.details": $requestData');
 
       final response = await _natsService.request(
         'service.info.details',
@@ -155,7 +155,7 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
 
       if (response != null) {
         final data = jsonDecode(response);
-        print('📨 Response received: ${jsonEncode(data)}');
+        debugPrint('📨 Response received: ${jsonEncode(data)}');
 
         setState(() {
           _serviceData = data;
@@ -168,7 +168,7 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
         }
       }
     } catch (e) {
-      print('Error fetching service details: $e');
+      debugPrint('Error fetching service details: $e');
       setState(() {
         _isLoading = false;
       });
@@ -315,14 +315,14 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                   ),
                 ),
 
-                // Moyo logo
+                // call4hep logo
                 Positioned(
                   top: 20.h,
                   left: 0,
                   right: 0,
                   child: Center(
                     child: Text(
-                      'moyo',
+                      'call4hep',
                       style: TextStyle(
                         fontSize: 48.sp,
                         fontWeight: FontWeight.bold,

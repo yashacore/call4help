@@ -82,7 +82,7 @@ class MySkillProvider extends ChangeNotifier {
         }),
       );
 
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
@@ -165,7 +165,7 @@ class MySkillProvider extends ChangeNotifier {
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
 
-      print('Update Skill Response: ${response.body}');
+      debugPrint('Update Skill Response: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

@@ -41,19 +41,19 @@ class _ImageSliderState extends State<ImageSlider> {
 
   @override
   initState() {
-    print("/////////////////widget.imageLinks");
-    print(widget.imageLinks);
-    print(containsMap(widget.imageLinks));
+    debugPrint("/////////////////widget.imageLinks");
+    // debugPrint(widget.imageLinks);
+    // debugPrint(containsMap(widget.imageLinks));
     if (widget.imageLinks.isEmpty) {
       imageList = [...dummyList];
 
-      print("/////////////////////////////////// First is running");
-      // print(imageList);
+      debugPrint("/////////////////////////////////// First is running");
+      // debugPrint(imageList);
     } else if (containsMap(widget.imageLinks)) {
       imageList = [...dummyList];
-      print("/////////////////////////////////// 2 is running");
+      debugPrint("/////////////////////////////////// 2 is running");
     } else {
-      print("/////////////////////////////////// 3 is running");
+      debugPrint("/////////////////////////////////// 3 is running");
       networkImage = true;
       imageList = List.generate(
         widget.imageLinks.length,
@@ -69,8 +69,8 @@ class _ImageSliderState extends State<ImageSlider> {
 
   @override
   Widget build(BuildContext context) {
-    print("/////// Image Slider Build");
-    print(imageList);
+    debugPrint("/////// Image Slider Build");
+    // debugPrint(imageList);
     return SizedBox(
       child: InkWell(
         onTap: () {},

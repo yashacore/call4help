@@ -8,7 +8,6 @@ import 'dart:convert';
 
 import '../../../constants/colorConstant/color_constant.dart';
 import '../../../providers/provider_navigation_provider.dart';
-import '../../commonOnboarding/splashScreen/splash_screen_provider.dart';
 
 enum Mode { customer, provider }
 
@@ -31,7 +30,7 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
       final providerAuthToken = prefs.getString('provider_auth_token');
 
       if (providerAuthToken == null || providerAuthToken.isEmpty) {
-        print('Provider auth token not found');
+        debugPrint('Provider auth token not found');
         return;
       }
 
@@ -47,16 +46,16 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
         }),
       );
 
-      print('Device token update response status: ${response.statusCode}');
+      debugPrint('Device token update response status: ${response.statusCode}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseData = json.decode(response.body);
-        print('Device token update message: ${responseData['message']}');
+        debugPrint('Device token update message: ${responseData['message']}');
       } else {
-        print('Failed to update device token: ${response.body}');
+        debugPrint('Failed to update device token: ${response.body}');
       }
     } catch (e) {
-      print('Error updating provider device token: $e');
+      debugPrint('Error updating provider device token: $e');
     }
   }
 
@@ -86,8 +85,8 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
         },
       );
 
-      print('Auth token: $authToken');
-      print('Response status: ${response.statusCode}');
+      debugPrint('Auth token: $authToken');
+      debugPrint('Response status: ${response.statusCode}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseData = json.decode(response.body);
@@ -97,9 +96,9 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
         final providerId = responseData['provider']?['id'];
         final isRegistered = responseData['provider']?['isregistered'] ?? false;
 
-        print('Provider token: $providerToken');
-        print('Provider ID: $providerId');
-        print('Is registered: $isRegistered');
+        debugPrint('Provider token: $providerToken');
+        debugPrint('Provider ID: $providerId');
+        debugPrint('Is registered: $isRegistered');
 
         if (providerToken != null && providerToken.isNotEmpty) {
           await prefs.setString('provider_auth_token', providerToken);
@@ -114,22 +113,22 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
           // Save provider registration status
           await prefs.setBool('is_provider_registered', isRegistered);
 
-          print('Successfully switched to provider mode');
-          print('Customer token preserved: ${prefs.getString('auth_token')}');
-          print(
+          debugPrint('Successfully switched to provider mode');
+          debugPrint('Customer token preserved: ${prefs.getString('auth_token')}');
+          debugPrint(
             'Provider token saved: ${prefs.getString('provider_auth_token')}',
           );
-          print('User role: ${prefs.getString('user_role')}');
+          debugPrint('User role: ${prefs.getString('user_role')}');
 
           // Update provider device token if providerId and deviceToken exist
           if (providerId != null) {
             final deviceToken = prefs.getString('device_token');
 
             if (deviceToken != null && deviceToken.isNotEmpty) {
-              print('Updating provider device token...');
+              debugPrint('Updating provider device token...');
               await _updateProviderDeviceToken(providerId, deviceToken);
             } else {
-              print('Device token not found in SharedPreferences');
+              debugPrint('Device token not found in SharedPreferences');
             }
           }
 
@@ -148,7 +147,7 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
         _showErrorDialog(errorMessage);
       }
     } catch (e) {
-      print('Error in _switchToProviderMode: $e');
+      debugPrint('Error in _switchToProviderMode: $e');
       _showErrorDialog('An error occurred: ${e.toString()}');
     } finally {
       if (mounted) {
@@ -283,11 +282,11 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       decoration: BoxDecoration(
         color: isActive
-            ? ColorConstant.moyoOrangeFade
+            ? ColorConstant.call4hepOrangeFade
             : const Color(0xFFF5F5F5),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isActive ? ColorConstant.moyoOrange : const Color(0xFF7B7B7B),
+          color: isActive ? ColorConstant.call4hepOrange : const Color(0xFF7B7B7B),
           width: 2,
         ),
       ),
@@ -308,7 +307,7 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
             mode == Mode.customer ? "Customer Mode" : "Provider Mode",
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: isActive
-                  ? ColorConstant.moyoOrange
+                  ? ColorConstant.call4hepOrange
                   : const Color(0xFF7B7B7B),
               fontWeight: FontWeight.w500,
             ),
@@ -317,7 +316,7 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
             mode == Mode.customer ? "Book services" : "Offer services",
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: isActive
-                  ? ColorConstant.moyoOrange
+                  ? ColorConstant.call4hepOrange
                   : const Color(0xFF7B7B7B),
               fontWeight: FontWeight.w400,
             ),
@@ -340,7 +339,7 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
               decoration: BoxDecoration(
-                color: _isLoading ? Colors.grey : ColorConstant.moyoOrange,
+                color: _isLoading ? Colors.grey : ColorConstant.call4hepOrange,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: InkWell(

@@ -77,7 +77,7 @@ class ServiceArrivalProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      print('Error initializing timer: $e');
+      debugPrint('Error initializing timer: $e');
     }
   }
 
@@ -114,7 +114,7 @@ class ServiceArrivalProvider extends ChangeNotifier {
         _resetTimerState();
       }
     } catch (e) {
-      print('Error loading timer state: $e');
+      debugPrint('Error loading timer state: $e');
       _resetTimerState();
     }
   }
@@ -219,7 +219,7 @@ class ServiceArrivalProvider extends ChangeNotifier {
         _resetTimerState();
       }
     } catch (e) {
-      print('Error clearing timer state: $e');
+      debugPrint('Error clearing timer state: $e');
     }
   }
 

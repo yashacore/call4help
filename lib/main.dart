@@ -22,7 +22,6 @@ import 'package:first_flutter/screens/provider_screens/navigation/ProviderChats/
 import 'package:first_flutter/screens/provider_screens/navigation/UserNotificationProvider.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/provider_service_tab_body/ProviderBidProvider.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/provider_service_tab_body/provider_confirmed_service.dart';
-import 'package:first_flutter/screens/provider_screens/navigation/provider_service_tab_body/provider_re_bid_service.dart';
 import 'package:first_flutter/screens/provider_screens/provider_custom_bottom_nav.dart';
 import 'package:first_flutter/screens/provider_screens/provider_service_details_screen.dart';
 import 'package:first_flutter/screens/user_screens/Address/MyAddressProvider.dart';
@@ -55,7 +54,6 @@ import 'package:provider/provider.dart';
 import 'BannerModel.dart';
 import 'NATS Service/NatsService.dart';
 import 'NotificationService.dart';
-import 'baseControllers/NavigationController/navigation_controller.dart';
 import 'firebase_options.dart';
 import 'screens/commonOnboarding/loginScreen/login_screen.dart';
 import 'screens/commonOnboarding/loginScreen/login_screen_provider.dart';
@@ -67,10 +65,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Initialize Firebase for background handling
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  print("=== 🔔 BACKGROUND Message Received ===");
-  print("Title: ${message.notification?.title}");
-  print("Body: ${message.notification?.body}");
-  print("Data: ${message.data}");
+  debugPrint("=== 🔔 BACKGROUND Message Received ===");
+  debugPrint("Title: ${message.notification?.title}");
+  debugPrint("Body: ${message.notification?.body}");
+  debugPrint("Data: ${message.data}");
 
   // Background notifications are automatically shown by Firebase
   // You can add custom logic here if needed
@@ -80,42 +78,42 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  print("=== 🚀 App Starting ===");
+  debugPrint("=== 🚀 App Starting ===");
 
   try {
     // 1. Initialize NATS Service
-    print("📡 Initializing NATS...");
+    debugPrint("📡 Initializing NATS...");
     await NatsService().initialize(
       url: 'nats://api.moyointernational.com',
       autoReconnect: true,
       reconnectInterval: const Duration(seconds: 5),
     );
-    print("✅ NATS initialized");
+    debugPrint("✅ NATS initialized");
 
     // 2. Initialize Firebase
-    print("🔥 Initializing Firebase...");
+    debugPrint("🔥 Initializing Firebase...");
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print("✅ Firebase initialized");
+    debugPrint("✅ Firebase initialized");
 
     // 3. Set Background Message Handler (MUST be before notification init)
-    print("📨 Setting background message handler...");
+    debugPrint("📨 Setting background message handler...");
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    print("✅ Background handler set");
+    debugPrint("✅ Background handler set");
 
     // 4. Initialize Notification Service
-    print("🔔 Initializing notifications...");
+    debugPrint("🔔 Initializing notifications...");
     await NotificationService.initializeNotifications();
-    print("✅ Notifications initialized");
+    debugPrint("✅ Notifications initialized");
 
     // 5. Setup Token Refresh Listener
     NotificationService.setupTokenRefreshListener();
-    print("✅ Token refresh listener setup");
+    debugPrint("✅ Token refresh listener setup");
 
-    print("=== ✅ All Services Initialized Successfully ===\n");
+    debugPrint("=== ✅ All Services Initialized Successfully ===\n");
   } catch (e) {
-    print("=== ❌ Initialization Error: $e ===");
+    debugPrint("=== ❌ Initialization Error: $e ===");
   }
 
   runApp(
@@ -196,7 +194,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (_notificationPermissionRequested) return;
     _notificationPermissionRequested = true;
 
-    if (mounted && context != null) {
+    if (mounted) {
       final granted = await NotificationService.requestNotificationPermission(
         context,
       );
@@ -259,7 +257,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             navigatorKey: NotificationService.navigatorKey,
 
             theme: ThemeData(
-              textTheme: GoogleFonts.robotoTextTheme(
+              textTheme: GoogleFonts.interTextTheme(
                 Theme.of(context).textTheme,
               ),
             ),
@@ -287,8 +285,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     serviceType: '',
                   ),
               '/EmailVerificationScreen': (context) {
-                final email =
-                    ModalRoute.of(context)?.settings.arguments as String?;
                 return ChangeNotifierProvider(
                   create: (_) => OtpScreenProvider(),
                 );

@@ -17,7 +17,7 @@
         <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBqTGBtJYtoRpvJFpF6tls1jcwlbiNcEVI" />
+            android:value="AIzaSyAkV6lz1n4MNS_lJaje3oIEXa2DN4QMz6U" />
 
         <!-- Firebase Notification Icon -->
         <meta-data
@@ -27,7 +27,7 @@
         <!-- Firebase Notification Channel ID (SINGLE ENTRY - FIXED) -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="moyo_high_importance" />
+            android:value="call4hep_high_importance" />
 
         <!-- Main Activity -->
         <activity

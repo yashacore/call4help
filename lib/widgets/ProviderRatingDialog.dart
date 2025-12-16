@@ -28,7 +28,7 @@ class RatingAPI {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('provider_auth_token');
     } catch (e) {
-      print('Error getting auth token: $e');
+      debugPrint('Error getting auth token: $e');
       return null;
     }
   }
@@ -71,9 +71,9 @@ class RatingAPI {
         'rated_to_provider_id': providerId.toString(),
       };
 
-      print('📤 Submitting rating to: $base_url/bid/api/user/rating/create');
-      print('📤 Request body: ${jsonEncode(requestBody)}');
-      print('📤 Token: ${token.substring(0, 20)}...');
+      debugPrint('📤 Submitting rating to: $base_url/bid/api/user/rating/create');
+      debugPrint('📤 Request body: ${jsonEncode(requestBody)}');
+      debugPrint('📤 Token: ${token.substring(0, 20)}...');
 
       // Make API request
       final response = await http
@@ -92,8 +92,8 @@ class RatingAPI {
             },
           );
 
-      print('📥 Response status: ${response.statusCode}');
-      print('📥 Response body: ${response.body}');
+      debugPrint('📥 Response status: ${response.statusCode}');
+      debugPrint('📥 Response body: ${response.body}');
 
       // Handle response
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -119,7 +119,7 @@ class RatingAPI {
             data: data,
           );
         } catch (e) {
-          print('Error parsing response: $e');
+          debugPrint('Error parsing response: $e');
           return RatingResponse(
             success: true,
             message: 'Rating submitted successfully',
@@ -142,7 +142,7 @@ class RatingAPI {
         try {
           final data = jsonDecode(response.body);
           final errorMsg = data['error'] ?? data['message'] ?? 'Server error';
-          print('❌ Server error details: $errorMsg');
+          debugPrint('❌ Server error details: $errorMsg');
           throw Exception('Server error: $errorMsg. Please try again later.');
         } catch (e) {
           throw Exception(
@@ -155,7 +155,7 @@ class RatingAPI {
         );
       }
     } catch (e) {
-      print('❌ Error submitting rating: $e');
+      debugPrint('❌ Error submitting rating: $e');
       if (e.toString().contains('Exception:')) {
         rethrow;
       }
@@ -228,11 +228,11 @@ class _ProviderRatingDialogState extends State<ProviderRatingDialog> {
     });
 
     try {
-      print('🎯 Submitting rating:');
-      print('   Service ID: ${widget.serviceId}');
-      print('   Provider ID: ${widget.userId}');
-      print('   Rating: $_rating');
-      print('   Review: $review');
+      debugPrint('🎯 Submitting rating:');
+      debugPrint('   Service ID: ${widget.serviceId}');
+      debugPrint('   Provider ID: ${widget.userId}');
+      debugPrint('   Rating: $_rating');
+      debugPrint('   Review: $review');
 
       final response = await RatingAPI.submitRating(
         serviceId: widget.serviceId!,
@@ -249,7 +249,7 @@ class _ProviderRatingDialogState extends State<ProviderRatingDialog> {
         _showError(response.message ?? 'Failed to submit rating');
       }
     } catch (e) {
-      print('❌ Dialog error: $e');
+      debugPrint('❌ Dialog error: $e');
       _showError(e.toString().replaceAll('Exception: ', ''));
     } finally {
       if (mounted) {
@@ -295,7 +295,7 @@ class _ProviderRatingDialogState extends State<ProviderRatingDialog> {
             padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 8.h),
             child: Text(
               'Rate Service',
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.inter(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF1D1B20),
@@ -317,7 +317,7 @@ class _ProviderRatingDialogState extends State<ProviderRatingDialog> {
                       padding: EdgeInsets.only(bottom: 12.h),
                       child: Text(
                         'Rate ${widget.providerName}',
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.inter(
                           fontSize: 13.sp,
                           color: Color(0xFF7A7A7A),
                         ),
@@ -365,7 +365,7 @@ class _ProviderRatingDialogState extends State<ProviderRatingDialog> {
                               : _rating == 4
                               ? 'Very Good'
                               : 'Excellent',
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF1D1B20),
@@ -379,7 +379,7 @@ class _ProviderRatingDialogState extends State<ProviderRatingDialog> {
                   // Review TextField
                   Text(
                     'Write your review *',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF1D1B20),
@@ -393,7 +393,7 @@ class _ProviderRatingDialogState extends State<ProviderRatingDialog> {
                     maxLength: 500,
                     decoration: InputDecoration(
                       hintText: 'Share your experience...',
-                      hintStyle: GoogleFonts.roboto(
+                      hintStyle: GoogleFonts.inter(
                         color: Color(0xFFBDBDBD),
                         fontSize: 13.sp,
                       ),
@@ -415,9 +415,9 @@ class _ProviderRatingDialogState extends State<ProviderRatingDialog> {
                       filled: true,
                       fillColor: Colors.white,
                       contentPadding: EdgeInsets.all(10.w),
-                      counterStyle: GoogleFonts.roboto(fontSize: 11.sp),
+                      counterStyle: GoogleFonts.inter(fontSize: 11.sp),
                     ),
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 13.sp,
                       color: Color(0xFF1D1B20),
                     ),
@@ -449,7 +449,7 @@ class _ProviderRatingDialogState extends State<ProviderRatingDialog> {
                     ),
                     child: Text(
                       'Cancel',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                         color: _isSubmitting
@@ -487,7 +487,7 @@ class _ProviderRatingDialogState extends State<ProviderRatingDialog> {
                           )
                         : Text(
                             'Submit',
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.inter(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,

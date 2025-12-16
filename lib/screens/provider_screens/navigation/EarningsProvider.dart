@@ -58,7 +58,7 @@ class EarningsProvider extends ChangeNotifier {
         },
       );
 
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         _earningsData = EarningsResponse.fromJson(jsonData);

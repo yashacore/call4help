@@ -89,7 +89,7 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                     child: Center(
                       child: Text(
                         'No carousel items available',
-                        style: GoogleFonts.roboto(color: Colors.grey.shade600),
+                        style: GoogleFonts.inter(color: Colors.grey.shade600),
                       ),
                     ),
                   );
@@ -109,7 +109,7 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
               child: Text(
                 "Service Offering",
                 textAlign: TextAlign.start,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Color(0xFF000000),
                     fontWeight: FontWeight.w500,
@@ -169,7 +169,7 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                       padding: const EdgeInsets.all(32.0),
                       child: Text(
                         'No categories available',
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.inter(
                           textStyle: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ),
@@ -277,7 +277,7 @@ class _CategoryCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: Color(0xFF000000),
                     fontSize: 10,

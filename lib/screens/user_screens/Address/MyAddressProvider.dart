@@ -109,7 +109,7 @@ class MyAddressProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('auth_token');
     } catch (e) {
-      print('Error getting auth token: $e');
+      debugPrint('Error getting auth token: $e');
       return null;
     }
   }
@@ -137,7 +137,7 @@ class MyAddressProvider extends ChangeNotifier {
         },
       );
 
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['status'] == true) {

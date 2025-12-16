@@ -60,16 +60,16 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                     imageUrl: widget.categoryIcon!,
                     fit: BoxFit.cover,
                     placeholder: (context, url) =>
-                        Icon(Icons.category, color: ColorConstant.moyoOrange),
+                        Icon(Icons.category, color: ColorConstant.call4hepOrange),
                     errorWidget: (context, url, error) =>
-                        Icon(Icons.category, color: ColorConstant.moyoOrange),
+                        Icon(Icons.category, color: ColorConstant.call4hepOrange),
                   ),
                 ),
               ),
             Expanded(
               child: Text(
                 widget.categoryName,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: ColorConstant.black,
                     fontWeight: FontWeight.w600,
@@ -87,11 +87,11 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(color: ColorConstant.moyoOrange),
+                  CircularProgressIndicator(color: ColorConstant.call4hepOrange),
                   SizedBox(height: 16),
                   Text(
                     'Loading subcategories...',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       textStyle: Theme.of(context).textTheme.bodyMedium,
                       color: Colors.grey[600],
                     ),
@@ -112,7 +112,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                     SizedBox(height: 16),
                     Text(
                       'Oops! Something went wrong',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.titleMedium,
                         fontWeight: FontWeight.w600,
                       ),
@@ -121,7 +121,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                     Text(
                       subcategoryProvider.errorMessage ?? 'An error occurred',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.bodyMedium,
                         color: Colors.grey[600],
                       ),
@@ -136,7 +136,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                       icon: Icon(Icons.refresh),
                       label: Text('Retry'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorConstant.moyoOrange,
+                        backgroundColor: ColorConstant.call4hepOrange,
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(
                           horizontal: 32,
@@ -168,7 +168,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                     SizedBox(height: 16),
                     Text(
                       'No subcategories available',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.titleMedium,
                         fontWeight: FontWeight.w600,
                       ),
@@ -177,7 +177,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                     Text(
                       'There are no services under this category yet.',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.bodyMedium,
                         color: Colors.grey[600],
                       ),
@@ -284,7 +284,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                   child: Icon(
                                     Icons.room_service_outlined,
                                     size: 48,
-                                    color: ColorConstant.moyoOrange.withOpacity(
+                                    color: ColorConstant.call4hepOrange.withOpacity(
                                       0.3,
                                     ),
                                   ),
@@ -293,7 +293,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                   child: Icon(
                                     Icons.room_service_outlined,
                                     size: 48,
-                                    color: ColorConstant.moyoOrange.withOpacity(
+                                    color: ColorConstant.call4hepOrange.withOpacity(
                                       0.3,
                                     ),
                                   ),
@@ -302,7 +302,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                             : Icon(
                                 Icons.room_service_outlined,
                                 size: 48,
-                                color: ColorConstant.moyoOrange.withOpacity(
+                                color: ColorConstant.call4hepOrange.withOpacity(
                                   0.3,
                                 ),
                               ),
@@ -318,12 +318,12 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: ColorConstant.moyoOrange,
+                          color: ColorConstant.call4hepOrange,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           subcategory.billingType.toUpperCase(),
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             textStyle: Theme.of(context).textTheme.labelSmall
                                 ?.copyWith(
                                   color: Colors.white,
@@ -353,7 +353,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                       subcategory.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         textStyle: Theme.of(context).textTheme.bodyMedium
                             ?.copyWith(
                               fontWeight: FontWeight.w600,
@@ -373,7 +373,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                             children: [
                               Text(
                                 'Starting from',
-                                style: GoogleFonts.roboto(
+                                style: GoogleFonts.inter(
                                   textStyle: Theme.of(context)
                                       .textTheme
                                       .labelSmall
@@ -385,12 +385,12 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                               ),
                               Text(
                                 '₹${subcategory.hourlyRate}/hr',
-                                style: GoogleFonts.roboto(
+                                style: GoogleFonts.inter(
                                   textStyle: Theme.of(context)
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        color: ColorConstant.moyoOrange,
+                                        color: ColorConstant.call4hepOrange,
                                         fontWeight: FontWeight.w700,
                                       ),
                                 ),
@@ -401,13 +401,13 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                         Container(
                           padding: EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: ColorConstant.moyoOrange.withOpacity(0.1),
+                            color: ColorConstant.call4hepOrange.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
                             Icons.arrow_forward,
                             size: 16,
-                            color: ColorConstant.moyoOrange,
+                            color: ColorConstant.call4hepOrange,
                           ),
                         ),
                       ],

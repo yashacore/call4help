@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:first_flutter/baseControllers/APis.dart';
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/widgets/provider_only_title_appbar.dart';
 import 'package:flutter/material.dart';
@@ -236,7 +235,7 @@ class _ProviderMySkillScreenState extends State<ProviderMySkillScreen> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text('Skill updated successfully'),
-                                        backgroundColor: ColorConstant.moyoGreen,
+                                        backgroundColor: ColorConstant.call4hepGreen,
                                         duration: Duration(seconds: 2),
                                       ),
                                     );
@@ -255,7 +254,7 @@ class _ProviderMySkillScreenState extends State<ProviderMySkillScreen> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: ColorConstant.moyoGreen,
+                                backgroundColor: ColorConstant.call4hepGreen,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -387,7 +386,7 @@ class _ProviderMySkillScreenState extends State<ProviderMySkillScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Skill status updated successfully'),
-                          backgroundColor: ColorConstant.moyoGreen,
+                          backgroundColor: ColorConstant.call4hepGreen,
                           duration: Duration(seconds: 2),
                         ),
                       );

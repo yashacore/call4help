@@ -7,12 +7,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../BannerModel.dart';
-import '../../../NotificationService.dart';
 import '../../../widgets/image_slider.dart';
 import '../../SubCategory/SelectFromHomeScreen.dart';
 import '../../user_screens/Home/CategoryProvider.dart';
 import '../../Skills/ProviderMySkillScreen.dart';
-import '../../SubCategory/SubcategoryScreen.dart';
 import '../CompletedServicesScreen.dart';
 import 'AvailabilityProvider.dart';
 
@@ -56,12 +54,12 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                           Text(
                             isOnline ? "You are online" : "You are offline",
                             textAlign: TextAlign.start,
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.inter(
                               textStyle: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(
                                     fontSize: 18,
                                     color: isOnline
-                                        ? ColorConstant.moyoGreen
+                                        ? ColorConstant.call4hepGreen
                                         : Colors.grey.shade900,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -71,7 +69,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                             thumbColor: WidgetStateProperty.all(
                               ColorConstant.white,
                             ),
-                            activeTrackColor: ColorConstant.moyoGreen,
+                            activeTrackColor: ColorConstant.call4hepGreen,
                             inactiveTrackColor: Colors.grey,
                             trackOutlineColor: WidgetStateProperty.all(
                               Colors.white.withOpacity(0),
@@ -113,7 +111,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                         child: LinearProgressIndicator(
                           backgroundColor: Colors.grey.shade200,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            ColorConstant.moyoGreen,
+                            ColorConstant.call4hepGreen,
                           ),
                         ),
                       ),
@@ -140,7 +138,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                         child: Text(
                           "Today's Stats",
                           textAlign: TextAlign.start,
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             textStyle: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   fontSize: 18,
@@ -176,7 +174,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                                     padding: EdgeInsets.all(10),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(16),
-                                      color: ColorConstant.moyoOrangeFade,
+                                      color: ColorConstant.call4hepOrangeFade,
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
@@ -188,7 +186,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                                         Icon(
                                           Icons.business_center_outlined,
                                           color: isOnline
-                                              ? ColorConstant.moyoOrange
+                                              ? ColorConstant.call4hepOrange
                                               : Colors.grey,
                                         ),
                                         SizedBox(height: 6),
@@ -379,7 +377,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                     child: Center(
                       child: Text(
                         'No carousel items available',
-                        style: GoogleFonts.roboto(color: Colors.grey.shade600),
+                        style: GoogleFonts.inter(color: Colors.grey.shade600),
                       ),
                     ),
                   );
@@ -397,9 +395,9 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
             SizedBox(
               width: double.infinity,
               child: Text(
-                "Moyo Offering's",
+                "call4hep Offering's",
                 textAlign: TextAlign.start,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Color(0xFF000000),
                     fontWeight: FontWeight.w500,
@@ -457,7 +455,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                       padding: const EdgeInsets.all(32.0),
                       child: Text(
                         'No categories available',
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.inter(
                           textStyle: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ),
@@ -526,7 +524,7 @@ class _ProviderCategoryCard extends StatelessWidget {
         width: cardWidth,
         height: 100,
         decoration: BoxDecoration(
-          color: Color(0xFFF7E5D1),
+          color: Colors.grey.shade300,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -561,7 +559,7 @@ class _ProviderCategoryCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: Color(0xFF000000),
                     fontSize: 10,

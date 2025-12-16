@@ -34,7 +34,7 @@ class UserAddressCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           spacing: 6,
           children: [
-            SvgPicture.asset("assets/icons/moyo_address_card_home_icon.svg"),
+            SvgPicture.asset("assets/icons/call4hep_address_card_home_icon.svg"),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -64,7 +64,7 @@ class UserAddressCard extends StatelessWidget {
         textAlign: TextAlign.start,
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Color(0xFF7A7A7A),
             fontWeight: FontWeight.w500,
@@ -89,7 +89,7 @@ class UserAddressCard extends StatelessWidget {
             textAlign: TextAlign.start,
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Color(0xFF7A7A7A),
                 fontWeight: FontWeight.w500,
@@ -101,7 +101,7 @@ class UserAddressCard extends StatelessWidget {
             textAlign: TextAlign.start,
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Color(0xFF000000),
                 fontWeight: FontWeight.w700,
@@ -122,8 +122,8 @@ class UserAddressCard extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            // color: MoyoColorBox.moyoOrange,
-            border: Border.all(color: ColorConstant.moyoOrange, width: 1),
+            // color: call4hepColorBox.call4hepOrange,
+            border: Border.all(color: ColorConstant.call4hepOrange, width: 1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -131,16 +131,16 @@ class UserAddressCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              Icon(Icons.edit_note_outlined, color: ColorConstant.moyoOrange),
-              // SvgPicture.asset("assets/icons/moyo_white_star.svg"),
+              Icon(Icons.edit_note_outlined, color: ColorConstant.call4hepOrange),
+              // SvgPicture.asset("assets/icons/call4hep_white_star.svg"),
               Text(
                 "Edit",
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: ColorConstant.moyoOrange,
+                    color: ColorConstant.call4hepOrange,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -165,7 +165,7 @@ class UserAddressCard extends StatelessWidget {
           "Primary",
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: GoogleFonts.roboto(
+          style: GoogleFonts.inter(
             textStyle: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),

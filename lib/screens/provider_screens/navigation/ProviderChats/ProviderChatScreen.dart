@@ -45,10 +45,10 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
   @override
   void initState() {
     super.initState();
-    print("=== ProviderChatScreen initState ===");
-    print("Service ID: ${widget.serviceId}");
-    print("Provider ID: ${widget.providerId}");
-    print("User Name: ${widget.userName}");
+    debugPrint("=== ProviderChatScreen initState ===");
+    debugPrint("Service ID: ${widget.serviceId}");
+    debugPrint("Provider ID: ${widget.providerId}");
+    debugPrint("User Name: ${widget.userName}");
 
     _messageController.addListener(_onTextChanged);
 
@@ -62,20 +62,20 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print("PostFrameCallback - calling _initializeChat");
+      debugPrint("PostFrameCallback - calling _initializeChat");
       _initializeChat();
     });
   }
 
   Future<void> _initializeChat() async {
-    print("=== _initializeChat called ===");
-    print("serviceId is null: ${widget.serviceId == null}");
-    print("providerId is null: ${widget.providerId == null}");
+    debugPrint("=== _initializeChat called ===");
+    debugPrint("serviceId is null: ${widget.serviceId == null}");
+    debugPrint("providerId is null: ${widget.providerId == null}");
 
     if (widget.serviceId == null || widget.providerId == null) {
-      print("ERROR: serviceId or providerId is null!");
-      print("serviceId: ${widget.serviceId}");
-      print("providerId: ${widget.providerId}");
+      debugPrint("ERROR: serviceId or providerId is null!");
+      debugPrint("serviceId: ${widget.serviceId}");
+      debugPrint("providerId: ${widget.providerId}");
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -99,15 +99,15 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
         context,
         listen: false,
       );
-      print("ChatProvider obtained successfully");
+      debugPrint("ChatProvider obtained successfully");
 
-      print("Calling chatProvider.initiateChat...");
+      debugPrint("Calling chatProvider.initiateChat...");
       final success = await chatProvider.initiateChat(
         serviceId: widget.serviceId!,
         providerId: widget.providerId!,
       );
 
-      print("initiateChat returned: $success");
+      debugPrint("initiateChat returned: $success");
 
       if (success) {
         setState(() {
@@ -119,9 +119,9 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
         await Future.delayed(Duration(milliseconds: 300));
         _scrollToBottom(immediate: true);
       } else {
-        print("Chat initialization failed");
+        debugPrint("Chat initialization failed");
         if (mounted && chatProvider.error != null) {
-          print("Error: ${chatProvider.error}");
+          debugPrint("Error: ${chatProvider.error}");
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(chatProvider.error!),
@@ -137,9 +137,9 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
         }
       }
     } catch (e, stackTrace) {
-      print("=== EXCEPTION in _initializeChat ===");
-      print("Error: $e");
-      print("StackTrace: $stackTrace");
+      debugPrint("=== EXCEPTION in _initializeChat ===");
+      debugPrint("Error: $e");
+      debugPrint("StackTrace: $stackTrace");
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -225,7 +225,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
         }
       }
     } catch (e) {
-      print("Error sending message: $e");
+      debugPrint("Error sending message: $e");
       setState(() {
         _isSending = false;
       });
@@ -279,11 +279,11 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(color: ColorConstant.moyoOrange),
+                    CircularProgressIndicator(color: ColorConstant.call4hepOrange),
                     SizedBox(height: 16.h),
                     Text(
                       'Loading chat...',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 14.sp,
                         color: Color(0xFF7A7A7A),
                       ),
@@ -322,7 +322,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
           SizedBox(height: 16.h),
           Text(
             'No messages yet',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 16.sp,
               color: Color(0xFF7A7A7A),
               fontWeight: FontWeight.w500,
@@ -331,7 +331,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
           SizedBox(height: 8.h),
           Text(
             'Start the conversation!',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 14.sp,
               color: Color(0xFFB0B0B0),
             ),
@@ -360,7 +360,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: ColorConstant.moyoOrange.withOpacity(0.3),
+                    color: ColorConstant.call4hepOrange.withOpacity(0.3),
                     width: 2.w,
                   ),
                 ),
@@ -370,27 +370,27 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                           imageUrl: widget.userImage!,
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
-                            color: ColorConstant.moyoOrangeFade,
+                            color: ColorConstant.call4hepOrangeFade,
                             child: Icon(
                               Icons.person,
-                              color: ColorConstant.moyoOrange,
+                              color: ColorConstant.call4hepOrange,
                               size: 20.sp,
                             ),
                           ),
                           errorWidget: (context, url, error) => Container(
-                            color: ColorConstant.moyoOrangeFade,
+                            color: ColorConstant.call4hepOrangeFade,
                             child: Icon(
                               Icons.person,
-                              color: ColorConstant.moyoOrange,
+                              color: ColorConstant.call4hepOrange,
                               size: 20.sp,
                             ),
                           ),
                         )
                       : Container(
-                          color: ColorConstant.moyoOrangeFade,
+                          color: ColorConstant.call4hepOrangeFade,
                           child: Icon(
                             Icons.person,
-                            color: ColorConstant.moyoOrange,
+                            color: ColorConstant.call4hepOrange,
                             size: 20.sp,
                           ),
                         ),
@@ -404,7 +404,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                     width: 12.w,
                     height: 12.w,
                     decoration: BoxDecoration(
-                      color: ColorConstant.moyoGreen,
+                      color: ColorConstant.call4hepGreen,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2.w),
                     ),
@@ -419,7 +419,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
               children: [
                 Text(
                   widget.userName ?? "User Name",
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.inter(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF1D1B20),
@@ -428,9 +428,9 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                 if (widget.isOnline)
                   Text(
                     'Online',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 12.sp,
-                      color: ColorConstant.moyoGreen,
+                      color: ColorConstant.call4hepGreen,
                     ),
                   ),
               ],
@@ -506,7 +506,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Text(
               dateText,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.inter(
                 fontSize: 12.sp,
                 color: Color(0xFF7A7A7A),
                 fontWeight: FontWeight.w500,
@@ -532,12 +532,12 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
               height: 28.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: ColorConstant.moyoOrangeFade,
+                color: ColorConstant.call4hepOrangeFade,
               ),
               child: Icon(
                 Icons.person,
                 size: 16.sp,
-                color: ColorConstant.moyoOrange,
+                color: ColorConstant.call4hepOrange,
               ),
             ),
             SizedBox(width: 8.w),
@@ -547,7 +547,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
               constraints: BoxConstraints(maxWidth: 280.w),
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               decoration: BoxDecoration(
-                color: isSentByMe ? ColorConstant.moyoOrange : Colors.white,
+                color: isSentByMe ? ColorConstant.call4hepOrange : Colors.white,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16.r),
                   topRight: Radius.circular(16.r),
@@ -567,7 +567,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                 children: [
                   Text(
                     message.message,
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       color: isSentByMe ? Colors.white : Color(0xFF1D1B20),
                       fontWeight: FontWeight.w400,
@@ -580,7 +580,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                     children: [
                       Text(
                         _formatTime(message.createdAt),
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.inter(
                           fontSize: 11.sp,
                           color: isSentByMe
                               ? Colors.white.withOpacity(0.8)
@@ -593,7 +593,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                           message.isRead ? Icons.done_all : Icons.check,
                           size: 14.sp,
                           color: message.isRead
-                              ? ColorConstant.moyoGreen
+                              ? ColorConstant.call4hepGreen
                               : Colors.white.withOpacity(0.8),
                         ),
                       ],
@@ -642,7 +642,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                 maxLines: null,
                 textInputAction: TextInputAction.newline,
                 enabled: _chatInitialized && !_isSending,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   color: Color(0xFF1D1B20),
                 ),
@@ -650,7 +650,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                   hintText: _chatInitialized
                       ? 'Type a message...'
                       : 'Loading chat...',
-                  hintStyle: GoogleFonts.roboto(
+                  hintStyle: GoogleFonts.inter(
                     fontSize: 14.sp,
                     color: Color(0xFF7A7A7A),
                   ),
@@ -675,8 +675,8 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
               height: 44.w,
               decoration: BoxDecoration(
                 color: (_isTyping && _chatInitialized && !_isSending)
-                    ? ColorConstant.moyoOrange
-                    : ColorConstant.moyoOrangeFade,
+                    ? ColorConstant.call4hepOrange
+                    : ColorConstant.call4hepOrangeFade,
                 shape: BoxShape.circle,
               ),
               child: _isSending
@@ -691,7 +691,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                       Icons.send,
                       color: (_isTyping && _chatInitialized)
                           ? Colors.white
-                          : ColorConstant.moyoOrange,
+                          : ColorConstant.call4hepOrange,
                       size: 20.sp,
                     ),
             ),

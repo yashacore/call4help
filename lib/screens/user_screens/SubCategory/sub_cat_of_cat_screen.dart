@@ -58,7 +58,7 @@ class _SubCatOfCatScreenState extends State<SubCatOfCatScreen> {
       builder: (context, provider, child) {
         if (provider.isLoading) {
           return Center(
-            child: CircularProgressIndicator(color: ColorConstant.moyoOrange),
+            child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
           );
         }
 
@@ -74,7 +74,7 @@ class _SubCatOfCatScreenState extends State<SubCatOfCatScreen> {
                   Text(
                     provider.errorMessage ?? 'An error occurred',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 16.sp,
                       color: Colors.red,
                     ),
@@ -96,7 +96,7 @@ class _SubCatOfCatScreenState extends State<SubCatOfCatScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorConstant.moyoOrange,
+                      backgroundColor: ColorConstant.call4hepOrange,
                       foregroundColor: Colors.white,
                     ),
                     child: Text('Retry'),
@@ -118,7 +118,7 @@ class _SubCatOfCatScreenState extends State<SubCatOfCatScreen> {
                   SizedBox(height: 16.h),
                   Text(
                     'No subcategories available',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 18.sp,
                       color: Colors.grey,
                     ),
@@ -304,7 +304,7 @@ class UserExpansionTileListCard extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () => _handleServiceTypeSelection(context, 'instant'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: ColorConstant.moyoOrange,
+              backgroundColor: ColorConstant.call4hepOrange,
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(vertical: 14.h),
               shape: RoundedRectangleBorder(
@@ -324,7 +324,7 @@ class UserExpansionTileListCard extends StatelessWidget {
           child: OutlinedButton(
             onPressed: () => _handleServiceTypeSelection(context, 'later'),
             style: OutlinedButton.styleFrom(
-              side: BorderSide(color: ColorConstant.moyoOrange, width: 2),
+              side: BorderSide(color: ColorConstant.call4hepOrange, width: 2),
               padding: EdgeInsets.symmetric(vertical: 14.h),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
@@ -333,7 +333,7 @@ class UserExpansionTileListCard extends StatelessWidget {
             child: Text(
               'Later',
               style: TextStyle(
-                color: ColorConstant.moyoOrange,
+                color: ColorConstant.call4hepOrange,
                 fontWeight: FontWeight.w600,
                 fontSize: 14.sp,
               ),
@@ -357,7 +357,7 @@ class UserExpansionTileListCard extends StatelessWidget {
     // ADD THIS CHECK:
     if (!isEmailVerified || userMobile.isEmpty) {
       // Email not verified OR mobile not provided, show dialog first
-      print(
+      debugPrint(
         'Email not verified or mobile missing, showing update profile dialog',
       );
 
@@ -371,13 +371,13 @@ class UserExpansionTileListCard extends StatelessWidget {
 
       if (!updatedEmailVerified || updatedMobile.isEmpty) {
         // Still not complete, don't proceed
-        print('Profile still incomplete after dialog');
+        debugPrint('Profile still incomplete after dialog');
         return;
       }
       // Both verified, continue to service screen below
     }
 
-    print(subcategory.id);
+    debugPrint(subcategory.id as String?);
     Navigator.push(
       context,
       MaterialPageRoute(

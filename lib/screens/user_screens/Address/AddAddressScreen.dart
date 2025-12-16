@@ -172,7 +172,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('auth_token');
     } catch (e) {
-      print('Error getting auth token: $e');
+      debugPrint('Error getting auth token: $e');
       return null;
     }
   }
@@ -217,14 +217,14 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Location selected successfully'),
-              backgroundColor: ColorConstant.moyoGreen,
+              backgroundColor: ColorConstant.call4hepGreen,
               duration: Duration(seconds: 2),
             ),
           );
         }
       }
     } catch (e) {
-      print('Error opening map picker: $e');
+      debugPrint('Error opening map picker: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -319,7 +319,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
 
       final responseData = jsonDecode(response.body);
 
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (responseData['status'] == true) {
           // Success
@@ -329,7 +329,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                 content: Text(
                   responseData['message'] ?? 'Address added successfully',
                 ),
-                backgroundColor: ColorConstant.moyoGreen,
+                backgroundColor: ColorConstant.call4hepGreen,
               ),
             );
             Navigator.pop(context, responseData['address_id']?[0]);
@@ -363,7 +363,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: ColorConstant.moyoOrange,
+        backgroundColor: ColorConstant.call4hepOrange,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: ColorConstant.white),
@@ -401,7 +401,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       title: const Text('Home'),
                       value: 'home',
                       groupValue: _addressType,
-                      activeColor: ColorConstant.moyoOrange,
+                      activeColor: ColorConstant.call4hepOrange,
                       contentPadding: EdgeInsets.zero,
                       onChanged: (value) {
                         setState(() {
@@ -415,7 +415,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       title: const Text('Office'),
                       value: 'office',
                       groupValue: _addressType,
-                      activeColor: ColorConstant.moyoOrange,
+                      activeColor: ColorConstant.call4hepOrange,
                       contentPadding: EdgeInsets.zero,
                       onChanged: (value) {
                         setState(() {
@@ -429,7 +429,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       title: const Text('Other'),
                       value: 'other',
                       groupValue: _addressType,
-                      activeColor: ColorConstant.moyoOrange,
+                      activeColor: ColorConstant.call4hepOrange,
                       contentPadding: EdgeInsets.zero,
                       onChanged: (value) {
                         setState(() {
@@ -453,7 +453,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                     color:
                         _selectedLatitude == null || _selectedLongitude == null
                         ? Colors.red.withOpacity(0.5)
-                        : ColorConstant.moyoOrange.withOpacity(0.3),
+                        : ColorConstant.call4hepOrange.withOpacity(0.3),
                     width: 1,
                   ),
                 ),
@@ -468,7 +468,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                               _selectedLatitude == null ||
                                   _selectedLongitude == null
                               ? Colors.red
-                              : ColorConstant.moyoOrange,
+                              : ColorConstant.call4hepOrange,
                           size: 24,
                         ),
                         const SizedBox(width: 8),
@@ -519,8 +519,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                               : 'Open Map',
                         ),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: ColorConstant.moyoOrange,
-                          side: BorderSide(color: ColorConstant.moyoOrange),
+                          foregroundColor: ColorConstant.call4hepOrange,
+                          side: BorderSide(color: ColorConstant.call4hepOrange),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -644,7 +644,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
               CheckboxListTile(
                 title: const Text('Set as default address'),
                 value: _isDefault,
-                activeColor: ColorConstant.moyoOrange,
+                activeColor: ColorConstant.call4hepOrange,
                 contentPadding: EdgeInsets.zero,
                 onChanged: (value) {
                   setState(() {
@@ -660,8 +660,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _submitAddress,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstant.moyoOrange,
-                    disabledBackgroundColor: ColorConstant.moyoOrange
+                    backgroundColor: ColorConstant.call4hepOrange,
+                    disabledBackgroundColor: ColorConstant.call4hepOrange
                         .withOpacity(0.6),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -740,7 +740,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(
-                color: ColorConstant.moyoOrange,
+                color: ColorConstant.call4hepOrange,
                 width: 2,
               ),
             ),

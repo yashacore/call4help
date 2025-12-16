@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants/colorConstant/color_constant.dart';
 import '../../providers/user_navigation_provider.dart';
-import '../commonOnboarding/splashScreen/splash_screen_provider.dart';
 
 enum Mode { customer, provider }
 
@@ -39,9 +38,9 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
       // Update user role to customer
       await prefs.setString('user_role', 'customer');
 
-      print('Switched to customer mode');
-      print('Auth token exists: ${authToken.isNotEmpty}');
-      print('User role updated to: customer');
+      debugPrint('Switched to customer mode');
+      debugPrint('Auth token exists: ${authToken.isNotEmpty}');
+      debugPrint('User role updated to: customer');
 
       // Navigate to customer screen
       if (mounted) {
@@ -182,11 +181,11 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       decoration: BoxDecoration(
         color: isActive
-            ? ColorConstant.moyoOrangeFade
+            ? ColorConstant.call4hepOrangeFade
             : const Color(0xFFF5F5F5),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isActive ? ColorConstant.moyoOrange : const Color(0xFF7B7B7B),
+          color: isActive ? ColorConstant.call4hepOrange : const Color(0xFF7B7B7B),
           width: 2,
         ),
       ),
@@ -207,7 +206,7 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
             mode == Mode.customer ? "Customer Mode" : "Provider Mode",
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: isActive
-                  ? ColorConstant.moyoOrange
+                  ? ColorConstant.call4hepOrange
                   : const Color(0xFF7B7B7B),
               fontWeight: FontWeight.w500,
             ),
@@ -216,7 +215,7 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
             mode == Mode.customer ? "Book services" : "Offer services",
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: isActive
-                  ? ColorConstant.moyoOrange
+                  ? ColorConstant.call4hepOrange
                   : const Color(0xFF7B7B7B),
               fontWeight: FontWeight.w400,
             ),
@@ -239,7 +238,7 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
               decoration: BoxDecoration(
-                color: _isLoading ? Colors.grey : ColorConstant.moyoOrange,
+                color: _isLoading ? Colors.grey : ColorConstant.call4hepOrange,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: InkWell(

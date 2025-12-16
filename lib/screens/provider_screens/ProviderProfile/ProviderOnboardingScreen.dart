@@ -1,6 +1,5 @@
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class ProviderOnboardingDialog extends StatelessWidget {
   const ProviderOnboardingDialog({super.key});
@@ -30,13 +29,13 @@ class ProviderOnboardingDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: ColorConstant.moyoOrangeFade,
+                color: ColorConstant.call4hepOrangeFade,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.person_add_rounded,
                 size: 60,
-                color: ColorConstant.moyoOrange,
+                color: ColorConstant.call4hepOrange,
               ),
             ),
             const SizedBox(height: 24),
@@ -71,7 +70,7 @@ class ProviderOnboardingDialog extends StatelessWidget {
                   Navigator.pushNamed(context, '/editProfile');
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorConstant.moyoOrange,
+                  backgroundColor: ColorConstant.call4hepOrange,
                   foregroundColor: ColorConstant.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(

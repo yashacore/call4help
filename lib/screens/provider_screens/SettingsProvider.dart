@@ -51,10 +51,10 @@ class SettingsProvider with ChangeNotifier {
         body: jsonEncode({'work_radius': radius}),  // Remove .toStringAsFixed(1)
       );
 
-      print(radius.toStringAsFixed(1));
+      debugPrint(radius.toStringAsFixed(1));
       _isLoading = false;
 
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Success
         _maxSearchDistance = radius;
@@ -86,7 +86,7 @@ class SettingsProvider with ChangeNotifier {
       _maxSearchDistance = prefs.getInt('maxSearchDistance') ?? 21;  // Changed from getDouble to getInt
       notifyListeners();
     } catch (e) {
-      print('Error loading saved radius: $e');
+      debugPrint('Error loading saved radius: $e');
     }
   }
 

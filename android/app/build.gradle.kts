@@ -34,7 +34,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.acore.moyo"
+        applicationId = "com.acore.call4help"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

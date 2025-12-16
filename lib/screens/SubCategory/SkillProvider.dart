@@ -60,7 +60,7 @@ class SkillProvider with ChangeNotifier {
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
 
-      print(response.body);
+      debugPrint(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         _lastResponse = json.decode(response.body);

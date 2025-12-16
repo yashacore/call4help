@@ -65,7 +65,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
             Expanded(
               child: Text(
                 message,
-                style: GoogleFonts.roboto(color: Colors.white),
+                style: GoogleFonts.inter(color: Colors.white),
               ),
             ),
           ],
@@ -92,7 +92,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
         ),
         title: Text(
           widget.subcategory.name,
-          style: GoogleFonts.roboto(
+          style: GoogleFonts.inter(
             textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
               color: ColorConstant.black,
               fontWeight: FontWeight.w600,
@@ -158,14 +158,14 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
               height: double.infinity,
               placeholder: (context, url) => Center(
                 child: CircularProgressIndicator(
-                  color: ColorConstant.moyoOrange,
+                  color: ColorConstant.call4hepOrange,
                 ),
               ),
               errorWidget: (context, url, error) => Center(
                 child: Icon(
                   Icons.room_service_outlined,
                   size: 80,
-                  color: ColorConstant.moyoOrange.withOpacity(0.3),
+                  color: ColorConstant.call4hepOrange.withOpacity(0.3),
                 ),
               ),
             )
@@ -174,7 +174,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
               child: Icon(
                 Icons.room_service_outlined,
                 size: 80,
-                color: ColorConstant.moyoOrange.withOpacity(0.3),
+                color: ColorConstant.call4hepOrange.withOpacity(0.3),
               ),
             ),
           Positioned(
@@ -183,7 +183,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: ColorConstant.moyoOrange,
+                color: ColorConstant.call4hepOrange,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
@@ -195,7 +195,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
               ),
               child: Text(
                 widget.subcategory.billingType.toUpperCase(),
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
                   fontSize: 12,
@@ -227,7 +227,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
         children: [
           Text(
             'Pricing',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: ColorConstant.black,
@@ -251,14 +251,14 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
         children: [
           Text(
             label,
-            style: GoogleFonts.roboto(fontSize: 14, color: Colors.grey[700]),
+            style: GoogleFonts.inter(fontSize: 14, color: Colors.grey[700]),
           ),
           Text(
             '₹$price',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: ColorConstant.moyoOrange,
+              color: ColorConstant.call4hepOrange,
             ),
           ),
         ],
@@ -285,7 +285,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
         children: [
           Text(
             'Service Details',
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: ColorConstant.black,
@@ -308,11 +308,11 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
         children: [
           Text(
             label,
-            style: GoogleFonts.roboto(fontSize: 14, color: Colors.grey[700]),
+            style: GoogleFonts.inter(fontSize: 14, color: Colors.grey[700]),
           ),
           Text(
             value,
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: ColorConstant.black,
@@ -344,13 +344,13 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
             children: [
               Icon(
                 Icons.work_outline,
-                color: ColorConstant.moyoOrange,
+                color: ColorConstant.call4hepOrange,
                 size: 20,
               ),
               SizedBox(width: 8),
               Text(
                 'Experience',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: ColorConstant.black,
@@ -364,10 +364,10 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               hintText: 'Enter years of experience',
-              hintStyle: GoogleFonts.roboto(color: Colors.grey[400]),
+              hintStyle: GoogleFonts.inter(color: Colors.grey[400]),
               suffixText: 'years',
-              suffixStyle: GoogleFonts.roboto(
-                color: ColorConstant.moyoOrange,
+              suffixStyle: GoogleFonts.inter(
+                color: ColorConstant.call4hepOrange,
                 fontWeight: FontWeight.w600,
               ),
               filled: true,
@@ -379,7 +379,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
-                  color: ColorConstant.moyoOrange,
+                  color: ColorConstant.call4hepOrange,
                   width: 2,
                 ),
               ),
@@ -424,13 +424,13 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
             children: [
               Icon(
                 Icons.description_outlined,
-                color: ColorConstant.moyoOrange,
+                color: ColorConstant.call4hepOrange,
                 size: 20,
               ),
               SizedBox(width: 8),
               Text(
                 'Proof Document',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: ColorConstant.black,
@@ -441,7 +441,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
           SizedBox(height: 4),
           Text(
             'Upload a certificate or proof of your expertise',
-            style: GoogleFonts.roboto(fontSize: 12, color: Colors.grey[600]),
+            style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
           ),
           SizedBox(height: 16),
           InkWell(
@@ -457,7 +457,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                 border: Border.all(
                   color: _proofDocument != null
                       ? Colors.green.withOpacity(0.5)
-                      : ColorConstant.moyoOrange.withOpacity(0.3),
+                      : ColorConstant.call4hepOrange.withOpacity(0.3),
                   width: 2,
                   style: BorderStyle.solid,
                 ),
@@ -469,7 +469,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                     decoration: BoxDecoration(
                       color: _proofDocument != null
                           ? Colors.green.withOpacity(0.1)
-                          : ColorConstant.moyoOrange.withOpacity(0.1),
+                          : ColorConstant.call4hepOrange.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
@@ -478,7 +478,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                           : Icons.cloud_upload_outlined,
                       color: _proofDocument != null
                           ? Colors.green
-                          : ColorConstant.moyoOrange,
+                          : ColorConstant.call4hepOrange,
                       size: 28,
                     ),
                   ),
@@ -491,7 +491,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                           _proofDocument != null
                               ? 'Document Uploaded'
                               : 'Upload Proof Document',
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: ColorConstant.black,
@@ -502,7 +502,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                           _proofDocument != null
                               ? _proofDocument!.path.split('/').last
                               : 'Tap to select from gallery',
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             fontSize: 12,
                             color: Colors.grey[600],
                           ),
@@ -550,7 +550,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
         children: [
           Text(
             title,
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.inter(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: ColorConstant.black,
@@ -587,9 +587,9 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
   Widget _buildSiteCard(String siteName, String? imageUrl) {
     return Container(
       decoration: BoxDecoration(
-        color: ColorConstant.moyoOrange.withOpacity(0.05),
+        color: ColorConstant.call4hepOrange.withOpacity(0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: ColorConstant.moyoOrange.withOpacity(0.3)),
+        border: Border.all(color: ColorConstant.call4hepOrange.withOpacity(0.3)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -612,7 +612,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
-                            color: ColorConstant.moyoOrange,
+                            color: ColorConstant.call4hepOrange,
                             strokeWidth: 2,
                           ),
                         ),
@@ -620,13 +620,13 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                       errorWidget: (context, url, error) => Icon(
                         Icons.location_city,
                         size: 30,
-                        color: ColorConstant.moyoOrange.withOpacity(0.5),
+                        color: ColorConstant.call4hepOrange.withOpacity(0.5),
                       ),
                     )
                   : Icon(
                       Icons.location_city,
                       size: 30,
-                      color: ColorConstant.moyoOrange.withOpacity(0.5),
+                      color: ColorConstant.call4hepOrange.withOpacity(0.5),
                     ),
             ),
           ),
@@ -638,7 +638,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.inter(
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
                 color: ColorConstant.black,
@@ -669,7 +669,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
             child: ElevatedButton(
               onPressed: skillProvider.isLoading ? null : _handleSubmit,
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.moyoOrange,
+                backgroundColor: ColorConstant.call4hepOrange,
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -693,7 +693,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                         SizedBox(width: 12),
                         Text(
                           'Submitting...',
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
@@ -707,7 +707,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                         SizedBox(width: 8),
                         Text(
                           'Submit Skill',
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
@@ -787,7 +787,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
               // Title
               Text(
                 'Skill Submitted!',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
                   color: ColorConstant.black,
@@ -800,7 +800,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
               Text(
                 response['message'] ??
                     'Your skill has been successfully submitted',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.inter(
                   fontSize: 14,
                   color: Colors.grey[600],
                   height: 1.5,
@@ -816,15 +816,15 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      ColorConstant.moyoOrange.withOpacity(0.1),
-                      ColorConstant.moyoOrange.withOpacity(0.05),
+                      ColorConstant.call4hepOrange.withOpacity(0.1),
+                      ColorConstant.call4hepOrange.withOpacity(0.05),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: ColorConstant.moyoOrange.withOpacity(0.3),
+                    color: ColorConstant.call4hepOrange.withOpacity(0.3),
                     width: 1,
                   ),
                 ),
@@ -835,16 +835,16 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                       children: [
                         Icon(
                           Icons.pending_outlined,
-                          color: ColorConstant.moyoOrange,
+                          color: ColorConstant.call4hepOrange,
                           size: 20,
                         ),
                         SizedBox(width: 8),
                         Text(
                           'Status: ${response['status'] ?? 'Pending'}',
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: ColorConstant.moyoOrange,
+                            color: ColorConstant.call4hepOrange,
                           ),
                         ),
                       ],
@@ -852,7 +852,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                     SizedBox(height: 8),
                     Text(
                       'Your skill is under verification',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 13,
                         color: Colors.grey[700],
                       ),
@@ -860,7 +860,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                     SizedBox(height: 4),
                     Text(
                       'We\'ll notify you once it\'s approved',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.inter(
                         fontSize: 12,
                         color: Colors.grey[600],
                       ),
@@ -879,7 +879,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                     Navigator.of(context).pop(); // Go back to previous screen
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstant.moyoOrange,
+                    backgroundColor: ColorConstant.call4hepOrange,
                     foregroundColor: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
@@ -889,7 +889,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                   ),
                   child: Text(
                     'Done',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),

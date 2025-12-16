@@ -12,7 +12,7 @@ class PersonalInfoCard extends StatelessWidget {
 
   const PersonalInfoCard({
     super.key,
-    this.iconPath = "assets/icons/moyo_address_card_home_icon.svg",
+    this.iconPath = "assets/icons/call4hep_address_card_home_icon.svg",
     this.label,
     this.title,
     this.isLabel = true,
@@ -71,7 +71,7 @@ class PersonalInfoCard extends StatelessWidget {
         textAlign: TextAlign.start,
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: const Color(0xFF7A7A7A),
             fontWeight: FontWeight.w500,
@@ -90,7 +90,7 @@ class PersonalInfoCard extends StatelessWidget {
         textAlign: TextAlign.start,
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.inter(
           textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: const Color(0xFF000000),
             fontSize: 19,

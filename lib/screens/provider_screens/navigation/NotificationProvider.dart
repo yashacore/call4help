@@ -60,7 +60,7 @@ class NotificationProvider extends ChangeNotifier {
         },
       );
 
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 200) {
         final index = _notifications.indexWhere(
           (n) => n['id'] == notificationId,

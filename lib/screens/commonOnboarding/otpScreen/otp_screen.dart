@@ -1,5 +1,4 @@
 // otp_screen.dart - FIXED ALIGNMENT VERSION
-import 'package:first_flutter/baseControllers/NavigationController/navigation_controller.dart';
 import 'package:first_flutter/constants/imgConstant/img_constant.dart';
 import 'package:first_flutter/constants/utils/app_text_style.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +82,7 @@ class _OtpScreenState extends State<OtpScreen> {
         focusNode: _focusNodes[index],
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
-        style: AppTextStyle.robotoBold.copyWith(
+        style: AppTextStyle.interBold.copyWith(
           fontSize: 24.sp,
           color: Colors.black,
           height: 1.0, // ADDED: Control line height
@@ -146,8 +145,8 @@ class _OtpScreenState extends State<OtpScreen> {
       return;
     }
 
-    print('=== Starting OTP verification ===');
-    print('Mobile: $mobile');
+    debugPrint('=== Starting OTP verification ===');
+    debugPrint('Mobile: $mobile');
 
     if (mobile == null || mobile.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -167,12 +166,12 @@ class _OtpScreenState extends State<OtpScreen> {
 
     if (result != null && mounted) {
       if (result['needsEmailVerification'] == true) {
-        print(
+        debugPrint(
           'Email verification needed, navigating to email verification screen',
         );
         await _setupNotificationsAndNavigate();
       } else {
-        print('Email verified, requesting notification permission');
+        debugPrint('Email verified, requesting notification permission');
         await _setupNotificationsAndNavigate();
       }
     } else if (provider.errorMessage != null && mounted) {
@@ -189,40 +188,40 @@ class _OtpScreenState extends State<OtpScreen> {
     final provider = context.read<OtpScreenProvider>();
 
     try {
-      print('=== Setting up notifications ===');
+      debugPrint('=== Setting up notifications ===');
 
       final permissionGranted =
           await NotificationService.requestNotificationPermission(context);
 
       if (permissionGranted) {
-        print('✓ Notification permission granted');
+        debugPrint('✓ Notification permission granted');
 
         final deviceToken = await NotificationService.getDeviceToken();
 
         if (deviceToken != null && deviceToken.isNotEmpty) {
-          print('✓ Device token obtained: ${deviceToken.substring(0, 20)}...');
+          debugPrint('✓ Device token obtained: ${deviceToken.substring(0, 20)}...');
 
           final updated = await provider.updateDeviceToken(
             deviceToken: deviceToken,
           );
 
           if (updated) {
-            print('✓ Device token updated successfully');
+            debugPrint('✓ Device token updated successfully');
           } else {
-            print('⚠ Failed to update device token on server');
+            debugPrint('⚠ Failed to update device token on server');
           }
         } else {
-          print('⚠ No device token available');
+          debugPrint('⚠ No device token available');
         }
       } else {
-        print('✗ User declined notification permission');
+        debugPrint('✗ User declined notification permission');
       }
     } catch (e) {
-      print('Error in notification setup: $e');
+      debugPrint('Error in notification setup: $e');
     }
 
     if (mounted) {
-      print('=== Navigating to home screen ===');
+      debugPrint('=== Navigating to home screen ===');
       Navigator.pushNamedAndRemoveUntil(
         context,
         "/UserCustomBottomNav",
@@ -242,7 +241,7 @@ class _OtpScreenState extends State<OtpScreen> {
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
-                navigationService.pop();
+                Navigator.pop(context);
               },
             ),
           ),
@@ -269,7 +268,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       SizedBox(height: 24.h),
                       Text(
                         "Enter OTP",
-                        style: AppTextStyle.robotoBold.copyWith(
+                        style: AppTextStyle.interBold.copyWith(
                           fontSize: 28.sp,
                           color: Colors.white,
                         ),
@@ -277,7 +276,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       SizedBox(height: 12.h),
                       Text(
                         "A 6 digit code has been sent to",
-                        style: AppTextStyle.robotoRegular.copyWith(
+                        style: AppTextStyle.interRegular.copyWith(
                           fontSize: 15.sp,
                           color: Colors.white,
                         ),
@@ -382,7 +381,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                   )
                                 : Text(
                                     "Verify OTP",
-                                    style: AppTextStyle.robotoMedium.copyWith(
+                                    style: AppTextStyle.interMedium.copyWith(
                                       fontSize: 16.sp,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -408,7 +407,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 provider.canResend
                                     ? "Didn't receive code? "
                                     : "Resend in ",
-                                style: AppTextStyle.robotoRegular.copyWith(
+                                style: AppTextStyle.interRegular.copyWith(
                                   fontSize: 14.sp,
                                   color: Colors.white.withOpacity(0.8),
                                 ),
@@ -417,7 +416,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 provider.canResend
                                     ? "Resend"
                                     : "${provider.secondsRemaining}s",
-                                style: AppTextStyle.robotoBold.copyWith(
+                                style: AppTextStyle.interBold.copyWith(
                                   fontSize: 14.sp,
                                   color: Colors.white,
                                   decoration: provider.canResend

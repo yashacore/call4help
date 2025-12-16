@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,7 +11,7 @@ class ServiceApiService {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('auth_token');
     } catch (e) {
-      print('Error getting token: $e');
+      debugPrint('Error getting token: $e');
       return null;
     }
   }
@@ -29,7 +30,7 @@ class ServiceApiService {
         },
       );
 
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else if (response.statusCode == 401) {
@@ -38,7 +39,7 @@ class ServiceApiService {
         throw Exception('Failed to load services: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching service history: $e');
+      debugPrint('Error fetching service history: $e');
       throw Exception('Failed to load services: $e');
     }
   }
