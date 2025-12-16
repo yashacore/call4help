@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await provider.signInWithGoogle((data) async {
       final needsMobileVerification = data['needsMobileVerification'] ?? false;
       final needsEmailVerification = data['needsEmailVerification'] ?? false;
-      final userEmail = data['user']?['email'];
+      final userEvmail = data['user']?['email'];
 
       await _setupNotificationsAndNavigate();
       /*if (needsMobileVerification) {
