@@ -19,7 +19,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.acore.moyo"
+    namespace = "com.acore.call4help"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 
@@ -35,7 +35,7 @@ android {
 
     defaultConfig {
         applicationId = "com.acore.moyo"
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

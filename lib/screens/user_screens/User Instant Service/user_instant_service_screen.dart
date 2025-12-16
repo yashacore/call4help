@@ -33,6 +33,7 @@ class UserInstantServiceScreen extends StatefulWidget {
 
 class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
   bool _isInitialized = false;
+  bool _showValidationErrors = false;
 
   @override
   void initState() {
@@ -218,6 +219,33 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                       _findServiceproviders(
                         context,
                         onPress: () async {
+                          // ✅ First check if payment method is selected before showing all validation errors
+                          final selectedMethod = provider.getFormValue(
+                            'payment_method',
+                          );
+
+                          if (selectedMethod == null ||
+                              selectedMethod.toString().isEmpty) {
+                            // Show specific payment method error without triggering all validations
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Please select a payment method'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+
+                            // Now trigger validation display for visual feedback
+                            setState(() {
+                              _showValidationErrors = true;
+                            });
+                            return; // Stop here, don't proceed with form submission
+                          }
+
+                          // ✅ Trigger validation display for other fields
+                          setState(() {
+                            _showValidationErrors = true;
+                          });
+
                           if (provider.validateForm(
                             serviceType: widget.serviceType,
                           )) {
@@ -263,7 +291,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                                 SnackBar(
                                   content: Text(
                                     provider.error ??
-                                        'Failed to create service',
+                                        'Required fields are missing',
                                   ),
                                   backgroundColor: Colors.red,
                                 ),
@@ -871,8 +899,12 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
   Widget _paymentMethodField(BuildContext context) {
     return Consumer<UserInstantServiceProvider>(
       builder: (context, provider, child) {
-        final selectedMethod =
-            provider.getFormValue('payment_method') ?? 'online';
+        final selectedMethod = provider.getFormValue('payment_method');
+
+        // ✅ Only show error when user clicks submit button
+        final hasError =
+            _showValidationErrors &&
+            (selectedMethod == null || selectedMethod.toString().isEmpty);
 
         return Column(
           spacing: 6,
@@ -901,13 +933,21 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
               decoration: BoxDecoration(
                 color: Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(12),
+                // ✅ Red border only after validation attempt
+                border: hasError
+                    ? Border.all(color: Colors.red, width: 2)
+                    : null,
               ),
               child: Row(
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () =>
-                          provider.updateFormValue('payment_method', 'online'),
+                      onTap: () {
+                        provider.updateFormValue('payment_method', 'online');
+                        setState(() {
+                          _showValidationErrors = false;
+                        });
+                      },
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
@@ -947,8 +987,13 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   SizedBox(width: 4),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () =>
-                          provider.updateFormValue('payment_method', 'cash'),
+                      onTap: () {
+                        provider.updateFormValue('payment_method', 'cash');
+                        // ✅ Clear error when user selects
+                        setState(() {
+                          _showValidationErrors = false;
+                        });
+                      },
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
@@ -989,7 +1034,21 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
               ),
             ),
 
-            // ✅ COMPLETED: Cash warning container
+            // ✅ Show error only when validation triggered and method not selected
+            if (hasError)
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: Text(
+                  'Please select a payment method',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.red,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+
+            // Cash warning container
             if (selectedMethod == 'cash')
               Container(
                 width: double.infinity,
