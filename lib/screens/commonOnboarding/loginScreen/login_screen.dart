@@ -127,23 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final userEvmail = data['user']?['email'];
 
       await _setupNotificationsAndNavigate();
-      /*if (needsMobileVerification) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const MobileVerificationScreen(),
-          ),
-        );
-      } */ /*else if (needsEmailVerification && userEmail != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => EmailVerificationScreen(userEmail: userEmail),
-          ),
-        );
-      }*/ /* else {
-        await _setupNotificationsAndNavigate();
-      }*/
+
     });
   }
 
