@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/screens/user_screens/razor_pay/razor_pay_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -1052,6 +1053,10 @@ class UserServiceDetails extends StatelessWidget {
               ),
               child: const Text("See Time"),
             ),
+          if (statusLower == "in_progress")
+            _payAmountButton(
+              context
+            )
         ],
       );
     }
@@ -1514,4 +1519,55 @@ class UserServiceDetails extends StatelessWidget {
       ),
     );
   }
+
+  int _parseAmount(String? price) {
+    if (price == null || price.isEmpty) return 0;
+    final cleaned = price.replaceAll(RegExp(r'[^\d.]'), '');
+    final value = double.tryParse(cleaned);
+    if (value == null || value <= 0) return 0;
+    return value.round();
+  }
+
+
+  Widget _payAmountButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: ElevatedButton(
+        onPressed: () {
+          final amount = _parseAmount(price);
+
+          if (amount <= 0) {
+            _showErrorSnackbar(context, "Invalid payment amount");
+            return;
+          }
+
+          final razorpay = RazorpayService();
+
+          razorpay.init(
+            onSuccess: (res) {
+              _showSuccessSnackbar(context, "Payment Successful");
+            },
+            onError: (res) {
+              _showErrorSnackbar(context, res.message ?? "Payment failed");
+            },
+            onWallet: (res) {},
+          );
+
+          razorpay.openCheckout(
+            amount: amount, // ₹ value
+            key: "rzp_test_RrrFFdWCi6TIZG",
+            name: "Call4Help",
+            description: "Service Payment",
+            contact: "9999999999",
+            email: "test@email.com",
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: ColorConstant.call4hepGreen,
+        ),
+        child: const Text("Pay Amount"),
+      ),
+    );
+  }
+
 }

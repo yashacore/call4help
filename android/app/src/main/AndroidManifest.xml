@@ -14,6 +14,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="Call4Help">
 
+        <!-- 🔥 FIX: Disable Impeller (VERY IMPORTANT for Razorpay) -->
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
+
         <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -24,7 +29,7 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher" />
 
-        <!-- Firebase Notification Channel ID (SINGLE ENTRY - FIXED) -->
+        <!-- Firebase Notification Channel -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="call4hep_high_importance" />
@@ -42,31 +47,26 @@
             android:theme="@style/LaunchTheme"
             android:windowSoftInputMode="adjustResize">
 
-            <!-- Intent Filter for App Launch -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Intent Filter for Notification Tap (Important!) -->
             <intent-filter>
                 <action android:name="FLUTTER_NOTIFICATION_CLICK" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-            <!-- Normal Theme -->
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
         </activity>
 
-        <!-- Flutter Embedding Version -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
 
-    <!-- Queries for Text Selection -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT" />

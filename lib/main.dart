@@ -34,7 +34,7 @@ import 'package:first_flutter/screens/user_screens/Profile/UserProfileProvider.d
 import 'package:first_flutter/screens/user_screens/SubCategory/SubCategoryProvider.dart';
 import 'package:first_flutter/screens/user_screens/SubCategory/SubCategoryStateProvider.dart';
 import 'package:first_flutter/screens/user_screens/SubCategory/sub_cat_of_cat_screen.dart';
-import 'package:first_flutter/screens/user_screens/User%20Instant%20Service/UserInstantServiceProvider.dart';
+import 'package:first_flutter/screens/user_screens/User Instant Service/UserInstantServiceProvider.dart';
 import 'package:first_flutter/screens/user_screens/navigation/EmergencyContactProvider.dart';
 import 'package:first_flutter/screens/user_screens/navigation/SOSProvider.dart';
 import 'package:first_flutter/screens/user_screens/navigation/UserChats/UserChatProvider.dart';
@@ -42,11 +42,10 @@ import 'package:first_flutter/screens/user_screens/navigation/UserSOSProvider.da
 import 'package:first_flutter/screens/user_screens/navigation/user_service_tab_body/ServiceProvider.dart';
 import 'package:first_flutter/screens/user_screens/navigation/user_service_tab_body/UserCompletedServiceProvider.dart';
 import 'package:first_flutter/screens/user_screens/user_custom_bottom_nav.dart';
-import 'package:first_flutter/screens/user_screens/User%20Instant%20Service/user_instant_service_screen.dart';
+import 'package:first_flutter/screens/user_screens/User Instant Service/user_instant_service_screen.dart';
 import 'package:first_flutter/screens/user_screens/Profile/user_profile_screen.dart';
 import 'package:first_flutter/screens/user_screens/user_service_details_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -60,60 +59,50 @@ import 'screens/commonOnboarding/loginScreen/login_screen_provider.dart';
 import 'screens/commonOnboarding/splashScreen/splash_screen.dart';
 import 'screens/commonOnboarding/splashScreen/splash_screen_provider.dart';
 
+/// ================== BACKGROUND FCM HANDLER ==================
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Initialize Firebase for background handling
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
 
-  debugPrint("=== 🔔 BACKGROUND Message Received ===");
+  debugPrint("🔔 BACKGROUND MESSAGE");
   debugPrint("Title: ${message.notification?.title}");
-  debugPrint("Body: ${message.notification?.body}");
-  debugPrint("Data: ${message.data}");
-
-  // Background notifications are automatically shown by Firebase
-  // You can add custom logic here if needed
 }
 
-// ================== MAIN ==================
+/// ================== MAIN ==================
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  debugPrint("=== 🚀 App Starting ===");
+  debugPrint("🚀 App Starting");
 
   try {
-    // 1. Initialize NATS Service
-    debugPrint("📡 Initializing NATS...");
+    /// NATS
     await NatsService().initialize(
       url: 'nats://api.moyointernational.com',
       autoReconnect: true,
       reconnectInterval: const Duration(seconds: 5),
     );
-    debugPrint("✅ NATS initialized");
 
-    // 2. Initialize Firebase
-    debugPrint("🔥 Initializing Firebase...");
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
+    /// FIREBASE (ONLY ONCE)
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+
+    /// BACKGROUND HANDLER
+    FirebaseMessaging.onBackgroundMessage(
+      _firebaseMessagingBackgroundHandler,
     );
-    debugPrint("✅ Firebase initialized");
 
-    // 3. Set Background Message Handler (MUST be before notification init)
-    debugPrint("📨 Setting background message handler...");
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    debugPrint("✅ Background handler set");
-
-    // 4. Initialize Notification Service
-    debugPrint("🔔 Initializing notifications...");
+    /// NOTIFICATIONS
     await NotificationService.initializeNotifications();
-    debugPrint("✅ Notifications initialized");
-
-    // 5. Setup Token Refresh Listener
     NotificationService.setupTokenRefreshListener();
-    debugPrint("✅ Token refresh listener setup");
-
-    debugPrint("=== ✅ All Services Initialized Successfully ===\n");
   } catch (e) {
-    debugPrint("=== ❌ Initialization Error: $e ===");
+    debugPrint("❌ INIT ERROR: $e");
   }
 
   runApp(
@@ -162,137 +151,42 @@ void main() async {
   );
 }
 
-class MyApp extends StatefulWidget {
+/// ================== APP ==================
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  final NatsService _natsService = NatsService();
-  bool _notificationPermissionRequested = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-
-    // Listen to NATS connection status
-    _natsService.connectionStream.listen((isConnected) {
-      debugPrint('📡 NATS: ${isConnected ? "Connected ✅" : "Disconnected ❌"}');
-    });
-
-    // Request notification permission after delay
-    Future.delayed(const Duration(seconds: 2), () {
-      _requestNotificationPermissionIfNeeded();
-    });
-  }
-
-  // Request Notification Permission
-  Future<void> _requestNotificationPermissionIfNeeded() async {
-    if (_notificationPermissionRequested) return;
-    _notificationPermissionRequested = true;
-
-    if (mounted) {
-      final granted = await NotificationService.requestNotificationPermission(
-        context,
-      );
-      debugPrint(
-        '📢 Notification permission: ${granted ? "✅ Granted" : "❌ Denied"}',
-      );
-
-      if (granted) {
-        final token = await NotificationService.getDeviceToken();
-        debugPrint('🔑 FCM Token: $token');
-        // TODO: Send token to your backend
-        // await YourApiService.sendTokenToServer(token);
-      }
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-
-    switch (state) {
-      case AppLifecycleState.resumed:
-        debugPrint('📱 App Resumed');
-        if (!_natsService.isConnected) {
-          _natsService.reconnect();
-        }
-        break;
-      case AppLifecycleState.paused:
-        debugPrint('📱 App Paused');
-        break;
-      case AppLifecycleState.inactive:
-        debugPrint('📱 App Inactive');
-        break;
-      case AppLifecycleState.detached:
-        debugPrint('📱 App Detached');
-        break;
-      case AppLifecycleState.hidden:
-        debugPrint('📱 App Hidden');
-        break;
-    }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(360, 800),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return SafeArea(
-          top: false,
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            navigatorKey: NotificationService.navigatorKey,
-
-            theme: ThemeData(
-              textTheme: GoogleFonts.interTextTheme(
-                Theme.of(context).textTheme,
-              ),
-            ),
-            initialRoute: '/splash',
-            routes: {
-              '/splash': (_) => const SplashScreen(),
-              '/login': (_) => const LoginScreen(),
-              '/UserCustomBottomNav': (_) => const UserCustomBottomNav(),
-              '/UserServiceDetailsScreen': (_) =>
-                  const UserServiceDetailsScreen(),
-              '/editProfile': (_) => const EditProfileScreen(),
-              '/provider_bid_details': (_) =>
-                  const ProviderServiceDetailsScreen(serviceId: "null"),
-              '/ProviderCustomBottomNav': (_) =>
-                  const ProviderCustomBottomNav(),
-              '/UserProfileScreen': (_) => const UserProfileScreen(),
-              '/SubCatOfCatScreen': (_) => const SubCatOfCatScreen(),
-              '/providerProfile': (context) => ProviderProfileScreen(),
-              '/editProviderProfile': (context) => EditProviderProfileScreen(),
-              '/ProviderOnboarding': (context) =>
-                  const ProviderOnboardingDialog(),
-              '/UserInstantServiceScreen': (_) =>
-                  const UserInstantServiceScreen(
-                    categoryId: 1,
-                    serviceType: '',
-                  ),
-              '/EmailVerificationScreen': (context) {
-                return ChangeNotifierProvider(
-                  create: (_) => OtpScreenProvider(),
-                );
-              },
-            },
+      builder: (_, __) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        navigatorKey: NotificationService.navigatorKey,
+        theme: ThemeData(
+          textTheme: GoogleFonts.interTextTheme(),
+        ),
+        initialRoute: '/splash',
+        routes: {
+          '/splash': (_) => const SplashScreen(),
+          '/login': (_) => const LoginScreen(),
+          '/UserCustomBottomNav': (_) => const UserCustomBottomNav(),
+          '/UserServiceDetailsScreen': (_) =>
+          const UserServiceDetailsScreen(),
+          '/editProfile': (_) => const EditProfileScreen(),
+          '/ProviderCustomBottomNav': (_) =>
+          const ProviderCustomBottomNav(),
+          '/UserProfileScreen': (_) => const UserProfileScreen(),
+          '/SubCatOfCatScreen': (_) => const SubCatOfCatScreen(),
+          '/providerProfile': (_) => ProviderProfileScreen(),
+          '/editProviderProfile': (_) => EditProviderProfileScreen(),
+          '/ProviderOnboarding': (_) => const ProviderOnboardingDialog(),
+          '/UserInstantServiceScreen': (_) =>
+          const UserInstantServiceScreen(
+            categoryId: 1,
+            serviceType: '',
           ),
-        );
-      },
+        },
+      ),
     );
   }
 }

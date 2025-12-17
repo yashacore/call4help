@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../widgets/user_service_list_card.dart';
 import '../../AssignedandCompleteUserServiceDetailsScreen.dart';
 import 'UserCompletedServiceProvider.dart';
-import 'InvoiceScreen.dart'; // Import the new invoice screen
+import 'InvoiceScreen.dart';
 
 class UserCompletedService extends StatefulWidget {
   const UserCompletedService({super.key});
@@ -118,8 +118,6 @@ class _UserCompletedServiceState extends State<UserCompletedService> {
             itemCount: provider.services.length,
             itemBuilder: (context, index) {
               final service = provider.services[index];
-
-              // Get the bid amount - use the first bid if available, otherwise use budget
               final bidAmount = service.bids.isNotEmpty
                   ? service.bids.first.amount.toStringAsFixed(0)
                   : (double.tryParse(service.budget) ?? 0).toStringAsFixed(0);
@@ -161,8 +159,6 @@ class _UserCompletedServiceState extends State<UserCompletedService> {
                       );
                     },
                   ),
-
-                  // Invoice Button
                 ],
               );
             },

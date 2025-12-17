@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:first_flutter/screens/provider_screens/provider_service_details_screen.dart';
 import 'package:first_flutter/screens/user_screens/user_custom_bottom_nav.dart';
@@ -10,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
   debugPrint("=== 🔔 BACKGROUND Message Received (Top-Level Handler) ===");
   debugPrint("Title: ${message.notification?.title}");
   debugPrint("Body: ${message.notification?.body}");
