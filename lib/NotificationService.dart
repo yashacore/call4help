@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// 🔥 CRITICAL: YE FUNCTION TOP-LEVEL HONA CHAHIYE (Class ke bahar)
-// Background mein notification handle karne ke liye
+
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -97,7 +96,7 @@ class NotificationService {
     );
 
     final channel = AndroidNotificationChannel(
-      'call4hep_high_importance_custom',
+      'moyo_high_importance_custom',
       'call4hep Custom Notifications',
       description: 'Notifications with custom sound',
       importance: Importance.max,
@@ -173,7 +172,7 @@ class NotificationService {
     debugPrint("=== 📲 Showing notification with custom sound ===");
 
     final androidDetails = AndroidNotificationDetails(
-      'call4hep_high_importance_custom',
+      'moyo_high_importance_custom',
       'call4hep Custom Notifications',
       channelDescription: 'Notifications with custom sound',
       importance: Importance.max,
@@ -229,7 +228,7 @@ class NotificationService {
       _customSoundFileName,
     );
     final channel = AndroidNotificationChannel(
-      'call4hep_high_importance_custom',
+      'moyo_high_importance_custom',
       'call4hep Custom Notifications',
       description: 'Notifications with custom sound',
       importance: Importance.max,
@@ -248,7 +247,7 @@ class NotificationService {
 
     // Notification details
     final androidDetails = AndroidNotificationDetails(
-      'call4hep_high_importance_custom',
+      'moyo_high_importance_custom',
       'call4hep Custom Notifications',
       channelDescription: 'Notifications with custom sound',
       importance: Importance.max,
@@ -568,7 +567,7 @@ class NotificationService {
     debugPrint("=== 🧪 Showing Test Notification ===");
 
     final androidDetails = AndroidNotificationDetails(
-      'call4hep_high_importance_custom',
+      'moyo_high_importance_custom',
       'call4hep Custom Notifications',
       channelDescription: 'Notifications with custom sound',
       importance: Importance.max,

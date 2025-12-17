@@ -377,7 +377,6 @@ class UserExpansionTileListCard extends StatelessWidget {
       // Both verified, continue to service screen below
     }
 
-    debugPrint(subcategory.id as String?);
     Navigator.push(
       context,
       MaterialPageRoute(

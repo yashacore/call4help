@@ -49,7 +49,6 @@ class SubcategoryProvider with ChangeNotifier {
         },
       );
 
-      debugPrint(categoryId as String?);
       debugPrint(response.body);
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);

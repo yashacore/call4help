@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:first_flutter/screens/user_screens/Home/top_services.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -19,12 +20,9 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
   @override
   void initState() {
     super.initState();
-    // Fetch categories and carousels when the screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CategoryProvider>().fetchCategories();
-      context.read<CarouselProvider>().fetchCarousels(
-        type: 'user',
-      );
+      context.read<CarouselProvider>().fetchCarousels(type: 'user');
     });
   }
 
@@ -36,21 +34,20 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
         child: Column(
           spacing: 10,
           children: [
-            // Carousel Section - Now using API data with type "user"
             Consumer<CarouselProvider>(
               builder: (context, carouselProvider, child) {
                 if (carouselProvider.isLoading) {
                   return Container(
                     height: 160,
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    child: Center(child: CircularProgressIndicator()),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    child: const Center(child: CircularProgressIndicator()),
                   );
                 }
 
                 if (carouselProvider.errorMessage != null) {
                   return Container(
                     height: 160,
-                    margin: EdgeInsets.symmetric(vertical: 10),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
                       borderRadius: BorderRadius.circular(10),
@@ -59,18 +56,18 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.error_outline, color: Colors.red),
-                          SizedBox(height: 8),
-                          Text(
+                          const Icon(Icons.error_outline, color: Colors.red),
+                          const SizedBox(height: 8),
+                          const Text(
                             'Failed to load carousel',
                             style: TextStyle(color: Colors.red),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           TextButton(
                             onPressed: () {
                               carouselProvider.fetchCarousels(type: 'user');
                             },
-                            child: Text('Retry'),
+                            child: const Text('Retry'),
                           ),
                         ],
                       ),
@@ -81,7 +78,7 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                 if (carouselProvider.carousels.isEmpty) {
                   return Container(
                     height: 160,
-                    margin: EdgeInsets.symmetric(vertical: 10),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(10),
@@ -89,13 +86,13 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                     child: Center(
                       child: Text(
                         'No carousel items available',
-                        style: GoogleFonts.inter(color: Colors.grey.shade600),
+                        style:
+                        GoogleFonts.inter(color: Colors.grey.shade600),
                       ),
                     ),
                   );
                 }
 
-                // Extract image URLs from carousel data
                 final imageLinks = carouselProvider.carousels
                     .map((carousel) => carousel.imageUrl)
                     .toList();
@@ -103,58 +100,56 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                 return ImageSlider(imageLinks: imageLinks);
               },
             ),
-
+            const HomeTopServices(),
             SizedBox(
               width: double.infinity,
               child: Text(
                 "Service Offering",
                 textAlign: TextAlign.start,
                 style: GoogleFonts.inter(
-                  textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Color(0xFF000000),
+                  textStyle:
+                  Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: const Color(0xFF000000),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
             ),
-
             Consumer<CategoryProvider>(
               builder: (context, categoryProvider, child) {
-                // Show loading indicator
                 if (categoryProvider.isLoading) {
-                  return Center(
+                  return const Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(32.0),
+                      padding: EdgeInsets.all(32.0),
                       child: CircularProgressIndicator(),
                     ),
                   );
                 }
 
-                // Show error message
                 if (categoryProvider.errorMessage != null) {
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.error_outline,
                             color: Colors.red,
                             size: 48,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Text(
                             categoryProvider.errorMessage ??
                                 'An error occurred',
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.red),
+                            style: const TextStyle(color: Colors.red),
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () {
                               categoryProvider.fetchCategories();
                             },
-                            child: Text('Retry'),
+                            child: const Text('Retry'),
                           ),
                         ],
                       ),
@@ -162,7 +157,6 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                   );
                 }
 
-                // Show empty state
                 if (categoryProvider.categories.isEmpty) {
                   return Center(
                     child: Padding(
@@ -170,22 +164,21 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                       child: Text(
                         'No categories available',
                         style: GoogleFonts.inter(
-                          textStyle: Theme.of(context).textTheme.bodyLarge,
+                          textStyle:
+                          Theme.of(context).textTheme.bodyLarge,
                         ),
                       ),
                     ),
                   );
                 }
 
-                // Show categories without animations
                 return SizedBox(
                   width: double.infinity,
                   child: Wrap(
                     alignment: WrapAlignment.start,
                     spacing: 16,
                     runSpacing: 16,
-                    children: categoryProvider.categories
-                        .map((category) {
+                    children: categoryProvider.categories.map((category) {
                       return _CategoryCard(
                         category: category,
                         categoryProvider: categoryProvider,
@@ -202,7 +195,6 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
   }
 }
 
-// Static Category Card Widget (no animation)
 class _CategoryCard extends StatelessWidget {
   final dynamic category;
   final CategoryProvider categoryProvider;
@@ -214,23 +206,16 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final screenWidth = screenSize.width;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth = (screenWidth - 32 - 48) / 4;
 
-    // Calculate fixed card width based on 4 cards per row with spacing
-    final cardWidth = (screenWidth - 32 - 48) / 4; // 32 padding, 48 spacing (16*3)
-
-    // Get the full image URL - icon already contains full S3 URL from API
     final imageUrl = category.icon != null && category.icon.isNotEmpty
         ? category.icon
         : null;
 
     return InkWell(
       onTap: () {
-        // Clear previous subcategories before navigating
         context.read<SubCategoryProvider>().clearSubcategories();
-
-        // Navigate and pass the entire category object
         Navigator.pushNamed(
           context,
           '/SubCatOfCatScreen',
@@ -238,16 +223,15 @@ class _CategoryCard extends StatelessWidget {
         );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
         width: cardWidth,
-        height: 100, // Fixed height for consistency
+        height: 100,
         decoration: BoxDecoration(
           color: Colors.grey.shade300,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               clipBehavior: Clip.hardEdge,
@@ -256,7 +240,7 @@ class _CategoryCard extends StatelessWidget {
               ),
               height: 48,
               width: 48,
-              child: imageUrl != null && imageUrl.isNotEmpty
+              child: imageUrl != null
                   ? CachedNetworkImage(
                 imageUrl: imageUrl,
                 fit: BoxFit.cover,
@@ -267,9 +251,11 @@ class _CategoryCard extends StatelessWidget {
                   'assets/images/moyo_service_placeholder.png',
                 ),
               )
-                  : Image.asset('assets/images/moyo_service_placeholder.png'),
+                  : Image.asset(
+                'assets/images/moyo_service_placeholder.png',
+              ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
@@ -278,8 +264,9 @@ class _CategoryCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.inter(
-                  textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Color(0xFF000000),
+                  textStyle:
+                  Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: const Color(0xFF000000),
                     fontSize: 10,
                     height: 1.2,
                   ),

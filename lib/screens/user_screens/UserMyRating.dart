@@ -71,7 +71,6 @@ class _UserMyRatingState extends State<UserMyRating> {
         return;
       }
 
-      debugPrint(providerId as String?);
       final response = await http.get(
         Uri.parse('$base_url/bid/api/user/user/$providerId'),
         headers: {'Authorization': 'Bearer $token'},

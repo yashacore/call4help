@@ -71,7 +71,6 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
         return;
       }
 
-      debugPrint(providerId as String?);
       final response = await http.get(
         Uri.parse('$base_url/bid/api/user/provider/$providerId'),
         headers: {'Authorization': 'Bearer $token'},
