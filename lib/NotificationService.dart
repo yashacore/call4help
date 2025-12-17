@@ -6,62 +6,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  debugPrint("=== 🔔 BACKGROUND Message Received (Top-Level Handler) ===");
-  debugPrint("Title: ${message.notification?.title}");
-  debugPrint("Body: ${message.notification?.body}");
-
-  // Background mein bhi local notification show karo with custom sound
-  await NotificationService.showLocalNotificationStatic(message);
-}
-
 class NotificationService {
   static final FirebaseMessaging _firebaseMessaging =
       FirebaseMessaging.instance;
   static final FlutterLocalNotificationsPlugin
   _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  // 🔥 NAVIGATION KEY: Global navigation ke liye
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
 
-  // ================== CUSTOM SOUND CONFIGURATION ==================
   static const String _customSoundFileName = 'notification_sound';
 
-  // ================== INITIALIZATION ==================
   static Future<void> initializeNotifications() async {
-    debugPrint("=== 🔔 Initializing Notifications ===");
-
-    // 🔥 IMPORTANT: Background handler ko register karo SABSE PEHLE
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-
-    // 1. Setup Local Notifications
     await _setupLocalNotifications();
 
-    // 2. Create Android Notification Channel (with custom sound)
     await _createNotificationChannel();
 
-    // 3. Set Foreground Notification Options (iOS)
     await _setForegroundOptions();
 
-    // 4. Listen to Foreground Messages
     _setupForegroundMessageHandler();
 
-    // 5. Listen to Background Message Taps
     _setupBackgroundMessageHandler();
 
-    // 6. Check if App Opened from Terminated State
     await _checkInitialMessage();
 
-    // 7. Setup Token Refresh Listener
     setupTokenRefreshListener();
-
-    debugPrint("=== ✅ Notification Initialization Complete ===");
   }
 
-  // Setup Local Notifications Plugin
   static Future<void> _setupLocalNotifications() async {
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
@@ -211,7 +182,9 @@ class NotificationService {
 
   // 🔥 STATIC METHOD: Background handler ke liye (Plugin initialize karne ke baad)
   static Future<void> showLocalNotificationStatic(RemoteMessage message) async {
-    debugPrint("=== 📲 [BACKGROUND] Showing notification with custom sound ===");
+    debugPrint(
+      "=== 📲 [BACKGROUND] Showing notification with custom sound ===",
+    );
 
     // Plugin ko initialize karo agar background se call ho raha hai
     const androidSettings = AndroidInitializationSettings(

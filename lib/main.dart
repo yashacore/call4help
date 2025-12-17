@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:first_flutter/providers/provider_navigation_provider.dart';
 import 'package:first_flutter/providers/user_navigation_provider.dart';
@@ -53,7 +52,6 @@ import 'package:provider/provider.dart';
 import 'BannerModel.dart';
 import 'NATS Service/NatsService.dart';
 import 'NotificationService.dart';
-import 'firebase_options.dart';
 import 'screens/commonOnboarding/loginScreen/login_screen.dart';
 import 'screens/commonOnboarding/loginScreen/login_screen_provider.dart';
 import 'screens/commonOnboarding/splashScreen/splash_screen.dart';
@@ -61,15 +59,12 @@ import 'screens/commonOnboarding/splashScreen/splash_screen_provider.dart';
 
 /// ================== BACKGROUND FCM HANDLER ==================
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  }
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  WidgetsFlutterBinding.ensureInitialized();
 
   debugPrint("🔔 BACKGROUND MESSAGE");
   debugPrint("Title: ${message.notification?.title}");
+  debugPrint("Body: ${message.notification?.body}");
 }
 
 /// ================== MAIN ==================
@@ -86,19 +81,12 @@ void main() async {
       reconnectInterval: const Duration(seconds: 5),
     );
 
-    /// FIREBASE (ONLY ONCE)
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    }
-
-    /// BACKGROUND HANDLER
+    /// FCM Background Handler (REGISTER ONCE)
     FirebaseMessaging.onBackgroundMessage(
-      _firebaseMessagingBackgroundHandler,
+      firebaseMessagingBackgroundHandler,
     );
 
-    /// NOTIFICATIONS
+    /// Notifications
     await NotificationService.initializeNotifications();
     NotificationService.setupTokenRefreshListener();
   } catch (e) {

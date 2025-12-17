@@ -470,7 +470,6 @@ class _ConfirmProviderServiceDetailsScreenState
             }
 
             final polylinePoints = route['overview_polyline']['points'];
-            PolylinePoints polylinePointsDecoder = PolylinePoints(apiKey: '');
             List<PointLatLng> decodedPoints = PolylinePoints.decodePolyline(
               polylinePoints,
             );

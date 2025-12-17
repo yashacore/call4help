@@ -569,7 +569,6 @@ class _CompletedServicesScreenState extends State<CompletedServicesScreen> {
 
   String _formatDateTime(String? dateString, String? timeString) {
     if (dateString == null || timeString == null) return '';
-    final date = DateTime.parse(dateString).toLocal();
     return '${_formatDate(dateString)} at $timeString';
   }
 }

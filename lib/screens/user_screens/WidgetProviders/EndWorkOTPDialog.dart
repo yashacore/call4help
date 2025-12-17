@@ -90,8 +90,6 @@ class _EndWorkOTPDialogState extends State<EndWorkOTPDialog> {
                   // OTP Input Fields
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      final availableWidth = constraints.maxWidth;
-                      final spacing = isSmallScreen ? 8.0 : (isTablet ? 16.0 : 12.0);
 
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

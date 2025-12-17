@@ -14,7 +14,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   VideoPlayerController? _videoController;
-  bool _isVideoInitialized = false;
   Timer? _timer;
 
   @override

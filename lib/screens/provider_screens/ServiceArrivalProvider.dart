@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../NATS Service/NatsService.dart';
 import '../../baseControllers/APis.dart';
 
 class ServiceArrivalProvider extends ChangeNotifier {
-  final NatsService _natsService = NatsService();
 
   // Timer state
   int _remainingSeconds = 600;

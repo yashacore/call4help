@@ -184,7 +184,6 @@ class _AssignedandCompleteUserServiceDetailsScreenState
             }
 
             final polylinePoints = route['overview_polyline']['points'];
-            PolylinePoints polylinePointsDecoder = PolylinePoints(apiKey: '');
             List<PointLatLng> decodedPoints = PolylinePoints.decodePolyline(
               polylinePoints,
             );
@@ -354,23 +353,6 @@ class _AssignedandCompleteUserServiceDetailsScreenState
       return '${months[date.month - 1]} ${date.day.toString().padLeft(2, '0')}, ${date.year}';
     } catch (e) {
       return dateString;
-    }
-  }
-
-  String _formatTime(String? timeString) {
-    if (timeString == null) return 'N/A';
-    try {
-      final parts = timeString.split(':');
-      if (parts.length >= 2) {
-        final hour = int.parse(parts[0]);
-        final minute = parts[1];
-        final period = hour >= 12 ? 'PM' : 'AM';
-        final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
-        return '$displayHour:$minute $period';
-      }
-      return timeString;
-    } catch (e) {
-      return timeString;
     }
   }
 
