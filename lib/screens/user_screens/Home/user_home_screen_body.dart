@@ -1,12 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/screens/user_screens/Home/top_services.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../../../BannerModel.dart';
 import '../../../widgets/image_slider.dart';
 import '../SubCategory/SubCategoryProvider.dart';
+import '../razor_pay/razor_pay_service.dart';
 import 'CategoryProvider.dart';
 
 class UserHomeScreenBody extends StatefulWidget {
@@ -86,8 +89,7 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                     child: Center(
                       child: Text(
                         'No carousel items available',
-                        style:
-                        GoogleFonts.inter(color: Colors.grey.shade600),
+                        style: GoogleFonts.inter(color: Colors.grey.shade600),
                       ),
                     ),
                   );
@@ -107,8 +109,7 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                 "Service Offering",
                 textAlign: TextAlign.start,
                 style: GoogleFonts.inter(
-                  textStyle:
-                  Theme.of(context).textTheme.titleLarge?.copyWith(
+                  textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: const Color(0xFF000000),
                     fontWeight: FontWeight.w500,
                   ),
@@ -164,8 +165,7 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                       child: Text(
                         'No categories available',
                         style: GoogleFonts.inter(
-                          textStyle:
-                          Theme.of(context).textTheme.bodyLarge,
+                          textStyle: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ),
                     ),
@@ -199,10 +199,7 @@ class _CategoryCard extends StatelessWidget {
   final dynamic category;
   final CategoryProvider categoryProvider;
 
-  const _CategoryCard({
-    required this.category,
-    required this.categoryProvider,
-  });
+  const _CategoryCard({required this.category, required this.categoryProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -216,11 +213,7 @@ class _CategoryCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         context.read<SubCategoryProvider>().clearSubcategories();
-        Navigator.pushNamed(
-          context,
-          '/SubCatOfCatScreen',
-          arguments: category,
-        );
+        Navigator.pushNamed(context, '/SubCatOfCatScreen', arguments: category);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
@@ -242,18 +235,16 @@ class _CategoryCard extends StatelessWidget {
               width: 48,
               child: imageUrl != null
                   ? CachedNetworkImage(
-                imageUrl: imageUrl,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Image.asset(
-                  'assets/images/moyo_service_placeholder.png',
-                ),
-                errorWidget: (context, url, error) => Image.asset(
-                  'assets/images/moyo_service_placeholder.png',
-                ),
-              )
-                  : Image.asset(
-                'assets/images/moyo_service_placeholder.png',
-              ),
+                      imageUrl: imageUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Image.asset(
+                        'assets/images/moyo_service_placeholder.png',
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        'assets/images/moyo_service_placeholder.png',
+                      ),
+                    )
+                  : Image.asset('assets/images/moyo_service_placeholder.png'),
             ),
             const SizedBox(height: 8),
             Padding(
@@ -264,8 +255,7 @@ class _CategoryCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.inter(
-                  textStyle:
-                  Theme.of(context).textTheme.labelSmall?.copyWith(
+                  textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: const Color(0xFF000000),
                     fontSize: 10,
                     height: 1.2,

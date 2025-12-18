@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../screens/user_screens/WidgetProviders/ServiceAPI.dart';
 import '../screens/user_screens/navigation/SOSEmergencyScreen.dart';
@@ -1544,17 +1545,36 @@ class UserServiceDetails extends StatelessWidget {
           final razorpay = RazorpayService();
 
           razorpay.init(
-            onSuccess: (res) {
+            onSuccess: (PaymentSuccessResponse res) {
+              debugPrint("✅ PAYMENT SUCCESS");
+              debugPrint("paymentId  : ${res.paymentId}");
+              debugPrint("orderId    : ${res.orderId}");
+              debugPrint("signature  : ${res.signature}");
+              debugPrint("raw object : ${res.toString()}");
+
               _showSuccessSnackbar(context, "Payment Successful");
             },
-            onError: (res) {
-              _showErrorSnackbar(context, res.message ?? "Payment failed");
+            onError: (PaymentFailureResponse res) {
+              debugPrint("❌ PAYMENT FAILED");
+              debugPrint("code       : ${res.code}");
+              debugPrint("message    : ${res.message}");
+              debugPrint("error      : ${res.error}");
+              debugPrint("raw object : ${res.toString()}");
+
+              _showErrorSnackbar(
+                context,
+                res.message ?? "Payment failed",
+              );
             },
-            onWallet: (res) {},
+            onWallet: (ExternalWalletResponse res) {
+              debugPrint("🟡 EXTERNAL WALLET SELECTED");
+              debugPrint("walletName : ${res.walletName}");
+              debugPrint("raw object : ${res.toString()}");
+            },
           );
 
           razorpay.openCheckout(
-            amount: amount, // ₹ value
+            amount: amount, // ₹ value (your service should convert to paise)
             key: "rzp_test_RrrFFdWCi6TIZG",
             name: "Call4Help",
             description: "Service Payment",
@@ -1567,6 +1587,7 @@ class UserServiceDetails extends StatelessWidget {
         ),
         child: const Text("Pay Amount"),
       ),
+
     );
   }
 

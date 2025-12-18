@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:first_flutter/providers/provider_navigation_provider.dart';
 import 'package:first_flutter/providers/user_navigation_provider.dart';
@@ -22,7 +23,6 @@ import 'package:first_flutter/screens/provider_screens/navigation/UserNotificati
 import 'package:first_flutter/screens/provider_screens/navigation/provider_service_tab_body/ProviderBidProvider.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/provider_service_tab_body/provider_confirmed_service.dart';
 import 'package:first_flutter/screens/provider_screens/provider_custom_bottom_nav.dart';
-import 'package:first_flutter/screens/provider_screens/provider_service_details_screen.dart';
 import 'package:first_flutter/screens/user_screens/Address/MyAddressProvider.dart';
 import 'package:first_flutter/screens/user_screens/BookProviderProvider.dart';
 import 'package:first_flutter/screens/user_screens/Home/CategoryProvider.dart';
@@ -45,6 +45,7 @@ import 'package:first_flutter/screens/user_screens/User Instant Service/user_ins
 import 'package:first_flutter/screens/user_screens/Profile/user_profile_screen.dart';
 import 'package:first_flutter/screens/user_screens/user_service_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -57,41 +58,53 @@ import 'screens/commonOnboarding/loginScreen/login_screen_provider.dart';
 import 'screens/commonOnboarding/splashScreen/splash_screen.dart';
 import 'screens/commonOnboarding/splashScreen/splash_screen_provider.dart';
 
-/// ================== BACKGROUND FCM HANDLER ==================
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   debugPrint("🔔 BACKGROUND MESSAGE");
   debugPrint("Title: ${message.notification?.title}");
   debugPrint("Body: ${message.notification?.body}");
+  debugPrint("Data: ${message.data}");
+
+  // ✅ SHOW notification manually (important)
+  await NotificationService.showLocalNotificationStatic(message);
 }
+
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
+
+Future<void> initLocalNotifications() async {
+  const AndroidInitializationSettings androidInit =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initSettings =
+  InitializationSettings(android: androidInit);
+
+  await flutterLocalNotificationsPlugin.initialize(initSettings);
+}
+
 
 /// ================== MAIN ==================
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  debugPrint("🚀 App Starting");
+  await Firebase.initializeApp();
 
-  try {
-    /// NATS
-    await NatsService().initialize(
-      url: 'nats://api.moyointernational.com',
-      autoReconnect: true,
-      reconnectInterval: const Duration(seconds: 5),
-    );
+  FirebaseMessaging.onBackgroundMessage(
+    firebaseMessagingBackgroundHandler,
+  );
 
-    /// FCM Background Handler (REGISTER ONCE)
-    FirebaseMessaging.onBackgroundMessage(
-      firebaseMessagingBackgroundHandler,
-    );
+  await NotificationService.initializeNotifications();
+  NotificationService.setupTokenRefreshListener();
 
-    /// Notifications
-    await NotificationService.initializeNotifications();
-    NotificationService.setupTokenRefreshListener();
-  } catch (e) {
-    debugPrint("❌ INIT ERROR: $e");
-  }
+  await NatsService().initialize(
+    url: 'nats://api.moyointernational.com',
+    autoReconnect: true,
+    reconnectInterval: const Duration(seconds: 5),
+  );
 
   runApp(
     MultiProvider(

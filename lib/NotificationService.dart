@@ -371,7 +371,7 @@ class NotificationService {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.1),
+                  color: Colors.blue.withAlpha(1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -579,5 +579,51 @@ class NotificationService {
         ?.deleteNotificationChannel('call4hep_high_importance');
 
     debugPrint("🗑️ Old channel deleted");
+  }
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  Future<void> initLocalNotifications() async {
+    const AndroidInitializationSettings androidInit =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const InitializationSettings initSettings =
+    InitializationSettings(android: androidInit);
+
+    await flutterLocalNotificationsPlugin.initialize(initSettings);
+  }
+
+
+  static Future<void> showForegroundNotification(
+      String title, String body) async {
+    const AndroidNotificationDetails androidDetails =
+    AndroidNotificationDetails(
+      'high_importance_channel',
+      'High Importance Notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails notificationDetails =
+    NotificationDetails(android: androidDetails);
+
+    await _flutterLocalNotificationsPlugin.show(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title,
+      body,
+      notificationDetails,
+    );
+  }
+
+  static void init() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        showForegroundNotification(
+          message.notification!.title ?? '',
+          message.notification!.body ?? '',
+        );
+      }
+    });
   }
 }

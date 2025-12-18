@@ -90,7 +90,6 @@ class _EndWorkOTPDialogState extends State<EndWorkOTPDialog> {
                   // OTP Input Fields
                   LayoutBuilder(
                     builder: (context, constraints) {
-
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: List.generate(4, (index) {
@@ -186,32 +185,34 @@ class _EndWorkOTPDialogState extends State<EndWorkOTPDialog> {
                             onPressed: startWorkProvider.isProcessing
                                 ? null
                                 : () async {
-                              final otp = otpControllers
-                                  .map((controller) => controller.text)
-                                  .join();
+                                    final otp = otpControllers
+                                        .map((controller) => controller.text)
+                                        .join();
 
-                              if (otp.length != 4) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Please enter complete OTP',
-                                      style: TextStyle(fontSize: buttonFontSize - 2),
-                                    ),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                                return;
-                              }
+                                    if (otp.length != 4) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Please enter complete OTP',
+                                            style: TextStyle(
+                                              fontSize: buttonFontSize - 2,
+                                            ),
+                                          ),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                      return;
+                                    }
 
-                              final success = await startWorkProvider.endWork(
-                                widget.serviceId,
-                                otp,
-                              );
+                                    final success = await startWorkProvider
+                                        .endWork(widget.serviceId, otp);
 
-                              if (success && mounted) {
-                                Navigator.of(context).pop(true);
-                              }
-                            },
+                                    if (success && mounted) {
+                                      Navigator.of(context).pop(true);
+                                    }
+                                  },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
                               foregroundColor: Colors.white,
@@ -225,20 +226,20 @@ class _EndWorkOTPDialogState extends State<EndWorkOTPDialog> {
                             ),
                             child: startWorkProvider.isProcessing
                                 ? SizedBox(
-                              height: 20.h,
-                              width: 20.w,
-                              child: const CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
+                                    height: 20.h,
+                                    width: 20.w,
+                                    child: const CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
                                 : Text(
-                              'Complete Work',
-                              style: TextStyle(
-                                fontSize: buttonFontSize,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                                    'Complete Work',
+                                    style: TextStyle(
+                                      fontSize: buttonFontSize,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                           ),
                         ),
                         SizedBox(height: 12.h),
@@ -248,9 +249,9 @@ class _EndWorkOTPDialogState extends State<EndWorkOTPDialog> {
                             onPressed: startWorkProvider.isProcessing
                                 ? null
                                 : () {
-                              startWorkProvider.reset();
-                              Navigator.of(context).pop(null);
-                            },
+                                    startWorkProvider.reset();
+                                    Navigator.of(context).pop(null);
+                                  },
                             child: Text(
                               'Cancel',
                               style: TextStyle(
@@ -266,9 +267,9 @@ class _EndWorkOTPDialogState extends State<EndWorkOTPDialog> {
                           onPressed: startWorkProvider.isProcessing
                               ? null
                               : () {
-                            startWorkProvider.reset();
-                            Navigator.of(context).pop(null);
-                          },
+                                  startWorkProvider.reset();
+                                  Navigator.of(context).pop(null);
+                                },
                           child: Text(
                             'Cancel',
                             style: TextStyle(
@@ -281,32 +282,32 @@ class _EndWorkOTPDialogState extends State<EndWorkOTPDialog> {
                           onPressed: startWorkProvider.isProcessing
                               ? null
                               : () async {
-                            final otp = otpControllers
-                                .map((controller) => controller.text)
-                                .join();
+                                  final otp = otpControllers
+                                      .map((controller) => controller.text)
+                                      .join();
 
-                            if (otp.length != 4) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Please enter complete OTP',
-                                    style: TextStyle(fontSize: buttonFontSize - 2),
-                                  ),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
+                                  if (otp.length != 4) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Please enter complete OTP',
+                                          style: TextStyle(
+                                            fontSize: buttonFontSize - 2,
+                                          ),
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
 
-                            final success = await startWorkProvider.endWork(
-                              widget.serviceId,
-                              otp,
-                            );
+                                  final success = await startWorkProvider
+                                      .endWork(widget.serviceId, otp);
 
-                            if (success && mounted) {
-                              Navigator.of(context).pop(true);
-                            }
-                          },
+                                  if (success && mounted) {
+                                    Navigator.of(context).pop(true);
+                                  }
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
@@ -320,20 +321,20 @@ class _EndWorkOTPDialogState extends State<EndWorkOTPDialog> {
                           ),
                           child: startWorkProvider.isProcessing
                               ? SizedBox(
-                            height: 20.h,
-                            width: 20.w,
-                            child: const CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
+                                  height: 20.h,
+                                  width: 20.w,
+                                  child: const CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
                               : Text(
-                            'Complete Work',
-                            style: TextStyle(
-                              fontSize: buttonFontSize,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                                  'Complete Work',
+                                  style: TextStyle(
+                                    fontSize: buttonFontSize,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                         ),
                       ],
                     ],
