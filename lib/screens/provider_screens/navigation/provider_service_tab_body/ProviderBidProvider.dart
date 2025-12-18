@@ -11,7 +11,7 @@ class ProviderBidProvider extends ChangeNotifier {
   String? _currentTopic;
   StreamSubscription<bool>? _connectionSubscription;
 
-  List<ProviderBidModel> _bids = [];
+  final List<ProviderBidModel> _bids = [];
   bool _isLoading = false;
   bool _isConnected = false;
   String? _error;

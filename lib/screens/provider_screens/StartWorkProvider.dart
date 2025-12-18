@@ -105,6 +105,7 @@ class StartWorkProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
+        debugPrint(responseData);
         _isSuccess = true;
         _errorMessage = null;
         _isProcessing = false;

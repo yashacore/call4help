@@ -27,13 +27,12 @@ class ProviderServiceApi {
         },
       );
 
-      debugPrint('Response token: ${token}');
+      debugPrint('Response token: $token');
       debugPrint('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
 
-        // Check if response has the expected structure
         if (jsonResponse.containsKey('services') &&
             jsonResponse['services'] is List) {
           final List<dynamic> servicesJson = jsonResponse['services'];

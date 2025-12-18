@@ -16,7 +16,6 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
   @override
   void initState() {
     super.initState();
-    // Initialize subscription when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = context.read<ProviderBidProvider>();
       if (!provider.isConnected || provider.providerId == null) {
@@ -26,33 +25,12 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
   }
 
   String _formatDate(DateTime? date) {
-    // ✅ FIXED: Handle null date
     if (date == null) return 'Not scheduled';
     return DateFormat('MMM dd, yyyy').format(date);
   }
 
-  String _formatTime(String? time) {
-    // ✅ FIXED: Handle null time
-    if (time == null || time.isEmpty) return 'Not specified';
 
-    try {
-      final parts = time.split(':');
-      if (parts.length >= 2) {
-        final hour = int.parse(parts[0]);
-        final minute = parts[1];
-        final period = hour >= 12 ? 'PM' : 'AM';
-        final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
-        return '$displayHour:$minute $period';
-      }
-      return time;
-    } catch (e) {
-      return time;
-    }
-  }
-
-  // ✅ NEW: Helper method to get display date
   String _getDisplayDate(dynamic bid) {
-    // Priority: scheduleDate > startDate > createdAt
     if (bid.scheduleDate != null) {
       return _formatDate(bid.scheduleDate);
     } else if (bid.startDate != null) {
@@ -67,7 +45,6 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
     return Scaffold(
       body: Consumer<ProviderBidProvider>(
         builder: (context, bidProvider, child) {
-          // Show loading indicator
           if (bidProvider.isLoading) {
             return const Center(
               child: Column(
@@ -80,8 +57,6 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
               ),
             );
           }
-
-          // Show error message
           if (bidProvider.error != null && !bidProvider.isConnected) {
             return Center(
               child: Column(
@@ -111,8 +86,6 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
               ),
             );
           }
-
-          // Show empty state
           if (bidProvider.bids.isEmpty) {
             return Center(
               child: Column(
@@ -171,8 +144,6 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
               ),
             );
           }
-
-          // Show list of service requests
           return RefreshIndicator(
             onRefresh: () async {
               await bidProvider.refresh();
@@ -182,18 +153,14 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
               padding: const EdgeInsets.symmetric(vertical: 8),
               itemBuilder: (context, index) {
                 final bid = bidProvider.bids[index];
-
-                // ✅ FIXED: Removed null-check operator on scheduleDate
                 return ProviderServiceListCard(
                   key: ValueKey(bid.id),
                   category: bid.category,
                   subCategory: bid.service,
                   date: _getDisplayDate(bid),
-                  // ✅ FIXED: Use helper method
                   dp: "https://picsum.photos/200/200?random=${bid.id}",
                   price: bid.budget.toStringAsFixed(2),
                   duration: bid.durationDisplay,
-                  // ✅ Already handles null
                   priceBy: bid.tenure == 'one_time' ? 'One Time' : bid.tenure,
                   providerCount: null,
                   status: bid.status,
@@ -207,7 +174,6 @@ class _ProviderBidServiceState extends State<ProviderBidService> {
                             ProviderServiceDetailsScreen(serviceId: bid.id),
                       ),
                     ).then((_) {
-                      // Re-initialize if needed when coming back
                       final provider = context.read<ProviderBidProvider>();
                       if (!provider.isConnected ||
                           provider.providerId == null) {

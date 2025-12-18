@@ -62,13 +62,6 @@ import 'screens/commonOnboarding/splashScreen/splash_screen_provider.dart';
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
-  debugPrint("🔔 BACKGROUND MESSAGE");
-  debugPrint("Title: ${message.notification?.title}");
-  debugPrint("Body: ${message.notification?.body}");
-  debugPrint("Data: ${message.data}");
-
-  // ✅ SHOW notification manually (important)
   await NotificationService.showLocalNotificationStatic(message);
 }
 

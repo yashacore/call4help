@@ -1,15 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/screens/user_screens/Home/top_services.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../../../BannerModel.dart';
 import '../../../widgets/image_slider.dart';
 import '../SubCategory/SubCategoryProvider.dart';
-import '../razor_pay/razor_pay_service.dart';
 import 'CategoryProvider.dart';
 
 class UserHomeScreenBody extends StatefulWidget {

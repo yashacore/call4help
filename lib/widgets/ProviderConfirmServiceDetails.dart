@@ -639,7 +639,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
         if (context.mounted) {
           _showSuccessSnackbar(
             context,
-            response.message ?? 'Service accepted successfully',
+            response.message,
           );
 
           // Add delay to show snackbar, then pop
@@ -660,7 +660,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
         if (context.mounted) {
           _showErrorSnackbar(
             context,
-            response.message ?? 'Failed to accept service',
+            response.message,
           );
         }
       }
@@ -876,7 +876,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
         if (context.mounted) {
           _showSuccessSnackbar(
             context,
-            response.message ?? 'Re-bid submitted successfully',
+            response.message,
           );
 
           // Add delay to show snackbar, then pop
@@ -897,7 +897,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
         if (context.mounted) {
           _showErrorSnackbar(
             context,
-            response.message ?? 'Failed to submit re-bid',
+            response.message,
           );
         }
       }
@@ -1404,13 +1404,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
     return SizedBox.shrink();
   }
 
-  String? _timeLeft(
-    BuildContext context, {
-    String? serviceStartTime,
-    String? duration,
-  }) {
-    return "03 : 29";
-  }
+
 
   Widget _startWork(BuildContext context) {
     return InkWell(

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +8,8 @@ import '../provider_service_details_screen.dart';
 import 'NotificationProvider.dart';
 
 class NotificationListScreen extends StatefulWidget {
+  const NotificationListScreen({super.key});
+
   @override
   _NotificationListScreenState createState() => _NotificationListScreenState();
 }
@@ -255,7 +256,6 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                 itemBuilder: (context, index) {
                   final notification = provider.notifications[index];
                   final isRead = notification['is_read'] ?? false;
-                  debugPrint("ayushhhhh $notification");
 
                   final serviceId = notification["data"]["service_id"];
                   debugPrint("Extracted serviceId: $serviceId");
@@ -274,14 +274,12 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                         border: isRead
                             ? null
                             : Border.all(
-                                color: ColorConstant.call4hepOrange.withOpacity(
-                                  0.3,
-                                ),
+                                color: ColorConstant.call4hepOrange.withAlpha(3),
                                 width: 1,
                               ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                            color: Colors.black.withAlpha(8),
                             blurRadius: 8.sp,
                             offset: Offset(0, 2.sp),
                           ),
@@ -294,8 +292,8 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                           height: 48.sp,
                           decoration: BoxDecoration(
                             color: isRead
-                                ? ColorConstant.call4hepGreen.withOpacity(0.2)
-                                : ColorConstant.call4hepOrange.withOpacity(0.3),
+                                ? ColorConstant.call4hepGreen.withAlpha(2)
+                                : ColorConstant.call4hepOrange.withAlpha(3),
                             borderRadius: BorderRadius.circular(12.sp),
                           ),
                           child: Icon(
@@ -314,7 +312,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                                 ? FontWeight.w500
                                 : FontWeight.w600,
                             color: isRead
-                                ? ColorConstant.onSurface.withOpacity(0.8)
+                                ? ColorConstant.onSurface.withAlpha(8)
                                 : ColorConstant.onSurface,
                           ),
                           maxLines: 1,
@@ -360,7 +358,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
+                                      color: Colors.black.withAlpha(2),
                                       blurRadius: 4.sp,
                                       offset: Offset(0, 2.sp),
                                     ),

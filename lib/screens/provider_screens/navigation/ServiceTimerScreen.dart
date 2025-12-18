@@ -12,10 +12,10 @@ class ServiceTimerScreen extends StatefulWidget {
   final String serviceId;
   final int durationValue;
   final String durationUnit;
-  final String? categoryName;  // Made nullable
-  final String? subCategoryName;  // Made nullable
+  final String? categoryName;
+  final String? subCategoryName;
 
-  ServiceTimerScreen({
+  const ServiceTimerScreen({
     super.key,
     required this.serviceId,
     required this.durationValue,
@@ -41,7 +41,6 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
 
   Map<String, dynamic>? _serviceData;
 
-  // OTP Controllers
   final List<TextEditingController> _startOtpControllers = List.generate(
     5,
         (_) => TextEditingController(),
@@ -63,11 +62,11 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
 
   @override
   void initState() {
+
     super.initState();
     _initializeTimer();
     _fetchServiceDetails();
 
-    // Start periodic API calls every 10 seconds
     _apiTimer = Timer.periodic(
       const Duration(seconds: 10),
           (timer) => _fetchServiceDetails(),
@@ -75,14 +74,9 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
   }
 
   void _initializeTimer() {
-    // Convert duration to seconds
     _allocatedSeconds = widget.durationValue * 3600;
     _totalSeconds = _allocatedSeconds;
-
-    // Load saved timer state if exists
     _loadTimerState();
-
-    // Start the countdown timer
     _startTimer();
   }
 
@@ -102,7 +96,6 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
         _checkExtraTime();
       });
     } else {
-      // First time - save start time
       final now = DateTime.now().toIso8601String();
       await prefs.setString('timer_start_${widget.serviceId}', now);
       setState(() {
@@ -162,7 +155,6 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
           _isLoading = false;
         });
 
-        // Check if service has ended
         if (data['status'] == 'completed' || data['status'] == 'ended') {
           _stopTimer();
         }
@@ -190,68 +182,7 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
   Color _getTimerColor() {
     return _isExtraTime
         ? Colors.red
-        : const Color(0xFF4CAF50); // Green for normal, Red for extra
-  }
-
-  Widget _buildOTPField(
-      List<TextEditingController> controllers,
-      List<FocusNode> focusNodes,
-      ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(5, (index) {
-        return Container(
-          width: 50.w,
-          height: 50.h,
-          margin: EdgeInsets.symmetric(horizontal: 4.w),
-          child: TextField(
-            controller: controllers[index],
-            focusNode: focusNodes[index],
-            textAlign: TextAlign.center,
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            style: TextStyle(
-              fontSize: 24.sp,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFFFF9800),
-            ),
-            decoration: InputDecoration(
-              counterText: '',
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
-                borderSide: BorderSide(
-                  color: const Color(0xFFFF9800),
-                  width: 2,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
-                borderSide: BorderSide(
-                  color: const Color(0xFFFF9800).withOpacity(0.5),
-                  width: 2,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
-                borderSide: BorderSide(
-                  color: const Color(0xFFFF9800),
-                  width: 2,
-                ),
-              ),
-            ),
-            onChanged: (value) {
-              if (value.isNotEmpty && index < 4) {
-                focusNodes[index + 1].requestFocus();
-              } else if (value.isEmpty && index > 0) {
-                focusNodes[index - 1].requestFocus();
-              }
-            },
-          ),
-        );
-      }),
-    );
+        : const Color(0xFF4CAF50);
   }
 
   Future<void> _handleSOS() async {
@@ -284,7 +215,6 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Provide default values for nullable fields
     final categoryName = widget.categoryName ?? 'Service';
     final subCategoryName = widget.subCategoryName ?? 'Category';
 
@@ -292,12 +222,10 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
       backgroundColor: const Color(0xFFFF9800),
       body: Column(
         children: [
-          // Top section with service provider image
           Expanded(
             flex: 2,
             child: Stack(
               children: [
-                // Background image with overlay
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -314,8 +242,6 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                     ),
                   ),
                 ),
-
-                // call4hep logo
                 Positioned(
                   top: 20.h,
                   left: 0,
@@ -332,8 +258,6 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                     ),
                   ),
                 ),
-
-                // Service category
                 Positioned(
                   bottom: 20.h,
                   left: 0,
@@ -373,8 +297,6 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
               ],
             ),
           ),
-
-          // Bottom section with timer and controls
           Expanded(
             flex: 3,
             child: Container(
@@ -393,7 +315,6 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                 child: Column(
                   children: [
-                    // Service category text
                     Text(
                       '$categoryName > $subCategoryName',
                       style: TextStyle(
@@ -408,7 +329,6 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Timer Clock
                         Expanded(
                           flex: 5,
                           child: CustomPaint(
@@ -432,15 +352,12 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                         ),
 
                         SizedBox(width: 14.w),
-
-                        // OTP and Service Time section
                         Expanded(
                           flex: 5,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(height: 20.h),
-                              // Elapsed Time Display
                               Container(
                                 width: double.infinity,
                                 padding: EdgeInsets.symmetric(
@@ -535,8 +452,6 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                         ),
                       ],
                     ),
-
-                    // Action Buttons
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -596,7 +511,6 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
   }
 }
 
-// Custom Painter for Timer Clock
 class TimerClockPainter extends CustomPainter {
   final int elapsedSeconds;
   final int allocatedSeconds;
@@ -614,50 +528,41 @@ class TimerClockPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
-
-    // Calculate progress percentage
     final progressSeconds = isExtraTime ? allocatedSeconds : elapsedSeconds;
     final totalForProgress = isExtraTime ? allocatedSeconds : allocatedSeconds;
     final progressPercentage = progressSeconds / totalForProgress;
     final progressAngle = progressPercentage * 2 * pi;
-
-    // Draw clock face background (beige color for remaining time)
     final bgPaint = Paint()
       ..color = const Color(0xFFFFF3E0)
       ..style = PaintingStyle.fill;
     canvas.drawCircle(center, radius, bgPaint);
 
-    // Draw green filled arc for elapsed time (like a pie slice)
     if (!isExtraTime && elapsedSeconds > 0) {
       final greenPaint = Paint()
         ..color =
-        const Color(0xFF8BC34A) // Light green color
+        const Color(0xFF8BC34A)
         ..style = PaintingStyle.fill;
 
       final path = Path();
-      path.moveTo(center.dx, center.dy); // Start from center
+      path.moveTo(center.dx, center.dy);
       path.arcTo(
         Rect.fromCircle(center: center, radius: radius),
         -pi / 2,
         progressAngle,
         false,
       );
-      path.lineTo(center.dx, center.dy); // Back to center
+      path.lineTo(center.dx, center.dy);
       path.close();
 
       canvas.drawPath(path, greenPaint);
     }
 
-    // If in extra time, fill entire clock with red and show extra progress in darker red
     if (isExtraTime) {
-      // First fill entire clock with light red
       final redBgPaint = Paint()
         ..color =
-        const Color(0xFFFFF3E0) // Light red
+        const Color(0xFFFFF3E0)
         ..style = PaintingStyle.fill;
       canvas.drawCircle(center, radius, redBgPaint);
-
-      // Then draw darker red for extra elapsed time
       final extraSeconds = elapsedSeconds - allocatedSeconds;
       final extraPercentage =
           (extraSeconds % allocatedSeconds) / allocatedSeconds;
@@ -666,7 +571,7 @@ class TimerClockPainter extends CustomPainter {
       if (extraSeconds > 0) {
         final darkRedPaint = Paint()
           ..color =
-          const Color(0xFFFF5252) // Darker red
+          const Color(0xFFFF5252)
           ..style = PaintingStyle.fill;
 
         final path = Path();
@@ -684,15 +589,12 @@ class TimerClockPainter extends CustomPainter {
       }
     }
 
-    // Draw outer circle border (orange)
     final circlePaint = Paint()
       ..color =
-      const Color(0xFFFF9800) // Orange border
+      const Color(0xFFFF9800)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8;
     canvas.drawCircle(center, radius - 4, circlePaint);
-
-    // Draw hour markers (numbers)
     for (int i = 0; i < 12; i++) {
       final angle = (i * 30) * (pi / 180);
       final x1 = center.dx + (radius - 20) * cos(angle - pi / 2);
@@ -716,21 +618,14 @@ class TimerClockPainter extends CustomPainter {
       );
     }
 
-    // Calculate hour and minute angles
     final totalMinutes = elapsedSeconds / 60;
     final hours = (totalMinutes / 60) % 12;
     final minutes = totalMinutes % 60;
-
-    // Hour hand angle (30 degrees per hour + 0.5 degrees per minute)
     final hourAngle = (hours * 30 + minutes * 0.5) * (pi / 180) - pi / 2;
-
-    // Minute hand angle (6 degrees per minute)
     final minuteAngle = (minutes * 6) * (pi / 180) - pi / 2;
-
-    // Draw hour hand (shorter and thicker) - Orange color
     final hourHandPaint = Paint()
       ..color =
-      const Color(0xFFFF9800) // Orange
+      const Color(0xFFFF9800)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 6
       ..strokeCap = StrokeCap.round;
@@ -739,11 +634,9 @@ class TimerClockPainter extends CustomPainter {
     final hourHandX = center.dx + hourHandLength * cos(hourAngle);
     final hourHandY = center.dy + hourHandLength * sin(hourAngle);
     canvas.drawLine(center, Offset(hourHandX, hourHandY), hourHandPaint);
-
-    // Draw minute hand (longer and thinner) - Orange color
     final minuteHandPaint = Paint()
       ..color =
-      const Color(0xFFFF9800) // Orange
+      const Color(0xFFFF9800)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.round;
@@ -753,10 +646,9 @@ class TimerClockPainter extends CustomPainter {
     final minuteHandY = center.dy + minuteHandLength * sin(minuteAngle);
     canvas.drawLine(center, Offset(minuteHandX, minuteHandY), minuteHandPaint);
 
-    // Draw center dot - Orange color
     final dotPaint = Paint()
       ..color =
-      const Color(0xFFFF9800) // Orange
+      const Color(0xFFFF9800)
       ..style = PaintingStyle.fill;
     canvas.drawCircle(center, 8, dotPaint);
   }

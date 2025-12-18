@@ -20,7 +20,6 @@ class ProviderChatProvider with ChangeNotifier {
   String? get chatId => _chatId;
   List<ChatMessage> get messages => _messages;
 
-  // Fetch chat history from NATS
   Future<bool> fetchChatHistory({required String chatId}) async {
     debugPrint("=== FETCHING CHAT HISTORY ===");
     debugPrint("Chat ID: $chatId");
@@ -74,7 +73,6 @@ class ProviderChatProvider with ChangeNotifier {
           }
         }
 
-        // Sort messages by timestamp (oldest first)
         _messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
         debugPrint("✅ Loaded ${_messages.length} messages from history");
@@ -98,7 +96,6 @@ class ProviderChatProvider with ChangeNotifier {
     }
   }
 
-  // Subscribe to new messages via NATS
   Future<void> subscribeToMessages({required String chatId}) async {
     try {
       debugPrint("=== Subscribing to chat messages ===");
@@ -136,7 +133,6 @@ class ProviderChatProvider with ChangeNotifier {
     }
   }
 
-  // Initiate chat with provider
   Future<bool> initiateChat({
     required String serviceId,
     required String providerId,

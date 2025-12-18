@@ -345,7 +345,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 2,
-      shadowColor: Colors.black.withOpacity(0.1),
+      shadowColor: Colors.black.withAlpha(1),
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Color(0xFF1D1B20)),
         onPressed: () => Navigator.pop(context),
@@ -360,7 +360,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: ColorConstant.call4hepOrange.withOpacity(0.3),
+                    color: ColorConstant.call4hepOrange.withAlpha(1),
                     width: 2.w,
                   ),
                 ),
@@ -556,7 +556,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withAlpha(5),
                     blurRadius: 4,
                     offset: Offset(0, 2),
                   ),
@@ -583,7 +583,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                         style: GoogleFonts.inter(
                           fontSize: 11.sp,
                           color: isSentByMe
-                              ? Colors.white.withOpacity(0.8)
+                              ? Colors.white.withAlpha(8)
                               : Color(0xFF7A7A7A),
                         ),
                       ),
@@ -594,7 +594,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                           size: 14.sp,
                           color: message.isRead
                               ? ColorConstant.call4hepGreen
-                              : Colors.white.withOpacity(0.8),
+                              : Colors.white.withAlpha(8),
                         ),
                       ],
                     ],
@@ -621,7 +621,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha(5),
             blurRadius: 10,
             offset: Offset(0, -2),
           ),

@@ -114,7 +114,7 @@ class _ProviderReBidServiceState extends State<ProviderReBidService> {
     final durationUnit = service['duration_unit'];
 
     if (durationValue != null && durationUnit != null) {
-      return '$durationValue ${durationUnit}${durationValue > 1 ? 's' : ''}';
+      return '$durationValue $durationUnit${durationValue > 1 ? 's' : ''}';
     }
     return 'N/A';
   }

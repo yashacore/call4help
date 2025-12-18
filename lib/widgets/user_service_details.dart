@@ -435,7 +435,7 @@ class UserServiceDetails extends StatelessWidget {
         if (context.mounted) {
           _showSuccessSnackbar(
             context,
-            response.message ?? 'Service accepted successfully',
+            response.message,
           );
 
           // Add delay to show snackbar, then pop
@@ -456,7 +456,7 @@ class UserServiceDetails extends StatelessWidget {
         if (context.mounted) {
           _showErrorSnackbar(
             context,
-            response.message ?? 'Failed to accept service',
+            response.message,
           );
         }
       }
@@ -711,7 +711,7 @@ class UserServiceDetails extends StatelessWidget {
         if (context.mounted) {
           _showSuccessSnackbar(
             context,
-            response.message ?? 'Re-bid submitted successfully',
+            response.message,
           );
 
           // Add delay to show snackbar, then pop
@@ -732,7 +732,7 @@ class UserServiceDetails extends StatelessWidget {
         if (context.mounted) {
           _showErrorSnackbar(
             context,
-            response.message ?? 'Failed to submit re-bid',
+            response.message,
           );
         }
       }
@@ -919,7 +919,6 @@ class UserServiceDetails extends StatelessWidget {
     );
   }
 
-  // Replace the _sosPinTimeLeftCallMessage method with this updated version
 
   Widget _sosPinTimeLeftCallMessage(
     BuildContext context,
@@ -934,7 +933,6 @@ class UserServiceDetails extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // SOS Button
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -962,7 +960,6 @@ class UserServiceDetails extends StatelessWidget {
             ),
           ),
 
-          // Center content - PIN or Timer based on status
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
@@ -970,19 +967,15 @@ class UserServiceDetails extends StatelessWidget {
             ),
           ),
 
-          // Call and Message buttons - Hide for pending status
           if (statusLower != "open")
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 16,
               children: [
-                // Call Button
                 InkWell(
                   onTap: () {
                     if (providerPhone != null && providerPhone.isNotEmpty) {
-                      // Add your call functionality here
-                      // Example: launch('tel:$providerPhone');
                       debugPrint('Calling: $providerPhone');
                     } else {
                       _showErrorSnackbar(context, 'Phone number not available');
@@ -992,10 +985,8 @@ class UserServiceDetails extends StatelessWidget {
                   child: SvgPicture.asset("assets/icons/call4hep_call_action.svg"),
                 ),
 
-                // Message/Chat Button
                 InkWell(
                   onTap: () {
-                    // Navigate to chat screen
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -1024,8 +1015,6 @@ class UserServiceDetails extends StatelessWidget {
 
   Widget _buildCenterContent(BuildContext context, String? pin) {
     final statusLower = status.toLowerCase();
-
-    // Show PIN for assigned, arrived statuses
     if (statusLower == "assigned" ||
         statusLower == "arrived" ||
         statusLower == "in_progress" ||
@@ -1062,17 +1051,10 @@ class UserServiceDetails extends StatelessWidget {
       );
     }
 
-    // Default - empty space
     return SizedBox.shrink();
   }
 
-  String? _timeLeft(
-    BuildContext context, {
-    String? serviceStartTime,
-    String? duration,
-  }) {
-    return "03 : 29";
-  }
+
 
   Widget _dpNameStatus(context, Widget child) {
     return Padding(

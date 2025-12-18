@@ -197,7 +197,7 @@ class _ProviderEarningScreenState extends State<ProviderEarningScreen> {
         Text(
           label,
           style: TextStyle(
-            color: ColorConstant.white.withOpacity(0.9),
+            color: ColorConstant.white.withAlpha(9),
             fontSize: 12.sp,
             fontWeight: FontWeight.w400,
           ),

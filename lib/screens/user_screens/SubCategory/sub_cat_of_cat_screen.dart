@@ -234,68 +234,7 @@ class UserExpansionTileListCard extends StatelessWidget {
     );
   }
 
-  Widget _buildPricingInfo(double maxWidth) {
-    final isSmallScreen = maxWidth < 320.w;
 
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Pricing Details',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14.sp,
-              color: Colors.black87,
-            ),
-          ),
-          SizedBox(height: 8.h),
-
-          // Hourly & Daily Row/Column
-          _buildPricingRow(isSmallScreen, [
-            _PriceItem(label: 'Hourly', price: subcategory.hourlyRate),
-            _PriceItem(label: 'Daily', price: subcategory.dailyRate),
-          ]),
-
-          SizedBox(height: 8.h),
-
-          // Weekly & Monthly Row/Column
-          _buildPricingRow(isSmallScreen, [
-            _PriceItem(label: 'Weekly', price: subcategory.weeklyRate),
-            _PriceItem(label: 'Monthly', price: subcategory.monthlyRate),
-          ]),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPricingRow(bool isSmallScreen, List<Widget> items) {
-    if (isSmallScreen) {
-      return Column(
-        children: items
-            .map(
-              (item) => Padding(
-                padding: EdgeInsets.only(bottom: 6.h),
-                child: Row(children: [Expanded(child: item)]),
-              ),
-            )
-            .toList(),
-      );
-    }
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: items.map((item) => Expanded(child: item)).toList(),
-    );
-  }
 
   Widget _buildServiceButtons(BuildContext context) {
     return Row(
@@ -349,32 +288,25 @@ class UserExpansionTileListCard extends StatelessWidget {
     BuildContext context,
     String serviceType,
   ) async {
-    // Get SharedPreferences
     final prefs = await SharedPreferences.getInstance();
     final isEmailVerified = prefs.getBool('is_email_verified') ?? false;
     final userMobile = prefs.getString('user_mobile') ?? '';
 
-    // ADD THIS CHECK:
     if (!isEmailVerified || userMobile.isEmpty) {
-      // Email not verified OR mobile not provided, show dialog first
       debugPrint(
         'Email not verified or mobile missing, showing update profile dialog',
       );
 
       await UpdateProfileDialog.show(context);
-
-      // After dialog closes, check again if both are now verified
       final updatedPrefs = await SharedPreferences.getInstance();
       final updatedEmailVerified =
           updatedPrefs.getBool('is_email_verified') ?? false;
       final updatedMobile = updatedPrefs.getString('user_mobile') ?? '';
 
       if (!updatedEmailVerified || updatedMobile.isEmpty) {
-        // Still not complete, don't proceed
         debugPrint('Profile still incomplete after dialog');
         return;
       }
-      // Both verified, continue to service screen below
     }
 
     Navigator.push(
