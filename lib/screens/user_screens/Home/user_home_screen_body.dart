@@ -4,9 +4,9 @@ import 'package:first_flutter/screens/user_screens/cyber_cafe/search_cyber_by_ci
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../../BannerModel.dart';
+import '../../../data/models/BannerModel.dart';
 import '../../../widgets/image_slider.dart';
-import 'CategoryProvider.dart';
+import '../../../providers/CategoryProvider.dart';
 
 class UserHomeScreenBody extends StatefulWidget {
   const UserHomeScreenBody({super.key});

@@ -26,17 +26,17 @@ import 'package:first_flutter/screens/provider_screens/navigation/NotificationPr
 import 'package:first_flutter/screens/provider_screens/navigation/ProviderChats/ProviderChatProvider.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/UserNotificationProvider.dart';
 import 'package:first_flutter/screens/provider_screens/provider_custom_bottom_nav.dart';
-import 'package:first_flutter/screens/user_screens/Address/MyAddressProvider.dart';
-import 'package:first_flutter/screens/user_screens/BookProviderProvider.dart';
-import 'package:first_flutter/screens/user_screens/Home/CategoryProvider.dart';
-import 'package:first_flutter/screens/user_screens/Profile/EditProfileProvider.dart';
+import 'package:first_flutter/providers/MyAddressProvider.dart';
+import 'package:first_flutter/providers/BookProviderProvider.dart';
+import 'package:first_flutter/providers/CategoryProvider.dart';
+import 'package:first_flutter/providers/EditProfileProvider.dart';
 import 'package:first_flutter/screens/user_screens/Profile/EditProfileScreen.dart';
 import 'package:first_flutter/screens/user_screens/Profile/FAQProvider.dart';
-import 'package:first_flutter/screens/user_screens/Profile/UserProfileProvider.dart';
+import 'package:first_flutter/providers/UserProfileProvider.dart';
 import 'package:first_flutter/screens/user_screens/SubCategory/SubCategoryProvider.dart';
-import 'package:first_flutter/screens/user_screens/SubCategory/SubCategoryStateProvider.dart';
+import 'package:first_flutter/providers/SubCategoryStateProvider.dart';
 import 'package:first_flutter/screens/user_screens/SubCategory/sub_cat_of_cat_screen.dart';
-import 'package:first_flutter/screens/user_screens/User Instant Service/UserInstantServiceProvider.dart';
+import 'package:first_flutter/providers/UserInstantServiceProvider.dart';
 import 'package:first_flutter/screens/user_screens/navigation/EmergencyContactProvider.dart';
 import 'package:first_flutter/screens/user_screens/navigation/SOSProvider.dart';
 import 'package:first_flutter/screens/user_screens/navigation/UserChats/UserChatProvider.dart';
@@ -53,9 +53,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import 'BannerModel.dart';
+import 'data/models/BannerModel.dart';
 import 'NATS Service/NatsService.dart';
-import 'NotificationService.dart';
+import 'data/api_services/NotificationService.dart';
 import 'screens/commonOnboarding/loginScreen/login_screen.dart';
 import 'screens/commonOnboarding/splashScreen/splash_screen.dart';
 

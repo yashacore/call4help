@@ -7,10 +7,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../BannerModel.dart';
+import '../../../data/models/BannerModel.dart';
 import '../../../widgets/image_slider.dart';
 import '../../SubCategory/SelectFromHomeScreen.dart';
-import '../../user_screens/Home/CategoryProvider.dart';
+import '../../../providers/CategoryProvider.dart';
 import '../../Skills/ProviderMySkillScreen.dart';
 import '../CompletedServicesScreen.dart';
 

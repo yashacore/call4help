@@ -10,8 +10,8 @@ import 'package:provider/provider.dart';
 
 import '../../commonOnboarding/loginScreen/MobileVerificationScreen.dart';
 import '../../commonOnboarding/otpScreen/EmailVerificationScreen.dart';
-import 'EditProfileProvider.dart';
-import 'UserProfileProvider.dart';
+import '../../../providers/EditProfileProvider.dart';
+import '../../../providers/UserProfileProvider.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});

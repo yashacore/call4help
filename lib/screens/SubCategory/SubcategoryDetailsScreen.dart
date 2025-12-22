@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../user_screens/User Instant Service/UserInstantServiceModel.dart' hide Subcategory;
 import 'SkillProvider.dart';
 
 class SubcategoryDetailsScreen extends StatefulWidget {

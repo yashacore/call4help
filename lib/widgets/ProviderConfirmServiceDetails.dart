@@ -16,7 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 import '../screens/provider_screens/navigation/ProviderChats/ProviderChatScreen.dart';
-import '../screens/user_screens/WidgetProviders/ServiceAPI.dart';
+import '../data/models/ServiceAPI.dart';
 import '../screens/user_screens/navigation/ProviderSOSEmergencyScreen.dart';
 
 class ProviderConfirmServiceDetails extends StatelessWidget {

@@ -7,7 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-import '../screens/user_screens/WidgetProviders/ServiceAPI.dart';
+import '../data/models/ServiceAPI.dart';
 import '../screens/user_screens/navigation/SOSEmergencyScreen.dart';
 import '../screens/user_screens/navigation/UserChats/UserChatScreen.dart';
 import 'CancelServiceDialog.dart';

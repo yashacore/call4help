@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/user_navigation_provider.dart';
-import 'UserInstantServiceProvider.dart';
+import '../../../providers/UserInstantServiceProvider.dart';
 import 'UserLocationPickerScreen.dart';
 
 class UserInstantServiceScreen extends StatefulWidget {

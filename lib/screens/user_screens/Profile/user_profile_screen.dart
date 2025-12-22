@@ -6,7 +6,7 @@ import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../widgets/personal_info_card.dart';
-import 'UserProfileProvider.dart';
+import '../../../providers/UserProfileProvider.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});

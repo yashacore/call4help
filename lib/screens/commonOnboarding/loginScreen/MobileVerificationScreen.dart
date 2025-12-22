@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../user_screens/Profile/EditProfileProvider.dart';
+import '../../../providers/EditProfileProvider.dart';
 
 class MobileVerificationDialog {
   static Future<bool?> show(BuildContext context) async {

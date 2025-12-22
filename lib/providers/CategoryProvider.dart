@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'CatehoryModel.dart';
+import '../data/models/CatehoryModel.dart';
 
 class CategoryProvider with ChangeNotifier {
   List<Category> _categories = [];

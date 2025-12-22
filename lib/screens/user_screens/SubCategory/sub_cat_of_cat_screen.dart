@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../widgets/UpdateProfileDialog.dart';
-import '../Home/CatehoryModel.dart';
+import '../../../data/models/CatehoryModel.dart';
 import '../User Instant Service/user_instant_service_screen.dart';
 import 'SubCategoryProvider.dart';
 
