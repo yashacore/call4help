@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:first_flutter/providers/provider_navigation_provider.dart';
+import 'package:first_flutter/providers/search_cyber_provider.dart';
 import 'package:first_flutter/providers/user_navigation_provider.dart';
 import 'package:first_flutter/screens/Skills/MySkillProvider.dart';
 import 'package:first_flutter/screens/SubCategory/SkillProvider.dart';
@@ -139,6 +140,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => EmergencyContactProvider()),
         ChangeNotifierProvider(create: (_) => SOSProvider()),
         ChangeNotifierProvider(create: (_) => UserSOSProvider()),
+        ChangeNotifierProvider(create: (_) => CyberCafeProvider()),
       ],
       child: const MyApp(),
     ),

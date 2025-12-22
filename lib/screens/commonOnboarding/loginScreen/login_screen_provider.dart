@@ -19,15 +19,12 @@ class LoginProvider with ChangeNotifier {
 
   String? get otpResponse => _otpResponse;
 
-  // Firebase Auth instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Google Sign-In instance
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: <String>['email', 'profile'],
   );
 
-  // Send OTP to mobile number
   Future<bool> sendOtp(String mobile, VoidCallback onSuccess) async {
     if (mobile.isEmpty || mobile.length < 10) {
       _errorMessage = "Please enter a valid mobile number";
@@ -92,7 +89,6 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
-  // Google Sign-In with Firebase - OPTIMIZED VERSION
   Future<void> signInWithGoogle(
     Function(Map<String, dynamic>) onSuccess,
   ) async {
@@ -101,13 +97,11 @@ class LoginProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      // Sign out first to ensure clean state
       await _googleSignIn.signOut();
       await _auth.signOut();
 
       debugPrint("=== Starting Google Sign-In ===");
 
-      // Trigger Google Sign-In flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
@@ -120,13 +114,11 @@ class LoginProvider with ChangeNotifier {
 
       debugPrint("✓ Google user signed in: ${googleUser.email}");
 
-      // Get authentication details from Google
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
       debugPrint("✓ Got Google Auth tokens");
 
-      // Validate Google tokens
       if (googleAuth.accessToken == null || googleAuth.idToken == null) {
         _isLoading = false;
         _errorMessage = "Failed to get Google authentication tokens";
@@ -135,15 +127,12 @@ class LoginProvider with ChangeNotifier {
         return;
       }
 
-      // Create Firebase credential
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
       debugPrint("✓ Created Firebase credential");
-
-      // Sign in to Firebase with the Google credential
       final UserCredential userCredential = await _auth.signInWithCredential(
         credential,
       );
