@@ -1,4 +1,5 @@
-import 'package:first_flutter/baseControllers/APis.dart';
+import 'package:first_flutter/config/baseControllers/APis.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../../../constants/colorConstant/color_constant.dart';
 import 'EmergencyContactProvider.dart';
 import 'SOSProvider.dart';
 

@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:first_flutter/baseControllers/APis.dart';
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/baseControllers/APis.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/NotificationListScreen.dart';
 import 'package:first_flutter/screens/user_screens/UserMyRating.dart';
 import 'package:flutter/material.dart';

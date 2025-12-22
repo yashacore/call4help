@@ -1,9 +1,9 @@
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/providers/EarningsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../constants/colorConstant/color_constant.dart';
-import 'EarningsProvider.dart';
 import 'EarningsResponse.dart';
 
 class ProviderEarningScreen extends StatefulWidget {

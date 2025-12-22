@@ -1,4 +1,4 @@
-import 'package:first_flutter/baseControllers/APis.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../../../constants/colorConstant/color_constant.dart';
+import '../../../config/baseControllers/APis.dart';
 import '../../../providers/provider_navigation_provider.dart';
 
 enum Mode { customer, provider }

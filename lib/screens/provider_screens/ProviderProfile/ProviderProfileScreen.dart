@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/providers/ProviderProfileProvider.dart';
 import 'package:first_flutter/widgets/button_large.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../widgets/personal_info_card.dart';
-import 'ProviderProfileProvider.dart';
 
 class ProviderProfileScreen extends StatefulWidget {
   const ProviderProfileScreen({super.key});
@@ -38,7 +38,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
           // Show loading indicator
           if (profileProvider.isLoading && !profileProvider.hasProfile) {
             return Center(
-              child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
+              child: CircularProgressIndicator(
+                color: ColorConstant.call4hepOrange,
+              ),
             );
           }
 

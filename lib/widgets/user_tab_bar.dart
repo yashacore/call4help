@@ -1,6 +1,6 @@
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
 
-import '../constants/colorConstant/color_constant.dart';
 
 class UserTabBar extends StatelessWidget {
   final TabController? controller;

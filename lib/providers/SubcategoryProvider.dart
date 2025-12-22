@@ -1,10 +1,10 @@
-import 'package:first_flutter/baseControllers/APis.dart';
+import 'package:first_flutter/config/baseControllers/APis.dart';
+import 'package:first_flutter/data/models/SubcategoryResponse.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import 'SubcategoryResponse.dart';
 
 class SubcategoryProvider with ChangeNotifier {
   List<Subcategory> _subcategories = [];

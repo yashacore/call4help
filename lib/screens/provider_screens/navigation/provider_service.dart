@@ -1,5 +1,5 @@
+import 'package:first_flutter/data/api_services/provider_confirmed_service.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/provider_service_tab_body/provider_bid_service.dart';
-import 'package:first_flutter/screens/provider_screens/navigation/provider_service_tab_body/provider_confirmed_service.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/provider_service_tab_body/provider_re_bid_service.dart';
 import 'package:flutter/material.dart';
 

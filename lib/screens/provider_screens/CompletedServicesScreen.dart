@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:first_flutter/baseControllers/APis.dart';
+import 'package:first_flutter/config/baseControllers/APis.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../constants/colorConstant/color_constant.dart';
 import '../../widgets/ProviderRatingDialog.dart';
 
 // Import your rating dialog file

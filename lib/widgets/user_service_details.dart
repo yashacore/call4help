@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/screens/user_screens/razor_pay/razor_pay_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

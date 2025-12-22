@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/providers/AvailabilityProvider.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/ProviderRatingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +13,6 @@ import '../../SubCategory/SelectFromHomeScreen.dart';
 import '../../user_screens/Home/CategoryProvider.dart';
 import '../../Skills/ProviderMySkillScreen.dart';
 import '../CompletedServicesScreen.dart';
-import 'AvailabilityProvider.dart';
 
 class ProviderHomeScreenBody extends StatefulWidget {
   const ProviderHomeScreenBody({super.key});

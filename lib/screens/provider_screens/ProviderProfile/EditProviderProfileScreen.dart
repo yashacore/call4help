@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/providers/EditProviderProfileProvider.dart';
+import 'package:first_flutter/providers/ProviderProfileProvider.dart';
 import 'package:first_flutter/widgets/button_large.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +12,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../providers/provider_navigation_provider.dart';
-import 'ProviderProfileProvider.dart';
-import 'EditProviderProfileProvider.dart';
 
 class EditProviderProfileScreen extends StatefulWidget {
   const EditProviderProfileScreen({super.key});
@@ -250,7 +250,9 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         builder: (context, profileProvider, editProvider, child) {
           if (profileProvider.isLoading) {
             return Center(
-              child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
+              child: CircularProgressIndicator(
+                color: ColorConstant.call4hepOrange,
+              ),
             );
           }
 
@@ -379,7 +381,10 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         decoration: InputDecoration(
           labelText: "Aadhaar Number",
           hintText: "1234-5678-9012",
-          prefixIcon: Icon(Icons.credit_card, color: ColorConstant.call4hepOrange),
+          prefixIcon: Icon(
+            Icons.credit_card,
+            color: ColorConstant.call4hepOrange,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
@@ -444,8 +449,6 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
       ),
     );
   }
-
-
 
   Widget _buildImagePicker({
     required String label,

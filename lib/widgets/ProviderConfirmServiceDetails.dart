@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/baseControllers/APis.dart' show base_url;
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/providers/ServiceArrivalProvider.dart';
 import 'package:first_flutter/screens/provider_screens/ProviderProfile/EditProviderProfileScreen.dart';
 import 'package:first_flutter/screens/user_screens/Profile/EditProfileScreen.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +14,9 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../baseControllers/APis.dart';
 
 import '../screens/provider_screens/navigation/ProviderChats/ProviderChatScreen.dart';
 import '../screens/user_screens/WidgetProviders/ServiceAPI.dart';
-import '../screens/provider_screens/ServiceArrivalProvider.dart';
 import '../screens/user_screens/navigation/ProviderSOSEmergencyScreen.dart';
 
 class ProviderConfirmServiceDetails extends StatelessWidget {
@@ -637,10 +637,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
       if (response.success) {
         // Show success message
         if (context.mounted) {
-          _showSuccessSnackbar(
-            context,
-            response.message,
-          );
+          _showSuccessSnackbar(context, response.message);
 
           // Add delay to show snackbar, then pop
           await Future.delayed(Duration(milliseconds: 500));
@@ -658,10 +655,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
       } else {
         // Show error message
         if (context.mounted) {
-          _showErrorSnackbar(
-            context,
-            response.message,
-          );
+          _showErrorSnackbar(context, response.message);
         }
       }
     } catch (e) {
@@ -874,10 +868,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
       if (response.success) {
         // Show success message
         if (context.mounted) {
-          _showSuccessSnackbar(
-            context,
-            response.message,
-          );
+          _showSuccessSnackbar(context, response.message);
 
           // Add delay to show snackbar, then pop
           await Future.delayed(Duration(milliseconds: 500));
@@ -895,10 +886,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
       } else {
         // Show error message
         if (context.mounted) {
-          _showErrorSnackbar(
-            context,
-            response.message,
-          );
+          _showErrorSnackbar(context, response.message);
         }
       }
     } catch (e) {
@@ -1404,8 +1392,6 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
     return SizedBox.shrink();
   }
 
-
-
   Widget _startWork(BuildContext context) {
     return InkWell(
       onTap: onStartWork,
@@ -1770,44 +1756,6 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
               SvgPicture.asset("assets/icons/call4hep_task-complete.svg"),
               Text(
                 "Task Complete",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.inter(
-                  textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: Color(0xFFFFFFFF),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _rateService(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: InkWell(
-        onTap: onRateService,
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: ColorConstant.call4hepOrange,
-            border: Border.all(color: ColorConstant.call4hepOrange, width: 1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 8,
-            children: [
-              SvgPicture.asset("assets/icons/call4hep_white_star.svg"),
-              Text(
-                "Rate Service",
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

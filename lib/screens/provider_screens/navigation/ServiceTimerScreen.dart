@@ -43,33 +43,31 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
 
   final List<TextEditingController> _startOtpControllers = List.generate(
     5,
-        (_) => TextEditingController(),
+    (_) => TextEditingController(),
   );
   final List<FocusNode> _startOtpFocusNodes = List.generate(
     5,
-        (_) => FocusNode(),
+    (_) => FocusNode(),
   );
 
   final List<TextEditingController> _satisfactionCodeControllers =
-  List.generate(5, (_) => TextEditingController());
+      List.generate(5, (_) => TextEditingController());
   final List<FocusNode> _satisfactionCodeFocusNodes = List.generate(
     5,
-        (_) => FocusNode(),
+    (_) => FocusNode(),
   );
 
   String? _startTime;
-  String? _endTime;
 
   @override
   void initState() {
-
     super.initState();
     _initializeTimer();
     _fetchServiceDetails();
 
     _apiTimer = Timer.periodic(
       const Duration(seconds: 10),
-          (timer) => _fetchServiceDetails(),
+      (timer) => _fetchServiceDetails(),
     );
   }
 
@@ -180,9 +178,7 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
   }
 
   Color _getTimerColor() {
-    return _isExtraTime
-        ? Colors.red
-        : const Color(0xFF4CAF50);
+    return _isExtraTime ? Colors.red : const Color(0xFF4CAF50);
   }
 
   Future<void> _handleSOS() async {
@@ -396,7 +392,7 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                                       _formatTime(
                                         _isExtraTime
                                             ? _elapsedSeconds -
-                                            _allocatedSeconds
+                                                  _allocatedSeconds
                                             : _elapsedSeconds,
                                       ),
                                       style: TextStyle(
@@ -437,7 +433,9 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                                     ),
                                     SizedBox(height: 4.h),
                                     Text(
-                                      (_serviceData?['schedule_time'] as String?) ?? '12:00 PM - 06:00 PM',
+                                      (_serviceData?['schedule_time']
+                                              as String?) ??
+                                          '12:00 PM - 06:00 PM',
                                       style: TextStyle(
                                         fontSize: 10.sp,
                                         color: const Color(0xFFFF9800),
@@ -539,8 +537,7 @@ class TimerClockPainter extends CustomPainter {
 
     if (!isExtraTime && elapsedSeconds > 0) {
       final greenPaint = Paint()
-        ..color =
-        const Color(0xFF8BC34A)
+        ..color = const Color(0xFF8BC34A)
         ..style = PaintingStyle.fill;
 
       final path = Path();
@@ -559,8 +556,7 @@ class TimerClockPainter extends CustomPainter {
 
     if (isExtraTime) {
       final redBgPaint = Paint()
-        ..color =
-        const Color(0xFFFFF3E0)
+        ..color = const Color(0xFFFFF3E0)
         ..style = PaintingStyle.fill;
       canvas.drawCircle(center, radius, redBgPaint);
       final extraSeconds = elapsedSeconds - allocatedSeconds;
@@ -570,8 +566,7 @@ class TimerClockPainter extends CustomPainter {
 
       if (extraSeconds > 0) {
         final darkRedPaint = Paint()
-          ..color =
-          const Color(0xFFFF5252)
+          ..color = const Color(0xFFFF5252)
           ..style = PaintingStyle.fill;
 
         final path = Path();
@@ -590,8 +585,7 @@ class TimerClockPainter extends CustomPainter {
     }
 
     final circlePaint = Paint()
-      ..color =
-      const Color(0xFFFF9800)
+      ..color = const Color(0xFFFF9800)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8;
     canvas.drawCircle(center, radius - 4, circlePaint);
@@ -624,8 +618,7 @@ class TimerClockPainter extends CustomPainter {
     final hourAngle = (hours * 30 + minutes * 0.5) * (pi / 180) - pi / 2;
     final minuteAngle = (minutes * 6) * (pi / 180) - pi / 2;
     final hourHandPaint = Paint()
-      ..color =
-      const Color(0xFFFF9800)
+      ..color = const Color(0xFFFF9800)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 6
       ..strokeCap = StrokeCap.round;
@@ -635,8 +628,7 @@ class TimerClockPainter extends CustomPainter {
     final hourHandY = center.dy + hourHandLength * sin(hourAngle);
     canvas.drawLine(center, Offset(hourHandX, hourHandY), hourHandPaint);
     final minuteHandPaint = Paint()
-      ..color =
-      const Color(0xFFFF9800)
+      ..color = const Color(0xFFFF9800)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.round;
@@ -647,8 +639,7 @@ class TimerClockPainter extends CustomPainter {
     canvas.drawLine(center, Offset(minuteHandX, minuteHandY), minuteHandPaint);
 
     final dotPaint = Paint()
-      ..color =
-      const Color(0xFFFF9800)
+      ..color = const Color(0xFFFF9800)
       ..style = PaintingStyle.fill;
     canvas.drawCircle(center, 8, dotPaint);
   }

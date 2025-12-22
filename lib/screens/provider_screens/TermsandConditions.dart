@@ -1,11 +1,11 @@
-import 'package:first_flutter/baseControllers/APis.dart';
+import 'package:first_flutter/config/baseControllers/APis.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../../constants/colorConstant/color_constant.dart';
 
 // Model for Legal Document
 class LegalDocument {

@@ -1,3 +1,6 @@
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/providers/SettingsProvider.dart';
+import 'package:first_flutter/providers/splash_screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -8,11 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:app_settings/app_settings.dart';
 
-import '../../constants/colorConstant/color_constant.dart';
-import '../commonOnboarding/splashScreen/splash_screen_provider.dart';
 import '../user_screens/Profile/FAQScreen.dart';
 import 'ContactFormScreen.dart';
-import 'SettingsProvider.dart';
 import 'TermsandConditions.dart';
 
 class SettingScreen extends StatefulWidget {

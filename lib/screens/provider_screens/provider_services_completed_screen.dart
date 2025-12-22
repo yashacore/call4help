@@ -1,4 +1,4 @@
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/widgets/provider_only_title_appbar.dart';
 import 'package:flutter/material.dart';
 

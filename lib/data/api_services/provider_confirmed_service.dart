@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../widgets/provider_service_list_card.dart';
-import '../../confirm_provider_service_details_screen.dart';
+import '../../screens/provider_screens/confirm_provider_service_details_screen.dart';
 
 class ProviderServiceApi {
   static const String baseUrl =

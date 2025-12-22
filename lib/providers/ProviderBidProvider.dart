@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:first_flutter/data/models/ProviderBidModel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../NATS Service/NatsService.dart';
-import 'ProviderBidModel.dart';
 
 class ProviderBidProvider extends ChangeNotifier {
   final NatsService _natsService = NatsService();

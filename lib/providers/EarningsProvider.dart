@@ -1,12 +1,12 @@
 // providers/earnings_provider.dart
 
-import 'package:first_flutter/baseControllers/APis.dart';
+import 'package:first_flutter/config/baseControllers/APis.dart';
+import 'package:first_flutter/screens/provider_screens/navigation/EarningsResponse.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import 'EarningsResponse.dart';
 
 class EarningsProvider extends ChangeNotifier {
   EarningsResponse? _earningsData;

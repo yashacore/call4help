@@ -1,11 +1,11 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class ImageSlider extends StatefulWidget {
   const ImageSlider({super.key, this.imageLinks = const []});
-  final List<dynamic?> imageLinks;
+
+  final List<dynamic> imageLinks;
 
   @override
   State<ImageSlider> createState() => _ImageSliderState();
@@ -21,7 +21,7 @@ class _ImageSliderState extends State<ImageSlider> {
     {
       'id': 1,
       'image_path':
-      'https://raw.githubusercontent.com/aarifhusainwork/aaspas-storage-assets/refs/heads/main/AppWizard/AltImages/propertyDummyImages/1.png',
+          'https://raw.githubusercontent.com/aarifhusainwork/aaspas-storage-assets/refs/heads/main/AppWizard/AltImages/propertyDummyImages/1.png',
     },
     // {
     //   'id': 2,
@@ -57,7 +57,7 @@ class _ImageSliderState extends State<ImageSlider> {
       networkImage = true;
       imageList = List.generate(
         widget.imageLinks.length,
-            (index) => {'id': index + 1, 'image_path': widget.imageLinks[index]},
+        (index) => {'id': index + 1, 'image_path': widget.imageLinks[index]},
       );
     }
 
@@ -75,44 +75,39 @@ class _ImageSliderState extends State<ImageSlider> {
       child: InkWell(
         onTap: () {},
         child: CarouselSlider(
-          items:
-          imageList
+          items: imageList
               .map(
                 (item) => Container(
-              clipBehavior: Clip.hardEdge,
-              width: double.infinity,
-              height: 10,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/image_slider.png"),
-                  fit: BoxFit.cover, // covers entire container
-                ),
-                borderRadius: BorderRadius.circular(16),
-                color: Colors.grey,
-              ),
-              child:
-              networkImage
-                  ? CachedNetworkImage(
-                imageUrl: item['image_path'],
-                fit: BoxFit.cover,
-                errorWidget:
-                    (context, url, error) => Image.asset(
-                  fit: BoxFit.cover,
-                      "assets/images/image_slider.png",
+                  clipBehavior: Clip.hardEdge,
+                  width: double.infinity,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/image_slider.png"),
+                      fit: BoxFit.cover, // covers entire container
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.grey,
+                  ),
+                  child: networkImage
+                      ? CachedNetworkImage(
+                          imageUrl: item['image_path'],
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) => Image.asset(
+                            fit: BoxFit.cover,
+                            "assets/images/image_slider.png",
+                          ),
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: item['image_path'],
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) => Image.asset(
+                            fit: BoxFit.cover,
+                            "assets/images/image_slider.png",
+                          ),
+                        ),
                 ),
               )
-                  : CachedNetworkImage(
-                imageUrl: item['image_path'],
-                fit: BoxFit.cover,
-                errorWidget:
-                    (context, url, error) => Image.asset(
-                  fit: BoxFit.cover,
-                      "assets/images/image_slider.png",
-                ),
-              ),
-
-            ),
-          )
               .toList(),
           options: CarouselOptions(
             scrollPhysics: BouncingScrollPhysics(),

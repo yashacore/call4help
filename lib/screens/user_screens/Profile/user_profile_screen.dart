@@ -1,7 +1,5 @@
-// screens/user_profile_screen.dart
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/screens/user_screens/Address/MyAddressesScreen.dart';
 import 'package:first_flutter/widgets/button_large.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
@@ -40,7 +38,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         builder: (context, profileProvider, child) {
           if (profileProvider.isLoading && !profileProvider.hasProfile) {
             return Center(
-              child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
+              child: CircularProgressIndicator(
+                color: ColorConstant.call4hepOrange,
+              ),
             );
           }
 
@@ -143,6 +143,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final bool hasImage = imageUrl != null && imageUrl.isNotEmpty;
 
     return Container(
+      height: 155,
+      width: 155,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(100),
@@ -151,10 +153,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           width: 2,
         ),
       ),
-      height: 155,
-      width: 155,
       child: Stack(
-        alignment: Alignment.center,
+        fit: StackFit.expand,
         children: [
           if (hasImage)
             CachedNetworkImage(
@@ -342,15 +342,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  // New section for provider information
   Widget _providerInformation(
     BuildContext context,
     UserProfileProvider profileProvider,
   ) {
     final provider = profileProvider.userProfile?.provider;
-
     if (provider == null) return SizedBox.shrink();
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,

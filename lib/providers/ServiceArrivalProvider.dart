@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:first_flutter/config/baseControllers/APis.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../baseControllers/APis.dart';
 
 class ServiceArrivalProvider extends ChangeNotifier {
 

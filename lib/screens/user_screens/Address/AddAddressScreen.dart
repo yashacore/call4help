@@ -1,11 +1,11 @@
-import 'package:first_flutter/baseControllers/APis.dart';
+import 'package:first_flutter/config/baseControllers/APis.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import '../../../constants/colorConstant/color_constant.dart';
 import '../User Instant Service/UserLocationPickerScreen.dart';
 
 class AddAddressScreen extends StatefulWidget {

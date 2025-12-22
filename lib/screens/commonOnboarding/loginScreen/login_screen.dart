@@ -1,6 +1,8 @@
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
-import 'package:first_flutter/constants/imgConstant/img_constant.dart';
-import 'package:first_flutter/constants/utils/app_text_style.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/imgConstant/img_constant.dart';
+import 'package:first_flutter/config/constants/utils/app_text_style.dart';
+import 'package:first_flutter/providers/login_screen_provider.dart';
+import 'package:first_flutter/providers/otp_screen_provider.dart';
 import 'package:first_flutter/screens/commonOnboarding/otpScreen/otp_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +11,6 @@ import 'package:provider/provider.dart';
 
 import '../../../NotificationService.dart';
 import '../../provider_screens/TermsandConditions.dart';
-import 'login_screen_provider.dart';
-import 'package:first_flutter/screens/commonOnboarding/otpScreen/otp_screen_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

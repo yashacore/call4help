@@ -1,4 +1,4 @@
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/screens/user_screens/navigation/user_go_to_provider.dart';
 import 'package:first_flutter/widgets/user_appbar.dart';
 import 'package:flutter/material.dart';

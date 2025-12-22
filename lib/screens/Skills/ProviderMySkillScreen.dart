@@ -1,11 +1,11 @@
 import 'dart:io';
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/providers/MySkillProvider.dart';
 import 'package:first_flutter/widgets/provider_only_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../widgets/provider_job_offering_card.dart';
-import 'MySkillProvider.dart';
 
 class ProviderMySkillScreen extends StatefulWidget {
   const ProviderMySkillScreen({super.key});
@@ -243,7 +243,7 @@ class _ProviderMySkillScreenState extends State<ProviderMySkillScreen> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          skillProvider.errorMessage ??
+                                          skillProvider?.errorMessage ??
                                               'Failed to update skill',
                                         ),
                                         backgroundColor: Colors.red,

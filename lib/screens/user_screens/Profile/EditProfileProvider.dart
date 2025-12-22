@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:first_flutter/baseControllers/APis.dart';
+import 'package:first_flutter/config/baseControllers/APis.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfileProvider with ChangeNotifier {
-  // Form controllers
   final TextEditingController firstnameController = TextEditingController();
   final TextEditingController lastnameController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
@@ -16,7 +15,6 @@ class EditProfileProvider with ChangeNotifier {
   final TextEditingController ageController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
 
-  // State variables
   bool _isLoading = false;
   bool _isFetchingProfile = false;
   String? _errorMessage;
@@ -91,10 +89,8 @@ class EditProfileProvider with ChangeNotifier {
 
   bool get isMobileVerified => _isMobileVerified;
 
-  // Image picker instance
   final ImagePicker _picker = ImagePicker();
 
-  // Fetch profile from API
   Future<bool> fetchProfileFromApi() async {
     _isFetchingProfile = true;
     _errorMessage = null;

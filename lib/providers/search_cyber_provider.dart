@@ -4,26 +4,13 @@ class CyberCafeProvider extends ChangeNotifier {
   bool isLoading = false;
   String? error;
 
-  bool hasSearched = false; // ⭐ KEY FLAG
+  bool hasSearched = false;
   List<Map<String, String>> cafes = [];
 
-  /// STATIC DATA (for testing)
   final List<Map<String, String>> _allCafes = [
-    {
-      "name": "Cyber Zone",
-      "address": "MP Nagar, Bhopal",
-      "city": "bhopal",
-    },
-    {
-      "name": "Digital Cafe",
-      "address": "New Market, Bhopal",
-      "city": "bhopal",
-    },
-    {
-      "name": "Net World",
-      "address": "Indrapuri, Bhopal",
-      "city": "bhopal",
-    },
+    {"name": "Cyber Zone", "address": "MP Nagar, Bhopal", "city": "delhi"},
+    {"name": "Digital Cafe", "address": "New Market, Bhopal", "city": "mumbai"},
+    {"name": "Net World", "address": "Indrapuri, Bhopal", "city": "bhopal"},
     {
       "name": "Fast Net Cafe",
       "address": "Vijay Nagar, Indore",
@@ -39,8 +26,9 @@ class CyberCafeProvider extends ChangeNotifier {
 
     Future.delayed(const Duration(milliseconds: 300), () {
       cafes = _allCafes
-          .where((cafe) =>
-          cafe['city']!.toLowerCase().contains(city.toLowerCase()))
+          .where(
+            (cafe) => cafe['city']!.toLowerCase().contains(city.toLowerCase()),
+          )
           .toList();
 
       isLoading = false;

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/providers/ServiceArrivalProvider.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,7 +17,6 @@ import '../../NATS Service/NatsService.dart';
 import '../../widgets/ProviderConfirmServiceDetails.dart';
 import '../user_screens/WidgetProviders/EndWorkOTPDialog.dart';
 import '../user_screens/WidgetProviders/OTPDialog.dart';
-import 'ServiceArrivalProvider.dart';
 import 'StartWorkProvider.dart';
 import 'navigation/ServiceTimerScreen.dart';
 

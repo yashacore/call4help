@@ -1,9 +1,9 @@
+import 'package:first_flutter/providers/ProviderBidProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../../../widgets/provider_service_list_card.dart';
 import '../../provider_service_details_screen.dart';
-import 'ProviderBidProvider.dart';
 
 class ProviderBidService extends StatefulWidget {
   const ProviderBidService({super.key});

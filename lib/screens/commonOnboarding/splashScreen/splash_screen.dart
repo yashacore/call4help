@@ -1,5 +1,5 @@
 // splash_screen.dart
-import 'package:first_flutter/screens/commonOnboarding/splashScreen/splash_screen_provider.dart';
+import 'package:first_flutter/providers/splash_screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';

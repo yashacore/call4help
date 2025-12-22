@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:first_flutter/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/data/models/SubcategoryResponse.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../user_screens/User Instant Service/UserInstantServiceModel.dart' hide Subcategory;
 import 'SkillProvider.dart';
-import 'SubcategoryResponse.dart';
 
 class SubcategoryDetailsScreen extends StatefulWidget {
   final Subcategory subcategory;

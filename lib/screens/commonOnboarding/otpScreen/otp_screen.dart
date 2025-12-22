@@ -1,14 +1,14 @@
 // otp_screen.dart - FIXED ALIGNMENT VERSION
-import 'package:first_flutter/constants/imgConstant/img_constant.dart';
-import 'package:first_flutter/constants/utils/app_text_style.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/config/constants/imgConstant/img_constant.dart';
+import 'package:first_flutter/config/constants/utils/app_text_style.dart';
+import 'package:first_flutter/providers/otp_screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../NotificationService.dart';
-import '../../../constants/colorConstant/color_constant.dart';
-import 'otp_screen_provider.dart';
 
 class OtpScreen extends StatefulWidget {
   final String? phoneNumber;

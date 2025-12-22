@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/data/models/SubcategoryResponse.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../constants/colorConstant/color_constant.dart';
 import '../../../providers/user_navigation_provider.dart';
-import '../../SubCategory/SubcategoryResponse.dart';
 import 'UserInstantServiceProvider.dart';
 import 'UserLocationPickerScreen.dart';
 
