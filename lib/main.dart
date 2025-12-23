@@ -10,6 +10,7 @@ import 'package:first_flutter/providers/ProviderProfileProvider.dart';
 import 'package:first_flutter/providers/ServiceArrivalProvider.dart';
 import 'package:first_flutter/providers/SettingsProvider.dart';
 import 'package:first_flutter/providers/SubcategoryProvider.dart';
+import 'package:first_flutter/providers/booking_details_provider.dart';
 import 'package:first_flutter/providers/booking_status_provider.dart';
 import 'package:first_flutter/providers/create_time_slot_provider.dart';
 import 'package:first_flutter/providers/login_screen_provider.dart';
@@ -22,6 +23,7 @@ import 'package:first_flutter/providers/slot_list_provider.dart';
 import 'package:first_flutter/providers/splash_screen_provider.dart' show SplashProvider;
 import 'package:first_flutter/providers/time_slot_provider.dart';
 import 'package:first_flutter/providers/user_navigation_provider.dart';
+import 'package:first_flutter/providers/user_notification_provider.dart';
 import 'package:first_flutter/screens/SubCategory/SkillProvider.dart';
 import 'package:first_flutter/screens/provider_screens/LegalDocumentScreen.dart';
 import 'package:first_flutter/screens/provider_screens/ProviderProfile/EditProviderProfileScreen.dart';
@@ -62,6 +64,7 @@ import 'package:provider/provider.dart';
 import 'data/models/BannerModel.dart';
 import 'NATS Service/NatsService.dart';
 import 'data/api_services/NotificationService.dart';
+import 'providers/booking_cyber_user_provider.dart';
 import 'screens/commonOnboarding/loginScreen/login_screen.dart';
 import 'screens/commonOnboarding/splashScreen/splash_screen.dart';
 
@@ -136,7 +139,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => FAQProvider()),
         ChangeNotifierProvider(create: (_) => SlotProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
-        ChangeNotifierProvider(create: (_) => UserNotificationProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProviderUser()),
         ChangeNotifierProvider(create: (_) => LegalDocumentProvider()),
         ChangeNotifierProvider(create: (_) => CompletedServiceProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
@@ -153,6 +156,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SlotListProvider ()),
         ChangeNotifierProvider(create: (_) => ProviderSlotsStatusProvider ()),
         ChangeNotifierProvider(create: (_) => NearbyCafesProvider ()),
+        ChangeNotifierProvider(create: (_) => BookingCyberServiceProvider ()),
+        ChangeNotifierProvider(create: (_) => BookingDetailProvider ()),
+        ChangeNotifierProvider(create: (_) => UserNotificationProvider ()),
       ],
       child: const MyApp(),
     ),

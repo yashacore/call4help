@@ -533,7 +533,7 @@ class _UserAppbarState extends State<UserAppbar> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UserNotificationListScreen(),
+                          builder: (context) => UserNotificationsScreen(),
                         ),
                       );
                     },
