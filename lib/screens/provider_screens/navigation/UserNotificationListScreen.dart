@@ -1,3 +1,4 @@
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/user_notification_provider.dart';
 import 'package:first_flutter/screens/user_screens/cyber_cafe/booking_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +55,8 @@ class _UserNotificationsScreenState extends State<UserNotificationsScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: ColorConstant.appColor,
+        foregroundColor: Colors.white,
         title: Text(
           _selectedIds.isNotEmpty
               ? 'Selected (${_selectedIds.length})'
@@ -77,9 +80,7 @@ class _UserNotificationsScreenState extends State<UserNotificationsScreen> {
             tooltip: 'Mark all as read',
             icon: const Icon(Icons.mark_email_read_outlined),
             onPressed: () async {
-              await context
-                  .read<NotificationProviderUser>()
-                  .markAllAsRead();
+              await context.read<NotificationProviderUser>().markAllAsRead();
               setState(() => _selectedIds.clear());
             },
           ),
@@ -111,16 +112,13 @@ class _UserNotificationsScreenState extends State<UserNotificationsScreen> {
                 onTap: () {
                   if (n.orderId.isNotEmpty) {
                     if (!n.isRead) {
-                      context
-                          .read<NotificationProviderUser>()
-                          .markAsRead(n.id);
+                      context.read<NotificationProviderUser>().markAsRead(n.id);
                     }
 
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            BookingDetailScreen(orderId: n.orderId),
+                        builder: (_) => BookingDetailScreen(orderId: n.orderId),
                       ),
                     );
                   }
@@ -130,14 +128,14 @@ class _UserNotificationsScreenState extends State<UserNotificationsScreen> {
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? Colors.blue.withOpacity(.12)
+                        ? Colors.blue.withAlpha(12)
                         : n.isRead
                         ? Colors.white
-                        : Colors.blue.withOpacity(.05),
+                        : Colors.blue.withAlpha(05),
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(.06),
+                        color: Colors.black.withAlpha(06),
                         blurRadius: 8,
                       ),
                     ],
@@ -145,8 +143,7 @@ class _UserNotificationsScreenState extends State<UserNotificationsScreen> {
                   child: Row(
                     children: [
                       CircleAvatar(
-                        backgroundColor:
-                        _colorByType(n.type).withOpacity(.15),
+                        backgroundColor: _colorByType(n.type).withAlpha(15),
                         child: Icon(
                           _iconByType(n.type),
                           color: _colorByType(n.type),
@@ -166,9 +163,7 @@ class _UserNotificationsScreenState extends State<UserNotificationsScreen> {
                             const SizedBox(height: 4),
                             Text(
                               n.message,
-                              style: TextStyle(
-                                color: Colors.grey.shade700,
-                              ),
+                              style: TextStyle(color: Colors.grey.shade700),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),

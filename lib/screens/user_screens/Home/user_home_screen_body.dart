@@ -1,8 +1,6 @@
 import 'package:first_flutter/screens/user_screens/Home/category_card.dart';
 import 'package:first_flutter/screens/user_screens/Home/top_services.dart';
 import 'package:first_flutter/screens/user_screens/cyber_cafe/demo_screen.dart';
-import 'package:first_flutter/screens/user_screens/cyber_cafe/search_cyber_by_city.dart';
-import 'package:first_flutter/screens/user_screens/cyber_cafe/time_slot_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';

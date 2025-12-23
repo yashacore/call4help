@@ -19,7 +19,7 @@ class NotificationProviderUser extends ChangeNotifier {
       final token = prefs.getString('auth_token');
 
       final response = await http.get(
-        Uri.parse('https://api.call4help.in/cyber-service/api/user/dashboard/notifications'),
+        Uri.parse('https://api.call4help.in/cyber-service/notifications/user'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ class NotificationProviderUser extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('auth_token');
 
-      final response = await http.post(
+      final response = await http.patch(
         Uri.parse('https://api.call4help.in/cyber-service/notifications/$notificationId/read'),
         headers: {
           'Authorization': 'Bearer $token',
