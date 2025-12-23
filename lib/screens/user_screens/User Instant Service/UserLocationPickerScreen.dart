@@ -334,7 +334,7 @@ class _UserLocationPickerScreenState extends State<UserLocationPickerScreen> {
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                       valueColor: AlwaysStoppedAnimation<Color>(
-                                        ColorConstant.call4hepOrange,
+                                        ColorConstant.call4helpOrange,
                                       ),
                                     ),
                                   ),
@@ -385,7 +385,7 @@ class _UserLocationPickerScreenState extends State<UserLocationPickerScreen> {
                                         Icon(
                                           Icons.location_on,
                                           size: 20,
-                                          color: ColorConstant.call4hepOrange,
+                                          color: ColorConstant.call4helpOrange,
                                         ),
                                         SizedBox(width: 12),
                                         Expanded(
@@ -454,7 +454,7 @@ class _UserLocationPickerScreenState extends State<UserLocationPickerScreen> {
                 heroTag: 'current_location',
                 mini: true,
                 backgroundColor: ColorConstant.white,
-                child: Icon(Icons.my_location, color: ColorConstant.call4hepOrange),
+                child: Icon(Icons.my_location, color: ColorConstant.call4helpOrange),
                 onPressed: () {
                   setState(() => _showSuggestions = false);
                   _getCurrentLocation();
@@ -488,7 +488,7 @@ class _UserLocationPickerScreenState extends State<UserLocationPickerScreen> {
                       children: [
                         Icon(
                           Icons.location_on,
-                          color: ColorConstant.call4hepOrange,
+                          color: ColorConstant.call4helpOrange,
                         ),
                         SizedBox(width: 8),
                         Text(
@@ -509,7 +509,7 @@ class _UserLocationPickerScreenState extends State<UserLocationPickerScreen> {
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                  ColorConstant.call4hepOrange,
+                                  ColorConstant.call4helpOrange,
                                 ),
                               ),
                             ),
@@ -535,7 +535,7 @@ class _UserLocationPickerScreenState extends State<UserLocationPickerScreen> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorConstant.call4hepOrange,
+                          backgroundColor: ColorConstant.call4helpOrange,
                           padding: EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),

@@ -392,7 +392,7 @@ class _AssignedandCompleteUserServiceDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.call4hepScaffoldGradient,
+      backgroundColor: ColorConstant.call4helpScaffoldGradient,
       appBar: UserOnlyTitleAppbar(title: "Service Details"),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

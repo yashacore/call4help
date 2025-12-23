@@ -66,7 +66,7 @@ class NotificationService {
 
     final channel = AndroidNotificationChannel(
       'moyo_high_importance_custom',
-      'call4hep Custom Notifications',
+      'call4help Custom Notifications',
       description: 'Notifications with custom sound',
       importance: Importance.max,
       playSound: true,
@@ -142,7 +142,7 @@ class NotificationService {
 
     final androidDetails = AndroidNotificationDetails(
       'moyo_high_importance_custom',
-      'call4hep Custom Notifications',
+      'call4help Custom Notifications',
       channelDescription: 'Notifications with custom sound',
       importance: Importance.max,
       priority: Priority.high,
@@ -200,7 +200,7 @@ class NotificationService {
     );
     final channel = AndroidNotificationChannel(
       'moyo_high_importance_custom',
-      'call4hep Custom Notifications',
+      'call4help Custom Notifications',
       description: 'Notifications with custom sound',
       importance: Importance.max,
       playSound: true,
@@ -219,7 +219,7 @@ class NotificationService {
     // Notification details
     final androidDetails = AndroidNotificationDetails(
       'moyo_high_importance_custom',
-      'call4hep Custom Notifications',
+      'call4help Custom Notifications',
       channelDescription: 'Notifications with custom sound',
       importance: Importance.max,
       priority: Priority.high,
@@ -539,7 +539,7 @@ class NotificationService {
 
     final androidDetails = AndroidNotificationDetails(
       'moyo_high_importance_custom',
-      'call4hep Custom Notifications',
+      'call4help Custom Notifications',
       channelDescription: 'Notifications with custom sound',
       importance: Importance.max,
       priority: Priority.high,
@@ -576,7 +576,7 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >()
-        ?.deleteNotificationChannel('call4hep_high_importance');
+        ?.deleteNotificationChannel('call4help_high_importance');
 
     debugPrint("🗑️ Old channel deleted");
   }

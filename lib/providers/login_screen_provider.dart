@@ -201,7 +201,7 @@ class LoginProvider with ChangeNotifier {
         final payload = jsonDecode(payloadJson);
         debugPrint(
           "  Token project: ${payload['aud']}",
-        ); // Should be 'call4hep-159ed'
+        ); // Should be 'call4help-159ed'
         debugPrint("  Token issuer: ${payload['iss']}");
         debugPrint("  Token email: ${payload['email']}");
       } catch (e) {

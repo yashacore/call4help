@@ -105,7 +105,7 @@ class _CompletedServicesScreenState extends State<CompletedServicesScreen> {
               Text('Rating submitted successfully!'),
             ],
           ),
-          backgroundColor: ColorConstant.call4hepGreen,
+          backgroundColor: ColorConstant.call4helpGreen,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -224,7 +224,7 @@ class _CompletedServicesScreenState extends State<CompletedServicesScreen> {
             width: double.infinity,
             padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
-              color: ColorConstant.call4hepGreen,
+              color: ColorConstant.call4helpGreen,
               borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
             ),
             child: Row(
@@ -234,7 +234,7 @@ class _CompletedServicesScreenState extends State<CompletedServicesScreen> {
                   backgroundColor: ColorConstant.white,
                   child: Icon(
                     Icons.verified,
-                    color: ColorConstant.call4hepGreen,
+                    color: ColorConstant.call4helpGreen,
                     size: 20.sp,
                   ),
                 ),
@@ -378,7 +378,7 @@ class _CompletedServicesScreenState extends State<CompletedServicesScreen> {
                     width: double.infinity,
                     padding: EdgeInsets.all(16.w),
                     decoration: BoxDecoration(
-                      color: ColorConstant.call4hepOrangeFade,
+                      color: ColorConstant.call4helpOrangeFade,
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(color: ColorConstant.buttonBg),
                     ),
@@ -394,7 +394,7 @@ class _CompletedServicesScreenState extends State<CompletedServicesScreen> {
                                 Icon(
                                   Icons.circle,
                                   size: 6.sp,
-                                  color: ColorConstant.call4hepGreen,
+                                  color: ColorConstant.call4helpGreen,
                                 ),
                                 SizedBox(width: 8.w),
                                 Expanded(
@@ -528,7 +528,7 @@ class _CompletedServicesScreenState extends State<CompletedServicesScreen> {
         Container(
           padding: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
-            color: ColorConstant.call4hepOrangeFade,
+            color: ColorConstant.call4helpOrangeFade,
             borderRadius: BorderRadius.circular(8.r),
           ),
           child: Icon(icon, size: 18.sp, color: ColorConstant.appColor),

@@ -12,7 +12,7 @@ class ProviderOnlyTitleAppbar extends StatelessWidget
   Widget build(BuildContext context) {
     return AppBar(
       foregroundColor: Colors.white,
-      backgroundColor: ColorConstant.call4hepOrange,
+      backgroundColor: ColorConstant.call4helpOrange,
       title: Text(
         title,
         style: GoogleFonts.inter(

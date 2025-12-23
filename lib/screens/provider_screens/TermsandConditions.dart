@@ -221,7 +221,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
               if (_provider.isLoading) {
                 return Center(
                   child: CircularProgressIndicator(
-                    color: ColorConstant.call4hepOrange,
+                    color: ColorConstant.call4helpOrange,
                   ),
                 );
               }
@@ -297,7 +297,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                         ElevatedButton(
                           onPressed: _loadDocument,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorConstant.call4hepOrange,
+                            backgroundColor: ColorConstant.call4helpOrange,
                             padding: EdgeInsets.symmetric(
                               horizontal: 32.w,
                               vertical: 12.h,
@@ -374,8 +374,8 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                                     ),
                                   ),
                                   selected: isSelected,
-                                  selectedColor: ColorConstant.call4hepOrange,
-                                  backgroundColor: ColorConstant.call4hepOrangeFade,
+                                  selectedColor: ColorConstant.call4helpOrange,
+                                  backgroundColor: ColorConstant.call4helpOrangeFade,
                                   onSelected: (selected) {
                                     if (selected) {
                                       setState(() {

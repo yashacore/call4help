@@ -1,6 +1,7 @@
 import 'package:first_flutter/screens/user_screens/Home/category_card.dart';
 import 'package:first_flutter/screens/user_screens/Home/top_services.dart';
 import 'package:first_flutter/screens/user_screens/cyber_cafe/search_cyber_by_city.dart';
+import 'package:first_flutter/screens/user_screens/cyber_cafe/time_slot_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -99,53 +100,6 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
               },
             ),
 
-            // ElevatedButton(
-            //   onPressed: () {
-            //     final amount = 100;
-            //
-            //
-            //
-            //     final razorpay = RazorpayService();
-            //
-            //     razorpay.init(
-            //       onSuccess: (PaymentSuccessResponse res) {
-            //         debugPrint("✅ PAYMENT SUCCESS");
-            //         debugPrint("paymentId  : ${res.paymentId}");
-            //         debugPrint("orderId    : ${res.orderId}");
-            //         debugPrint("signature  : ${res.signature}");
-            //         debugPrint("raw object : ${res.toString()}");
-            //
-            //       },
-            //       onError: (PaymentFailureResponse res) {
-            //         debugPrint("❌ PAYMENT FAILED");
-            //         debugPrint("code       : ${res.code}");
-            //         debugPrint("message    : ${res.message}");
-            //         debugPrint("error      : ${res.error}");
-            //         debugPrint("raw object : ${res.toString()}");
-            //
-            //
-            //       },
-            //       onWallet: (ExternalWalletResponse res) {
-            //         debugPrint("🟡 EXTERNAL WALLET SELECTED");
-            //         debugPrint("walletName : ${res.walletName}");
-            //         debugPrint("raw object : ${res.toString()}");
-            //       },
-            //     );
-            //
-            //     razorpay.openCheckout(
-            //       amount: amount, // ₹ value (your service should convert to paise)
-            //       key: "rzp_test_RrrFFdWCi6TIZG",
-            //       name: "Call4Help",
-            //       description: "Service Payment",
-            //       contact: "9999999999",
-            //       email: "test@email.com",
-            //     );
-            //   },
-            //   style: ElevatedButton.styleFrom(
-            //     backgroundColor: ColorConstant.call4hepGreen,
-            //   ),
-            //   child: const Text("Pay Amount"),
-            // ),
             const HomeTopServices(),
             SizedBox(
               width: double.infinity,
@@ -232,14 +186,23 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                 );
               },
             ),
-            ElevatedButton(onPressed: (){
-              Navigator.push(context,
-              MaterialPageRoute(builder: (context) => SearchCyberCafeScreen()));
-            }, child: Text("Cyber Cafe"))
+            ElevatedButton(
+              onPressed: () {
+
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SlotScreen(
+                    ),
+                  ),
+                );
+              },
+              child: Text("Cyber Cafe"),
+            ),
           ],
         ),
       ),
     );
   }
 }
-

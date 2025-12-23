@@ -58,7 +58,7 @@ class _SubCatOfCatScreenState extends State<SubCatOfCatScreen> {
       builder: (context, provider, child) {
         if (provider.isLoading) {
           return Center(
-            child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
+            child: CircularProgressIndicator(color: ColorConstant.call4helpOrange),
           );
         }
 
@@ -96,7 +96,7 @@ class _SubCatOfCatScreenState extends State<SubCatOfCatScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorConstant.call4hepOrange,
+                      backgroundColor: ColorConstant.call4helpOrange,
                       foregroundColor: Colors.white,
                     ),
                     child: Text('Retry'),
@@ -243,7 +243,7 @@ class UserExpansionTileListCard extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () => _handleServiceTypeSelection(context, 'instant'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: ColorConstant.call4hepOrange,
+              backgroundColor: ColorConstant.call4helpOrange,
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(vertical: 14.h),
               shape: RoundedRectangleBorder(
@@ -263,7 +263,7 @@ class UserExpansionTileListCard extends StatelessWidget {
           child: OutlinedButton(
             onPressed: () => _handleServiceTypeSelection(context, 'later'),
             style: OutlinedButton.styleFrom(
-              side: BorderSide(color: ColorConstant.call4hepOrange, width: 2),
+              side: BorderSide(color: ColorConstant.call4helpOrange, width: 2),
               padding: EdgeInsets.symmetric(vertical: 14.h),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
@@ -272,7 +272,7 @@ class UserExpansionTileListCard extends StatelessWidget {
             child: Text(
               'Later',
               style: TextStyle(
-                color: ColorConstant.call4hepOrange,
+                color: ColorConstant.call4helpOrange,
                 fontWeight: FontWeight.w600,
                 fontSize: 14.sp,
               ),

@@ -119,7 +119,7 @@ class _UserMyRatingState extends State<UserMyRating> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              ColorConstant.call4hepOrangeFade.withOpacity(0.3),
+              ColorConstant.call4helpOrangeFade.withOpacity(0.3),
               ColorConstant.scaffoldGray,
             ],
           ),
@@ -128,7 +128,7 @@ class _UserMyRatingState extends State<UserMyRating> {
           child: isLoading
               ? Center(
                   child: CircularProgressIndicator(
-                    color: ColorConstant.call4hepOrange,
+                    color: ColorConstant.call4helpOrange,
                   ),
                 )
               : errorMessage != null
@@ -164,7 +164,7 @@ class _UserMyRatingState extends State<UserMyRating> {
                 fetchData();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.call4hepOrange,
+                backgroundColor: ColorConstant.call4helpOrange,
                 foregroundColor: ColorConstant.white,
                 padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
                 shape: RoundedRectangleBorder(
@@ -222,14 +222,14 @@ class _UserMyRatingState extends State<UserMyRating> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    ColorConstant.call4hepOrange,
-                    ColorConstant.call4hepScaffoldGradient,
+                    ColorConstant.call4helpOrange,
+                    ColorConstant.call4helpScaffoldGradient,
                   ],
                 ),
                 borderRadius: BorderRadius.circular(24.r),
                 boxShadow: [
                   BoxShadow(
-                    color: ColorConstant.call4hepOrange.withOpacity(0.3),
+                    color: ColorConstant.call4helpOrange.withOpacity(0.3),
                     blurRadius: 20,
                     offset: Offset(0, 10),
                   ),
@@ -377,7 +377,7 @@ class _UserMyRatingState extends State<UserMyRating> {
                         ? Icons.star_rounded
                         : Icons.star_outline_rounded,
                     color: index < stars
-                        ? ColorConstant.call4hepOrange
+                        ? ColorConstant.call4helpOrange
                         : ColorConstant.onSurface.withOpacity(0.3),
                     size: 20.sp,
                   );
@@ -561,16 +561,16 @@ class _UserMyRatingState extends State<UserMyRating> {
           ),
         ),
         SizedBox(width: 4.w),
-        Icon(Icons.star, size: 16.sp, color: ColorConstant.call4hepOrange),
+        Icon(Icons.star, size: 16.sp, color: ColorConstant.call4helpOrange),
         SizedBox(width: 12.w),
         Expanded(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(4.r),
             child: LinearProgressIndicator(
               value: percentage,
-              backgroundColor: ColorConstant.call4hepOrangeFade.withOpacity(0.3),
+              backgroundColor: ColorConstant.call4helpOrangeFade.withOpacity(0.3),
               valueColor: AlwaysStoppedAnimation<Color>(
-                ColorConstant.call4hepOrange,
+                ColorConstant.call4helpOrange,
               ),
               minHeight: 8.h,
             ),

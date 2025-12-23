@@ -67,7 +67,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: ColorConstant.call4hepOrange,
+              backgroundColor: ColorConstant.call4helpOrange,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -90,7 +90,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
     return Scaffold(
       backgroundColor: ColorConstant.white,
       appBar: AppBar(
-        backgroundColor: ColorConstant.call4hepOrange,
+        backgroundColor: ColorConstant.call4helpOrange,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: ColorConstant.white),
@@ -133,7 +133,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
                       color: ColorConstant.white,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: ColorConstant.call4hepOrange,
+                        color: ColorConstant.call4helpOrange,
                         width: 2,
                       ),
                     ),
@@ -142,14 +142,14 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
                       children: [
                         Icon(
                           Icons.add,
-                          color: ColorConstant.call4hepOrange,
+                          color: ColorConstant.call4helpOrange,
                           size: 24,
                         ),
                         SizedBox(width: 8),
                         Text(
                           'Add new Address',
                           style: TextStyle(
-                            color: ColorConstant.call4hepOrange,
+                            color: ColorConstant.call4helpOrange,
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
@@ -182,7 +182,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
                 child: provider.isLoading
                     ? Center(
                         child: CircularProgressIndicator(
-                          color: ColorConstant.call4hepOrange,
+                          color: ColorConstant.call4helpOrange,
                         ),
                       )
                     : provider.errorMessage != null
@@ -199,7 +199,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
                             ElevatedButton(
                               onPressed: () => provider.fetchAddresses(),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: ColorConstant.call4hepOrange,
+                                backgroundColor: ColorConstant.call4helpOrange,
                               ),
                               child: Text('Retry'),
                             ),
@@ -244,7 +244,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
         color: ColorConstant.white,
         borderRadius: BorderRadius.circular(12),
         border: address.isDefault
-            ? Border.all(color: ColorConstant.call4hepOrange, width: 2)
+            ? Border.all(color: ColorConstant.call4helpOrange, width: 2)
             : null,
         boxShadow: [
           BoxShadow(
@@ -264,13 +264,13 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: address.isDefault
-                      ? ColorConstant.call4hepOrange.withOpacity(0.2)
-                      : ColorConstant.call4hepOrangeFade,
+                      ? ColorConstant.call4helpOrange.withOpacity(0.2)
+                      : ColorConstant.call4helpOrangeFade,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   address.isDefault ? Icons.home : Icons.home_outlined,
-                  color: ColorConstant.call4hepOrange,
+                  color: ColorConstant.call4helpOrange,
                   size: 24,
                 ),
               ),
@@ -308,7 +308,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: ColorConstant.call4hepGreen,
+                color: ColorConstant.call4helpGreen,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
@@ -372,7 +372,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: ColorConstant.call4hepOrange,
+                        color: ColorConstant.call4helpOrange,
                         width: 1.5,
                       ),
                     ),
@@ -381,14 +381,14 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
                       children: [
                         Icon(
                           Icons.edit_outlined,
-                          color: ColorConstant.call4hepOrange,
+                          color: ColorConstant.call4helpOrange,
                           size: 20,
                         ),
                         SizedBox(width: 8),
                         Text(
                           'Edit',
                           style: TextStyle(
-                            color: ColorConstant.call4hepOrange,
+                            color: ColorConstant.call4helpOrange,
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
@@ -411,7 +411,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
                       padding: EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: ColorConstant.call4hepOrange,
+                        color: ColorConstant.call4helpOrange,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

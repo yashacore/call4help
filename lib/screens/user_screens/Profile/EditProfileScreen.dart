@@ -70,7 +70,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ListTile(
                 leading: Icon(
                   Icons.photo_library,
-                  color: ColorConstant.call4hepOrange,
+                  color: ColorConstant.call4helpOrange,
                   size: 24.sp,
                 ),
                 title: Text(
@@ -85,7 +85,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ListTile(
                 leading: Icon(
                   Icons.camera_alt,
-                  color: ColorConstant.call4hepOrange,
+                  color: ColorConstant.call4helpOrange,
                   size: 24.sp,
                 ),
                 title: Text('Take a Photo', style: TextStyle(fontSize: 16.sp)),
@@ -219,7 +219,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     await _handleVerifyEmail();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstant.call4hepOrange,
+                    backgroundColor: ColorConstant.call4helpOrange,
                     foregroundColor: ColorConstant.white,
                     padding: EdgeInsets.symmetric(vertical: 16.h),
                     shape: RoundedRectangleBorder(
@@ -324,7 +324,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     await _handleVerifyMobile();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstant.call4hepOrange,
+                    backgroundColor: ColorConstant.call4helpOrange,
                     foregroundColor: ColorConstant.white,
                     padding: EdgeInsets.symmetric(vertical: 16.h),
                     shape: RoundedRectangleBorder(
@@ -439,7 +439,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         builder: (context, editProvider, child) {
           if (editProvider.isFetchingProfile) {
             return Center(
-              child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
+              child: CircularProgressIndicator(color: ColorConstant.call4helpOrange),
             );
           }
 
@@ -480,7 +480,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       icon: const Icon(Icons.refresh),
                       label: const Text('Retry'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorConstant.call4hepOrange,
+                        backgroundColor: ColorConstant.call4helpOrange,
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(
                           horizontal: 32.w,
@@ -509,7 +509,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ButtonLarge(
                       isIcon: false,
                       label: "Save Changes",
-                      backgroundColor: ColorConstant.call4hepOrange,
+                      backgroundColor: ColorConstant.call4helpOrange,
                       labelColor: Colors.white,
                       onTap: editProvider.isLoading ? null : _handleSave,
                     ),
@@ -526,7 +526,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   color: Colors.black.withOpacity(0.3),
                   child: Center(
                     child: CircularProgressIndicator(
-                      color: ColorConstant.call4hepOrange,
+                      color: ColorConstant.call4helpOrange,
                     ),
                   ),
                 ),
@@ -549,7 +549,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100.r),
               border: Border.all(
-                color: ColorConstant.call4hepOrange.withOpacity(0.3),
+                color: ColorConstant.call4helpOrange.withOpacity(0.3),
                 width: 2.w,
               ),
             ),
@@ -561,7 +561,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: Container(
               padding: EdgeInsets.all(8.w),
               decoration: BoxDecoration(
-                color: ColorConstant.call4hepOrange,
+                color: ColorConstant.call4helpOrange,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 3.w),
               ),
@@ -589,7 +589,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         fit: BoxFit.cover,
         placeholder: (context, url) => Center(
           child: CircularProgressIndicator(
-            color: ColorConstant.call4hepOrange,
+            color: ColorConstant.call4helpOrange,
             strokeWidth: 2.w,
           ),
         ),
@@ -743,7 +743,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Icons.email_outlined,
                       color: hasEmailChanged && !isVerified && hasEmail
                           ? Colors.orange
-                          : ColorConstant.call4hepOrange,
+                          : ColorConstant.call4helpOrange,
                       size: 24.sp,
                     ),
                     border: OutlineInputBorder(
@@ -771,7 +771,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ? null
                         : _handleVerifyEmail,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorConstant.call4hepOrange,
+                      backgroundColor: ColorConstant.call4helpOrange,
                       foregroundColor: Colors.white,
                       padding: EdgeInsets.symmetric(
                         horizontal: 16.w,
@@ -947,7 +947,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Icons.phone_outlined,
                       color: hasMobileChanged && !isVerified && hasMobile
                           ? Colors.orange
-                          : ColorConstant.call4hepOrange,
+                          : ColorConstant.call4helpOrange,
                       size: 24.sp,
                     ),
                     border: OutlineInputBorder(
@@ -975,7 +975,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ? null
                         : _handleVerifyMobile,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorConstant.call4hepOrange,
+                      backgroundColor: ColorConstant.call4helpOrange,
                       foregroundColor: Colors.white,
                       padding: EdgeInsets.symmetric(
                         horizontal: 16.w,
@@ -1120,7 +1120,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           color: isSelected
-              ? ColorConstant.call4hepOrange.withOpacity(0.1)
+              ? ColorConstant.call4helpOrange.withOpacity(0.1)
               : Colors.white,
           borderRadius: BorderRadius.circular(12.r),
         ),
@@ -1130,7 +1130,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             Icon(
               icon,
               color: isSelected
-                  ? ColorConstant.call4hepOrange
+                  ? ColorConstant.call4helpOrange
                   : Colors.grey.shade400,
               size: 28.sp,
             ),
@@ -1141,7 +1141,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 fontSize: 14.sp,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 color: isSelected
-                    ? ColorConstant.call4hepOrange
+                    ? ColorConstant.call4helpOrange
                     : Colors.grey.shade600,
               ),
             ),
@@ -1201,7 +1201,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               prefixIcon: Icon(
                 icon,
-                color: ColorConstant.call4hepOrange,
+                color: ColorConstant.call4helpOrange,
                 size: 24.sp,
               ),
               border: OutlineInputBorder(

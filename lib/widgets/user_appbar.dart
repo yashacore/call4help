@@ -177,7 +177,7 @@ class _UserAppbarState extends State<UserAppbar> {
                     'OK',
                     style: GoogleFonts.inter(
                       fontWeight: FontWeight.bold,
-                      color: ColorConstant.call4hepOrange,
+                      color: ColorConstant.call4helpOrange,
                     ),
                   ),
                 ),
@@ -368,7 +368,7 @@ class _UserAppbarState extends State<UserAppbar> {
     return AppBar(
       foregroundColor: Colors.white,
       automaticallyImplyLeading: false,
-      backgroundColor: ColorConstant.call4hepOrange,
+      backgroundColor: ColorConstant.call4helpOrange,
       title: Consumer<UserProfileProvider>(
         builder: (context, profileProvider, child) {
           return Row(
@@ -496,7 +496,7 @@ class _UserAppbarState extends State<UserAppbar> {
                           color: Colors.red,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: ColorConstant.call4hepOrange,
+                            color: ColorConstant.call4helpOrange,
                             width: 2,
                           ),
                         ),
@@ -552,7 +552,7 @@ class _UserAppbarState extends State<UserAppbar> {
                           color: Colors.red,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: ColorConstant.call4hepOrange,
+                            color: ColorConstant.call4helpOrange,
                             width: 2,
                           ),
                         ),

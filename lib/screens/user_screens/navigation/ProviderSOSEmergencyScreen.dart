@@ -113,7 +113,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(color: ColorConstant.call4hepOrange),
+              CircularProgressIndicator(color: ColorConstant.call4helpOrange),
               SizedBox(height: 16.h),
               Text(
                 'Triggering SOS...',
@@ -206,7 +206,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstant.call4hepOrange,
+                    backgroundColor: ColorConstant.call4helpOrange,
                     padding: EdgeInsets.symmetric(vertical: 14.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
@@ -309,7 +309,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(color: ColorConstant.call4hepOrange),
+            CircularProgressIndicator(color: ColorConstant.call4helpOrange),
             SizedBox(height: 16.h),
             Text(
               'Loading contacts...',
@@ -353,7 +353,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorConstant.call4hepOrange,
+                  backgroundColor: ColorConstant.call4helpOrange,
                   padding: EdgeInsets.symmetric(
                     horizontal: 24.w,
                     vertical: 12.h,
@@ -434,12 +434,12 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
               width: 48.w,
               height: 48.w,
               decoration: BoxDecoration(
-                color: ColorConstant.call4hepOrangeFade,
+                color: ColorConstant.call4helpOrangeFade,
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
                 Icons.support_agent,
-                color: ColorConstant.call4hepOrange,
+                color: ColorConstant.call4helpOrange,
                 size: 24.sp,
               ),
             ),
@@ -464,7 +464,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                     style: GoogleFonts.inter(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
-                      color: ColorConstant.call4hepOrange,
+                      color: ColorConstant.call4helpOrange,
                     ),
                   ),
                   if (contact.message.isNotEmpty) ...[
@@ -483,7 +483,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
                 ],
               ),
             ),
-            Icon(Icons.phone, color: ColorConstant.call4hepGreen, size: 24.sp),
+            Icon(Icons.phone, color: ColorConstant.call4helpGreen, size: 24.sp),
           ],
         ),
       ),
@@ -629,7 +629,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [ColorConstant.call4hepOrange, Color(0xFFFF9F3A)],
+              colors: [ColorConstant.call4helpOrange, Color(0xFFFF9F3A)],
             ),
             title: 'Customer Support',
             subtitle: '24/7 Available Support',
@@ -797,12 +797,12 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
               Container(
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
-                  color: ColorConstant.call4hepOrangeFade,
+                  color: ColorConstant.call4helpOrangeFade,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
                   Icons.info_outline,
-                  color: ColorConstant.call4hepOrange,
+                  color: ColorConstant.call4helpOrange,
                   size: 20.sp,
                 ),
               ),
@@ -861,7 +861,7 @@ class _ProviderSOSEmergencyScreenState extends State<ProviderSOSEmergencyScreen>
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, size: 18.sp, color: ColorConstant.call4hepOrange),
+            Icon(icon, size: 18.sp, color: ColorConstant.call4helpOrange),
             SizedBox(width: 12.w),
             Expanded(
               child: Column(

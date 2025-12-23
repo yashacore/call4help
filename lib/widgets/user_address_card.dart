@@ -34,7 +34,7 @@ class UserAddressCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           spacing: 6,
           children: [
-            SvgPicture.asset("assets/icons/call4hep_address_card_home_icon.svg"),
+            SvgPicture.asset("assets/icons/call4help_address_card_home_icon.svg"),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -122,8 +122,8 @@ class UserAddressCard extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            // color: call4hepColorBox.call4hepOrange,
-            border: Border.all(color: ColorConstant.call4hepOrange, width: 1),
+            // color: call4helpColorBox.call4helpOrange,
+            border: Border.all(color: ColorConstant.call4helpOrange, width: 1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -131,8 +131,8 @@ class UserAddressCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              Icon(Icons.edit_note_outlined, color: ColorConstant.call4hepOrange),
-              // SvgPicture.asset("assets/icons/call4hep_white_star.svg"),
+              Icon(Icons.edit_note_outlined, color: ColorConstant.call4helpOrange),
+              // SvgPicture.asset("assets/icons/call4help_white_star.svg"),
               Text(
                 "Edit",
                 textAlign: TextAlign.center,
@@ -140,7 +140,7 @@ class UserAddressCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: ColorConstant.call4hepOrange,
+                    color: ColorConstant.call4helpOrange,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

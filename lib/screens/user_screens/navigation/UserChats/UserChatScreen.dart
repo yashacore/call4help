@@ -133,7 +133,7 @@ class _UserChatScreenState extends State<UserChatScreen>
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Chat loaded successfully'),
-              backgroundColor: ColorConstant.call4hepGreen,
+              backgroundColor: ColorConstant.call4helpGreen,
               duration: Duration(seconds: 2),
             ),
           );
@@ -281,7 +281,7 @@ class _UserChatScreenState extends State<UserChatScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(color: ColorConstant.call4hepOrange),
+                  CircularProgressIndicator(color: ColorConstant.call4helpOrange),
                   SizedBox(height: 16.h),
                   Text(
                     'Loading chat...',
@@ -361,7 +361,7 @@ class _UserChatScreenState extends State<UserChatScreen>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: ColorConstant.call4hepOrange.withOpacity(0.3),
+                    color: ColorConstant.call4helpOrange.withOpacity(0.3),
                     width: 2.w,
                   ),
                 ),
@@ -371,27 +371,27 @@ class _UserChatScreenState extends State<UserChatScreen>
                           imageUrl: widget.userImage!,
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
-                            color: ColorConstant.call4hepOrangeFade,
+                            color: ColorConstant.call4helpOrangeFade,
                             child: Icon(
                               Icons.person,
-                              color: ColorConstant.call4hepOrange,
+                              color: ColorConstant.call4helpOrange,
                               size: 20.sp,
                             ),
                           ),
                           errorWidget: (context, url, error) => Container(
-                            color: ColorConstant.call4hepOrangeFade,
+                            color: ColorConstant.call4helpOrangeFade,
                             child: Icon(
                               Icons.person,
-                              color: ColorConstant.call4hepOrange,
+                              color: ColorConstant.call4helpOrange,
                               size: 20.sp,
                             ),
                           ),
                         )
                       : Container(
-                          color: ColorConstant.call4hepOrangeFade,
+                          color: ColorConstant.call4helpOrangeFade,
                           child: Icon(
                             Icons.person,
-                            color: ColorConstant.call4hepOrange,
+                            color: ColorConstant.call4helpOrange,
                             size: 20.sp,
                           ),
                         ),
@@ -405,7 +405,7 @@ class _UserChatScreenState extends State<UserChatScreen>
                     width: 12.w,
                     height: 12.w,
                     decoration: BoxDecoration(
-                      color: ColorConstant.call4hepGreen,
+                      color: ColorConstant.call4helpGreen,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2.w),
                     ),
@@ -518,12 +518,12 @@ class _UserChatScreenState extends State<UserChatScreen>
               height: 24.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: ColorConstant.call4hepOrangeFade,
+                color: ColorConstant.call4helpOrangeFade,
               ),
               child: Icon(
                 Icons.person,
                 size: 14.sp,
-                color: ColorConstant.call4hepOrange,
+                color: ColorConstant.call4helpOrange,
               ),
             ),
             SizedBox(width: 8.w),
@@ -533,7 +533,7 @@ class _UserChatScreenState extends State<UserChatScreen>
               constraints: BoxConstraints(maxWidth: 280.w),
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               decoration: BoxDecoration(
-                color: isSentByMe ? ColorConstant.call4hepOrange : Colors.white,
+                color: isSentByMe ? ColorConstant.call4helpOrange : Colors.white,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16.r),
                   topRight: Radius.circular(16.r),
@@ -661,8 +661,8 @@ class _UserChatScreenState extends State<UserChatScreen>
                 height: 40.w,
                 decoration: BoxDecoration(
                   color: (_isTyping && _chatInitialized && !_isSending)
-                      ? ColorConstant.call4hepOrange
-                      : ColorConstant.call4hepOrangeFade,
+                      ? ColorConstant.call4helpOrange
+                      : ColorConstant.call4helpOrangeFade,
                   shape: BoxShape.circle,
                 ),
                 child: _isSending
@@ -679,7 +679,7 @@ class _UserChatScreenState extends State<UserChatScreen>
                         Icons.send,
                         color: (_isTyping && _chatInitialized)
                             ? Colors.white
-                            : ColorConstant.call4hepOrange,
+                            : ColorConstant.call4helpOrange,
                         size: 20.sp,
                       ),
               ),

@@ -10,7 +10,7 @@ import '../../screens/provider_screens/confirm_provider_service_details_screen.d
 
 class ProviderServiceApi {
   static const String baseUrl =
-      'https://api.moyointernational.com/bid/api/service';
+      'https://api.call4help.in/bid/api/service';
 
   Future<List<ServiceHistory>> getProviderServiceHistory() async {
     try {

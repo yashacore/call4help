@@ -12,7 +12,7 @@ class PersonalInfoCard extends StatelessWidget {
 
   const PersonalInfoCard({
     super.key,
-    this.iconPath = "assets/icons/call4hep_address_card_home_icon.svg",
+    this.iconPath = "assets/icons/call4help_address_card_home_icon.svg",
     this.label,
     this.title,
     this.isLabel = true,

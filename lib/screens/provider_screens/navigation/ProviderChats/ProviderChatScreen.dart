@@ -279,7 +279,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(color: ColorConstant.call4hepOrange),
+                    CircularProgressIndicator(color: ColorConstant.call4helpOrange),
                     SizedBox(height: 16.h),
                     Text(
                       'Loading chat...',
@@ -360,7 +360,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: ColorConstant.call4hepOrange.withAlpha(1),
+                    color: ColorConstant.call4helpOrange.withAlpha(1),
                     width: 2.w,
                   ),
                 ),
@@ -370,27 +370,27 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                           imageUrl: widget.userImage!,
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
-                            color: ColorConstant.call4hepOrangeFade,
+                            color: ColorConstant.call4helpOrangeFade,
                             child: Icon(
                               Icons.person,
-                              color: ColorConstant.call4hepOrange,
+                              color: ColorConstant.call4helpOrange,
                               size: 20.sp,
                             ),
                           ),
                           errorWidget: (context, url, error) => Container(
-                            color: ColorConstant.call4hepOrangeFade,
+                            color: ColorConstant.call4helpOrangeFade,
                             child: Icon(
                               Icons.person,
-                              color: ColorConstant.call4hepOrange,
+                              color: ColorConstant.call4helpOrange,
                               size: 20.sp,
                             ),
                           ),
                         )
                       : Container(
-                          color: ColorConstant.call4hepOrangeFade,
+                          color: ColorConstant.call4helpOrangeFade,
                           child: Icon(
                             Icons.person,
-                            color: ColorConstant.call4hepOrange,
+                            color: ColorConstant.call4helpOrange,
                             size: 20.sp,
                           ),
                         ),
@@ -404,7 +404,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                     width: 12.w,
                     height: 12.w,
                     decoration: BoxDecoration(
-                      color: ColorConstant.call4hepGreen,
+                      color: ColorConstant.call4helpGreen,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2.w),
                     ),
@@ -430,7 +430,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                     'Online',
                     style: GoogleFonts.inter(
                       fontSize: 12.sp,
-                      color: ColorConstant.call4hepGreen,
+                      color: ColorConstant.call4helpGreen,
                     ),
                   ),
               ],
@@ -532,12 +532,12 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
               height: 28.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: ColorConstant.call4hepOrangeFade,
+                color: ColorConstant.call4helpOrangeFade,
               ),
               child: Icon(
                 Icons.person,
                 size: 16.sp,
-                color: ColorConstant.call4hepOrange,
+                color: ColorConstant.call4helpOrange,
               ),
             ),
             SizedBox(width: 8.w),
@@ -547,7 +547,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
               constraints: BoxConstraints(maxWidth: 280.w),
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               decoration: BoxDecoration(
-                color: isSentByMe ? ColorConstant.call4hepOrange : Colors.white,
+                color: isSentByMe ? ColorConstant.call4helpOrange : Colors.white,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16.r),
                   topRight: Radius.circular(16.r),
@@ -593,7 +593,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                           message.isRead ? Icons.done_all : Icons.check,
                           size: 14.sp,
                           color: message.isRead
-                              ? ColorConstant.call4hepGreen
+                              ? ColorConstant.call4helpGreen
                               : Colors.white.withAlpha(8),
                         ),
                       ],
@@ -675,8 +675,8 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
               height: 44.w,
               decoration: BoxDecoration(
                 color: (_isTyping && _chatInitialized && !_isSending)
-                    ? ColorConstant.call4hepOrange
-                    : ColorConstant.call4hepOrangeFade,
+                    ? ColorConstant.call4helpOrange
+                    : ColorConstant.call4helpOrangeFade,
                 shape: BoxShape.circle,
               ),
               child: _isSending
@@ -691,7 +691,7 @@ class _ProviderChatScreenState extends State<ProviderChatScreen>
                       Icons.send,
                       color: (_isTyping && _chatInitialized)
                           ? Colors.white
-                          : ColorConstant.call4hepOrange,
+                          : ColorConstant.call4helpOrange,
                       size: 20.sp,
                     ),
             ),

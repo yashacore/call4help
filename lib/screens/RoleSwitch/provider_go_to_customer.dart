@@ -181,11 +181,11 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       decoration: BoxDecoration(
         color: isActive
-            ? ColorConstant.call4hepOrangeFade
+            ? ColorConstant.call4helpOrangeFade
             : const Color(0xFFF5F5F5),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isActive ? ColorConstant.call4hepOrange : const Color(0xFF7B7B7B),
+          color: isActive ? ColorConstant.call4helpOrange : const Color(0xFF7B7B7B),
           width: 2,
         ),
       ),
@@ -206,7 +206,7 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
             mode == Mode.customer ? "Customer Mode" : "Provider Mode",
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: isActive
-                  ? ColorConstant.call4hepOrange
+                  ? ColorConstant.call4helpOrange
                   : const Color(0xFF7B7B7B),
               fontWeight: FontWeight.w500,
             ),
@@ -215,7 +215,7 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
             mode == Mode.customer ? "Book services" : "Offer services",
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: isActive
-                  ? ColorConstant.call4hepOrange
+                  ? ColorConstant.call4helpOrange
                   : const Color(0xFF7B7B7B),
               fontWeight: FontWeight.w400,
             ),
@@ -238,7 +238,7 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
               decoration: BoxDecoration(
-                color: _isLoading ? Colors.grey : ColorConstant.call4hepOrange,
+                color: _isLoading ? Colors.grey : ColorConstant.call4helpOrange,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: InkWell(

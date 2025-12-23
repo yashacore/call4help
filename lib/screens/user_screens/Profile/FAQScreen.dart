@@ -44,7 +44,7 @@ class _FAQScreenState extends State<FAQScreen> {
           if (faqProvider.isLoading && faqProvider.faqs.isEmpty) {
             return Center(
               child: CircularProgressIndicator(
-                color: ColorConstant.call4hepOrange,
+                color: ColorConstant.call4helpOrange,
               ),
             );
           }
@@ -58,7 +58,7 @@ class _FAQScreenState extends State<FAQScreen> {
 
           return RefreshIndicator(
             onRefresh: () => faqProvider.loadFAQs(),
-            color: ColorConstant.call4hepOrange,
+            color: ColorConstant.call4helpOrange,
             child: Column(
               children: [
                 _buildSearchBar(),
@@ -106,7 +106,7 @@ class _FAQScreenState extends State<FAQScreen> {
           ),
           prefixIcon: Icon(
             Icons.search,
-            color: ColorConstant.call4hepOrange,
+            color: ColorConstant.call4helpOrange,
             size: 22.sp,
           ),
           suffixIcon: _searchQuery.isNotEmpty
@@ -149,18 +149,18 @@ class _FAQScreenState extends State<FAQScreen> {
               margin: EdgeInsets.only(right: 8.w),
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
               decoration: BoxDecoration(
-                color: isSelected ? ColorConstant.call4hepOrange : Colors.white,
+                color: isSelected ? ColorConstant.call4helpOrange : Colors.white,
                 borderRadius: BorderRadius.circular(25.r),
                 border: Border.all(
                   color: isSelected
-                      ? ColorConstant.call4hepOrange
+                      ? ColorConstant.call4helpOrange
                       : Colors.grey.shade300,
                   width: 1.5,
                 ),
                 boxShadow: isSelected
                     ? [
                   BoxShadow(
-                    color: ColorConstant.call4hepOrange.withOpacity(0.3),
+                    color: ColorConstant.call4helpOrange.withOpacity(0.3),
                     blurRadius: 8,
                     offset: Offset(0, 2),
                   ),
@@ -229,12 +229,12 @@ class _FAQScreenState extends State<FAQScreen> {
                         width: 40.w,
                         height: 40.h,
                         decoration: BoxDecoration(
-                          color: ColorConstant.call4hepOrange.withOpacity(0.1),
+                          color: ColorConstant.call4helpOrange.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Icon(
                           Icons.help_outline,
-                          color: ColorConstant.call4hepOrange,
+                          color: ColorConstant.call4helpOrange,
                           size: 22.sp,
                         ),
                       ),
@@ -257,7 +257,7 @@ class _FAQScreenState extends State<FAQScreen> {
                         height: 28.h,
                         decoration: BoxDecoration(
                           color: isExpanded
-                              ? ColorConstant.call4hepOrange
+                              ? ColorConstant.call4helpOrange
                               : Colors.grey.shade100,
                           shape: BoxShape.circle,
                         ),
@@ -300,7 +300,7 @@ class _FAQScreenState extends State<FAQScreen> {
                           padding: EdgeInsets.symmetric(
                               horizontal: 12.w, vertical: 6.h),
                           decoration: BoxDecoration(
-                            color: ColorConstant.call4hepOrange.withOpacity(0.1),
+                            color: ColorConstant.call4helpOrange.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(20.r),
                           ),
                           child: Row(
@@ -309,14 +309,14 @@ class _FAQScreenState extends State<FAQScreen> {
                               Icon(
                                 Icons.category_outlined,
                                 size: 14.sp,
-                                color: ColorConstant.call4hepOrange,
+                                color: ColorConstant.call4helpOrange,
                               ),
                               SizedBox(width: 4.w),
                               Text(
                                 faq.category,
                                 style: TextStyle(
                                   fontSize: 11.sp,
-                                  color: ColorConstant.call4hepOrange,
+                                  color: ColorConstant.call4helpOrange,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -401,7 +401,7 @@ class _FAQScreenState extends State<FAQScreen> {
               icon: Icon(Icons.refresh),
               label: Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.call4hepOrange,
+                backgroundColor: ColorConstant.call4helpOrange,
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
                 shape: RoundedRectangleBorder(

@@ -122,7 +122,7 @@ class UserServiceDetails extends StatelessWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.r),
                     borderSide: BorderSide(
-                      color: ColorConstant.call4hepOrange,
+                      color: ColorConstant.call4helpOrange,
                       width: 2.w,
                     ),
                   ),
@@ -164,7 +164,7 @@ class UserServiceDetails extends StatelessWidget {
                 Navigator.of(context).pop(note);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.call4hepGreen,
+                backgroundColor: ColorConstant.call4helpGreen,
                 padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),
@@ -247,7 +247,7 @@ class UserServiceDetails extends StatelessWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(
-                      color: ColorConstant.call4hepOrange,
+                      color: ColorConstant.call4helpOrange,
                       width: 2,
                     ),
                   ),
@@ -289,7 +289,7 @@ class UserServiceDetails extends StatelessWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(
-                      color: ColorConstant.call4hepOrange,
+                      color: ColorConstant.call4helpOrange,
                       width: 2,
                     ),
                   ),
@@ -483,7 +483,7 @@ class UserServiceDetails extends StatelessWidget {
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: ColorConstant.call4hepGreen,
+        backgroundColor: ColorConstant.call4helpGreen,
         duration: Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
       ),
@@ -581,7 +581,7 @@ class UserServiceDetails extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: ColorConstant.call4hepGreen,
+                  color: ColorConstant.call4helpGreen,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -761,7 +761,7 @@ class UserServiceDetails extends StatelessWidget {
           context,
           text: "Open",
           backgroundColor: Color(0xFFE8F5E9),
-          textColor: ColorConstant.call4hepGreen,
+          textColor: ColorConstant.call4helpGreen,
         );
 
       case 'pending':
@@ -809,7 +809,7 @@ class UserServiceDetails extends StatelessWidget {
           context,
           text: "Completed",
           backgroundColor: Color(0xFFE6F7C0),
-          textColor: ColorConstant.call4hepGreen,
+          textColor: ColorConstant.call4helpGreen,
         );
 
       case 'cancelled':
@@ -982,7 +982,7 @@ class UserServiceDetails extends StatelessWidget {
                     }
                   },
                   borderRadius: BorderRadius.circular(50),
-                  child: SvgPicture.asset("assets/icons/call4hep_call_action.svg"),
+                  child: SvgPicture.asset("assets/icons/call4help_call_action.svg"),
                 ),
 
                 InkWell(
@@ -1003,7 +1003,7 @@ class UserServiceDetails extends StatelessWidget {
                   },
                   borderRadius: BorderRadius.circular(50),
                   child: SvgPicture.asset(
-                    "assets/icons/call4hep_message_action.svg",
+                    "assets/icons/call4help_message_action.svg",
                   ),
                 ),
               ],
@@ -1136,7 +1136,7 @@ class UserServiceDetails extends StatelessWidget {
                           style: GoogleFonts.inter(
                             textStyle: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(fontWeight: FontWeight.w500),
-                            color: ColorConstant.call4hepOrange,
+                            color: ColorConstant.call4helpOrange,
                           ),
                         ),
                       ),
@@ -1166,7 +1166,7 @@ class UserServiceDetails extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: ColorConstant.call4hepOrangeFade,
+                color: ColorConstant.call4helpOrangeFade,
                 borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
               child: Text(
@@ -1177,7 +1177,7 @@ class UserServiceDetails extends StatelessWidget {
                   textStyle: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-                  color: ColorConstant.call4hepOrange,
+                  color: ColorConstant.call4helpOrange,
                 ),
               ),
             ),
@@ -1189,7 +1189,7 @@ class UserServiceDetails extends StatelessWidget {
               spacing: 6,
               children: [
                 SvgPicture.asset(
-                  "assets/icons/call4hep_material-symbols_timer-outline.svg",
+                  "assets/icons/call4help_material-symbols_timer-outline.svg",
                 ),
                 Text(
                   duration ?? "No Duration",
@@ -1253,7 +1253,7 @@ class UserServiceDetails extends StatelessWidget {
             (e) => Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: ColorConstant.call4hepOrangeFade,
+                color: ColorConstant.call4helpOrangeFade,
                 borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
               child: Text(
@@ -1355,7 +1355,7 @@ class UserServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              SvgPicture.asset("assets/icons/call4hep_close-filled.svg"),
+              SvgPicture.asset("assets/icons/call4help_close-filled.svg"),
               Text(
                 "Cancel the service",
                 textAlign: TextAlign.center,
@@ -1393,7 +1393,7 @@ class UserServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              SvgPicture.asset("assets/icons/call4hep_task-complete.svg"),
+              SvgPicture.asset("assets/icons/call4help_task-complete.svg"),
               Text(
                 "Task Complete",
                 textAlign: TextAlign.center,
@@ -1474,8 +1474,8 @@ class UserServiceDetails extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: ColorConstant.call4hepOrange,
-            border: Border.all(color: ColorConstant.call4hepOrange, width: 1),
+            color: ColorConstant.call4helpOrange,
+            border: Border.all(color: ColorConstant.call4helpOrange, width: 1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -1483,7 +1483,7 @@ class UserServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              SvgPicture.asset("assets/icons/call4hep_white_star.svg"),
+              SvgPicture.asset("assets/icons/call4help_white_star.svg"),
               Text(
                 "Rate Service",
                 textAlign: TextAlign.center,
@@ -1565,7 +1565,7 @@ class UserServiceDetails extends StatelessWidget {
           );
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: ColorConstant.call4hepGreen,
+          backgroundColor: ColorConstant.call4helpGreen,
         ),
         child: const Text("Pay Amount"),
       ),

@@ -10,7 +10,7 @@ class ProviderTabBar extends StatelessWidget {
       height: 50,
       alignment: Alignment.bottomCenter,
       child: TabBar(
-        indicatorColor: ColorConstant.call4hepOrange,
+        indicatorColor: ColorConstant.call4helpOrange,
         labelColor: ColorConstant.black,
         indicatorSize: TabBarIndicatorSize.tab,
         tabs: [

@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../NATS Service/NatsService.dart';
 
 class SubcategoryService {
-  static const String baseUrl = 'https://api.moyointernational.com/api';
+  static const String baseUrl = 'https://api.call4help.in//api';
 
   Future<SubcategoryResponse?> fetchSubcategories(int categoryId) async {
     try {

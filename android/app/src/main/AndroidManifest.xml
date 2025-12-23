@@ -32,7 +32,7 @@
         <!-- Firebase Notification Channel -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="call4hep_high_importance" />
+            android:value="call4help_high_importance" />
 
         <!-- Main Activity -->
         <activity

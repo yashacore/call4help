@@ -244,7 +244,7 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                   right: 0,
                   child: Center(
                     child: Text(
-                      'call4hep',
+                      'call4help',
                       style: TextStyle(
                         fontSize: 48.sp,
                         fontWeight: FontWeight.bold,

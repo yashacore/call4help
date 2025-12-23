@@ -235,7 +235,7 @@ class _ProviderMySkillScreenState extends State<ProviderMySkillScreen> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text('Skill updated successfully'),
-                                        backgroundColor: ColorConstant.call4hepGreen,
+                                        backgroundColor: ColorConstant.call4helpGreen,
                                         duration: Duration(seconds: 2),
                                       ),
                                     );
@@ -254,7 +254,7 @@ class _ProviderMySkillScreenState extends State<ProviderMySkillScreen> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: ColorConstant.call4hepGreen,
+                                backgroundColor: ColorConstant.call4helpGreen,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -386,7 +386,7 @@ class _ProviderMySkillScreenState extends State<ProviderMySkillScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Skill status updated successfully'),
-                          backgroundColor: ColorConstant.call4hepGreen,
+                          backgroundColor: ColorConstant.call4helpGreen,
                           duration: Duration(seconds: 2),
                         ),
                       );

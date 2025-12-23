@@ -278,12 +278,12 @@ class _ContactFormScreenState extends State<ContactFormScreen> {
               Container(
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
-                  color: ColorConstant.call4hepGreen.withOpacity(0.1),
+                  color: ColorConstant.call4helpGreen.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.check_circle,
-                  color: ColorConstant.call4hepGreen,
+                  color: ColorConstant.call4helpGreen,
                   size: 64.sp,
                 ),
               ),
@@ -314,7 +314,7 @@ class _ContactFormScreenState extends State<ContactFormScreen> {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstant.call4hepOrange,
+                    backgroundColor: ColorConstant.call4helpOrange,
                     foregroundColor: ColorConstant.white,
                     padding: EdgeInsets.symmetric(vertical: 14.h),
                     shape: RoundedRectangleBorder(
@@ -389,7 +389,7 @@ class _ContactFormScreenState extends State<ContactFormScreen> {
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstant.call4hepOrange,
+                    backgroundColor: ColorConstant.call4helpOrange,
                     foregroundColor: ColorConstant.white,
                     padding: EdgeInsets.symmetric(vertical: 14.h),
                     shape: RoundedRectangleBorder(
@@ -422,7 +422,7 @@ class _ContactFormScreenState extends State<ContactFormScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              ColorConstant.call4hepOrangeFade.withOpacity(0.3),
+              ColorConstant.call4helpOrangeFade.withOpacity(0.3),
               ColorConstant.scaffoldGray,
               ColorConstant.buttonBg.withOpacity(0.1),
             ],
@@ -506,14 +506,14 @@ class _ContactFormScreenState extends State<ContactFormScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            ColorConstant.call4hepOrange,
-            ColorConstant.call4hepScaffoldGradient,
+            ColorConstant.call4helpOrange,
+            ColorConstant.call4helpScaffoldGradient,
           ],
         ),
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: ColorConstant.call4hepOrange.withOpacity(0.3),
+            color: ColorConstant.call4helpOrange.withOpacity(0.3),
             blurRadius: 15,
             offset: Offset(0, 8),
           ),
@@ -657,15 +657,15 @@ class _ContactFormScreenState extends State<ContactFormScreen> {
               child: ElevatedButton(
                 onPressed: isLoading ? null : _submitForm,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorConstant.call4hepOrange,
+                  backgroundColor: ColorConstant.call4helpOrange,
                   foregroundColor: ColorConstant.white,
                   padding: EdgeInsets.symmetric(vertical: 16.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   elevation: 0,
-                  shadowColor: ColorConstant.call4hepOrange.withOpacity(0.3),
-                  disabledBackgroundColor: ColorConstant.call4hepOrange.withOpacity(0.5),
+                  shadowColor: ColorConstant.call4helpOrange.withOpacity(0.3),
+                  disabledBackgroundColor: ColorConstant.call4helpOrange.withOpacity(0.5),
                 ),
                 child: isLoading
                     ? SizedBox(
@@ -738,7 +738,7 @@ class _ContactFormScreenState extends State<ContactFormScreen> {
             ),
             prefixIcon: Icon(
               icon,
-              color: ColorConstant.call4hepOrange,
+              color: ColorConstant.call4helpOrange,
               size: 22.sp,
             ),
             filled: true,
@@ -756,7 +756,7 @@ class _ContactFormScreenState extends State<ContactFormScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: ColorConstant.call4hepOrange, width: 2),
+              borderSide: BorderSide(color: ColorConstant.call4helpOrange, width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),

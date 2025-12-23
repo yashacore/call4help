@@ -61,7 +61,7 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.call4hepOrange,
+                backgroundColor: ColorConstant.call4helpOrange,
               ),
               child: const Text('Confirm'),
             ),
@@ -169,7 +169,7 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
     // Guard against null service
     if (_currentService == null) {
       return Scaffold(
-        backgroundColor: ColorConstant.call4hepScaffoldGradient,
+        backgroundColor: ColorConstant.call4helpScaffoldGradient,
         appBar: UserOnlyTitleAppbar(title: "Service Details"),
         body: const Center(child: Text('Service data not available')),
       );
@@ -177,7 +177,7 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
     debugPrint("Providerrrrrrrrrrr${_currentService?.assignedProviderId}");
 
     return Scaffold(
-      backgroundColor: ColorConstant.call4hepScaffoldGradient,
+      backgroundColor: ColorConstant.call4helpScaffoldGradient,
       appBar: UserOnlyTitleAppbar(title: "Service Details"),
       body: Consumer2<ServiceProvider, BookProviderProvider>(
         builder: (context, serviceProvider, bookProviderProvider, child) {
@@ -290,7 +290,7 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
                         children: [
                           CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              ColorConstant.call4hepOrange,
+                              ColorConstant.call4helpOrange,
                             ),
                           ),
                           const SizedBox(width: 16),

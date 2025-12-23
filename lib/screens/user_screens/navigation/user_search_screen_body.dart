@@ -88,11 +88,11 @@ class _UserSearchScreenBodyState extends State<UserSearchScreenBody> {
             : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: ColorConstant.call4hepOrange.withAlpha(0)),
+          borderSide: BorderSide(color: ColorConstant.call4helpOrange.withAlpha(0)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: ColorConstant.call4hepOrange),
+          borderSide: BorderSide(color: ColorConstant.call4helpOrange),
         ),
       ),
       maxLines: 1,
@@ -128,7 +128,7 @@ class _UserSearchScreenBodyState extends State<UserSearchScreenBody> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SvgPicture.asset(
-            'assets/icons/call4hep_big_search.svg',
+            'assets/icons/call4help_big_search.svg',
             color: Colors.grey[400],
           ),
           Text(

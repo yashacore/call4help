@@ -10,11 +10,17 @@ import 'package:first_flutter/providers/ProviderProfileProvider.dart';
 import 'package:first_flutter/providers/ServiceArrivalProvider.dart';
 import 'package:first_flutter/providers/SettingsProvider.dart';
 import 'package:first_flutter/providers/SubcategoryProvider.dart';
+import 'package:first_flutter/providers/booking_status_provider.dart';
+import 'package:first_flutter/providers/create_time_slot_provider.dart';
 import 'package:first_flutter/providers/login_screen_provider.dart';
+import 'package:first_flutter/providers/nearby_cafe_provider.dart';
 import 'package:first_flutter/providers/otp_screen_provider.dart';
 import 'package:first_flutter/providers/provider_navigation_provider.dart';
+import 'package:first_flutter/providers/register_cafe_provider.dart';
 import 'package:first_flutter/providers/search_cyber_provider.dart';
+import 'package:first_flutter/providers/slot_list_provider.dart';
 import 'package:first_flutter/providers/splash_screen_provider.dart' show SplashProvider;
+import 'package:first_flutter/providers/time_slot_provider.dart';
 import 'package:first_flutter/providers/user_navigation_provider.dart';
 import 'package:first_flutter/screens/SubCategory/SkillProvider.dart';
 import 'package:first_flutter/screens/provider_screens/LegalDocumentScreen.dart';
@@ -128,6 +134,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ServiceArrivalProvider()),
         ChangeNotifierProvider(create: (_) => StartWorkProvider()),
         ChangeNotifierProvider(create: (_) => FAQProvider()),
+        ChangeNotifierProvider(create: (_) => SlotProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => UserNotificationProvider()),
         ChangeNotifierProvider(create: (_) => LegalDocumentProvider()),
@@ -141,6 +148,11 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SOSProvider()),
         ChangeNotifierProvider(create: (_) => UserSOSProvider()),
         ChangeNotifierProvider(create: (_) => CyberCafeProvider()),
+        ChangeNotifierProvider(create: (_) => RegisterCafeProvider()),
+        ChangeNotifierProvider(create: (_) => CreateSlotProvider ()),
+        ChangeNotifierProvider(create: (_) => SlotListProvider ()),
+        ChangeNotifierProvider(create: (_) => ProviderSlotsStatusProvider ()),
+        ChangeNotifierProvider(create: (_) => NearbyCafesProvider ()),
       ],
       child: const MyApp(),
     ),

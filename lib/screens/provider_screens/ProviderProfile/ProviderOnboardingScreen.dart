@@ -29,13 +29,13 @@ class ProviderOnboardingDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: ColorConstant.call4hepOrangeFade,
+                color: ColorConstant.call4helpOrangeFade,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.person_add_rounded,
                 size: 60,
-                color: ColorConstant.call4hepOrange,
+                color: ColorConstant.call4helpOrange,
               ),
             ),
             const SizedBox(height: 24),
@@ -70,7 +70,7 @@ class ProviderOnboardingDialog extends StatelessWidget {
                   Navigator.pushNamed(context, '/editProfile');
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorConstant.call4hepOrange,
+                  backgroundColor: ColorConstant.call4helpOrange,
                   foregroundColor: ColorConstant.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(

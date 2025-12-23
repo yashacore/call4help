@@ -253,7 +253,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                                       .textTheme
                                       .labelLarge
                                       ?.copyWith(
-                                        color: ColorConstant.call4hepOrange,
+                                        color: ColorConstant.call4helpOrange,
                                       ),
                                 ),
                               ),
@@ -270,7 +270,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: ColorConstant.call4hepOrangeFade,
+                                    color: ColorConstant.call4helpOrangeFade,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(50),
                                     ),
@@ -286,7 +286,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                                           ?.copyWith(
                                             fontWeight: FontWeight.w500,
                                           ),
-                                      color: ColorConstant.call4hepOrange,
+                                      color: ColorConstant.call4helpOrange,
                                     ),
                                   ),
                                 ),
@@ -308,13 +308,13 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                                               ?.copyWith(
                                                 fontWeight: FontWeight.w500,
                                               ),
-                                          color: ColorConstant.call4hepOrange,
+                                          color: ColorConstant.call4helpOrange,
                                         ),
                                       ),
                                     if (widget.status == "No status")
                                       Icon(
                                         Icons.work_outline,
-                                        color: ColorConstant.call4hepOrange,
+                                        color: ColorConstant.call4helpOrange,
                                       ),
                                     currentStatusChip(context, widget.status),
                                   ],
@@ -344,7 +344,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
                       height: 4,
                       decoration: BoxDecoration(
                         color: _progress > 0.3
-                            ? ColorConstant.call4hepGreen
+                            ? ColorConstant.call4helpGreen
                             : Colors.red,
                       ),
                     ),
@@ -366,7 +366,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
           context,
           text: "Open",
           backgroundColor: Color(0xFFE8F5E9),
-          textColor: ColorConstant.call4hepGreen,
+          textColor: ColorConstant.call4helpGreen,
         );
 
       case 'pending':
@@ -414,7 +414,7 @@ class _ProviderServiceListCardState extends State<ProviderServiceListCard> {
           context,
           text: "Completed",
           backgroundColor: Color(0xFFE6F7C0),
-          textColor: ColorConstant.call4hepGreen,
+          textColor: ColorConstant.call4helpGreen,
         );
 
       case 'cancelled':

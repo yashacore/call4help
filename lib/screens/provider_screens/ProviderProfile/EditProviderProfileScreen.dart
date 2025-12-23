@@ -126,7 +126,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                 ListTile(
                   leading: Icon(
                     Icons.photo_camera,
-                    color: ColorConstant.call4hepOrange,
+                    color: ColorConstant.call4helpOrange,
                   ),
                   title: Text('Camera'),
                   onTap: () {
@@ -137,7 +137,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                 ListTile(
                   leading: Icon(
                     Icons.photo_library,
-                    color: ColorConstant.call4hepOrange,
+                    color: ColorConstant.call4helpOrange,
                   ),
                   title: Text('Gallery'),
                   onTap: () {
@@ -251,7 +251,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
           if (profileProvider.isLoading) {
             return Center(
               child: CircularProgressIndicator(
-                color: ColorConstant.call4hepOrange,
+                color: ColorConstant.call4helpOrange,
               ),
             );
           }
@@ -312,7 +312,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                       label: editProvider.isLoading
                           ? "Saving..."
                           : "Save Changes",
-                      backgroundColor: ColorConstant.call4hepOrange,
+                      backgroundColor: ColorConstant.call4helpOrange,
                       labelColor: Colors.white,
                       onTap: editProvider.isLoading
                           ? () {} // Empty function instead of null
@@ -383,7 +383,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
           hintText: "1234-5678-9012",
           prefixIcon: Icon(
             Icons.credit_card,
-            color: ColorConstant.call4hepOrange,
+            color: ColorConstant.call4helpOrange,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
@@ -437,7 +437,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         decoration: InputDecoration(
           labelText: "PAN Number",
           hintText: "ABCDE1234F",
-          prefixIcon: Icon(Icons.badge, color: ColorConstant.call4hepOrange),
+          prefixIcon: Icon(Icons.badge, color: ColorConstant.call4helpOrange),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
@@ -489,7 +489,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                   icon: Icon(Icons.add_photo_alternate, size: 20),
                   label: Text(hasNewImage ? 'Change' : 'Upload'),
                   style: TextButton.styleFrom(
-                    foregroundColor: ColorConstant.call4hepOrange,
+                    foregroundColor: ColorConstant.call4helpOrange,
                   ),
                 ),
               ],
@@ -514,7 +514,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Center(
                             child: CircularProgressIndicator(
-                              color: ColorConstant.call4hepOrange,
+                              color: ColorConstant.call4helpOrange,
                             ),
                           ),
                           errorWidget: (context, url, error) => Center(
@@ -561,7 +561,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
           style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
         ),
         value: value,
-        activeColor: ColorConstant.call4hepOrange,
+        activeColor: ColorConstant.call4helpOrange,
         onChanged: onChanged,
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),

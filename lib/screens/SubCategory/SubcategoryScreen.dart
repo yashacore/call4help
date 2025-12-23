@@ -60,9 +60,9 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                     imageUrl: widget.categoryIcon!,
                     fit: BoxFit.cover,
                     placeholder: (context, url) =>
-                        Icon(Icons.category, color: ColorConstant.call4hepOrange),
+                        Icon(Icons.category, color: ColorConstant.call4helpOrange),
                     errorWidget: (context, url, error) =>
-                        Icon(Icons.category, color: ColorConstant.call4hepOrange),
+                        Icon(Icons.category, color: ColorConstant.call4helpOrange),
                   ),
                 ),
               ),
@@ -87,7 +87,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(color: ColorConstant.call4hepOrange),
+                  CircularProgressIndicator(color: ColorConstant.call4helpOrange),
                   SizedBox(height: 16),
                   Text(
                     'Loading subcategories...',
@@ -136,7 +136,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                       icon: Icon(Icons.refresh),
                       label: Text('Retry'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorConstant.call4hepOrange,
+                        backgroundColor: ColorConstant.call4helpOrange,
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(
                           horizontal: 32,
@@ -284,7 +284,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                   child: Icon(
                                     Icons.room_service_outlined,
                                     size: 48,
-                                    color: ColorConstant.call4hepOrange.withOpacity(
+                                    color: ColorConstant.call4helpOrange.withOpacity(
                                       0.3,
                                     ),
                                   ),
@@ -293,7 +293,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                   child: Icon(
                                     Icons.room_service_outlined,
                                     size: 48,
-                                    color: ColorConstant.call4hepOrange.withOpacity(
+                                    color: ColorConstant.call4helpOrange.withOpacity(
                                       0.3,
                                     ),
                                   ),
@@ -302,7 +302,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                             : Icon(
                                 Icons.room_service_outlined,
                                 size: 48,
-                                color: ColorConstant.call4hepOrange.withOpacity(
+                                color: ColorConstant.call4helpOrange.withOpacity(
                                   0.3,
                                 ),
                               ),
@@ -318,7 +318,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: ColorConstant.call4hepOrange,
+                          color: ColorConstant.call4helpOrange,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -390,7 +390,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        color: ColorConstant.call4hepOrange,
+                                        color: ColorConstant.call4helpOrange,
                                         fontWeight: FontWeight.w700,
                                       ),
                                 ),
@@ -401,13 +401,13 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                         Container(
                           padding: EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: ColorConstant.call4hepOrange.withOpacity(0.1),
+                            color: ColorConstant.call4helpOrange.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
                             Icons.arrow_forward,
                             size: 16,
-                            color: ColorConstant.call4hepOrange,
+                            color: ColorConstant.call4helpOrange,
                           ),
                         ),
                       ],

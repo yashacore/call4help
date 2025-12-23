@@ -29,7 +29,7 @@ class ButtonLarge extends StatelessWidget {
     this.backgroundColor = const Color(0xFFFD8405),
     this.iconColor = const Color(0xFFC0BEBD),
     this.borderRadius = 12,
-    this.iconPath = "assets/icons/call4hep_add_new_address.svg",
+    this.iconPath = "assets/icons/call4help_add_new_address.svg",
     this.onTap,
     this.icon = const Icon(Icons.account_circle_sharp),
   });

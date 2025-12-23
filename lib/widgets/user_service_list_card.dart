@@ -151,7 +151,7 @@ class UserServiceListCard extends StatelessWidget {
                                       .textTheme
                                       .labelLarge
                                       ?.copyWith(
-                                    color: ColorConstant.call4hepOrange,
+                                    color: ColorConstant.call4helpOrange,
                                   ),
                                 ),
                               ),
@@ -169,7 +169,7 @@ class UserServiceListCard extends StatelessWidget {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: ColorConstant.call4hepOrangeFade,
+                                    color: ColorConstant.call4helpOrangeFade,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(50),
                                     ),
@@ -185,7 +185,7 @@ class UserServiceListCard extends StatelessWidget {
                                           ?.copyWith(
                                         fontWeight: FontWeight.w500,
                                       ),
-                                      color: ColorConstant.call4hepOrange,
+                                      color: ColorConstant.call4helpOrange,
                                     ),
                                   ),
                                 ),
@@ -207,13 +207,13 @@ class UserServiceListCard extends StatelessWidget {
                                               ?.copyWith(
                                             fontWeight: FontWeight.w500,
                                           ),
-                                          color: ColorConstant.call4hepOrange,
+                                          color: ColorConstant.call4helpOrange,
                                         ),
                                       ),
                                     if (status == "No status")
                                       Icon(
                                         Icons.work_outline,
-                                        color: ColorConstant.call4hepOrange,
+                                        color: ColorConstant.call4helpOrange,
                                       ),
 
                                     /// Status Chip
@@ -226,7 +226,7 @@ class UserServiceListCard extends StatelessWidget {
                                         child: Container(
                                           padding: EdgeInsets.all(6),
                                           decoration: BoxDecoration(
-                                            color: ColorConstant.call4hepOrange,
+                                            color: ColorConstant.call4helpOrange,
                                             borderRadius: BorderRadius.circular(6),
                                           ),
                                           child: Icon(
@@ -290,7 +290,7 @@ class UserServiceListCard extends StatelessWidget {
               textStyle: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-              color: ColorConstant.call4hepGreen,
+              color: ColorConstant.call4helpGreen,
             ),
           ),
         );

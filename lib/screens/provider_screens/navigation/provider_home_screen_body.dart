@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/AvailabilityProvider.dart';
+import 'package:first_flutter/screens/provider_screens/cyber_cafe/register_cafe.dart';
+import 'package:first_flutter/screens/provider_screens/cyber_cafe/tesing_screen.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/ProviderRatingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -59,7 +61,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                                   ?.copyWith(
                                     fontSize: 18,
                                     color: isOnline
-                                        ? ColorConstant.call4hepGreen
+                                        ? ColorConstant.call4helpGreen
                                         : Colors.grey.shade900,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -69,7 +71,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                             thumbColor: WidgetStateProperty.all(
                               ColorConstant.white,
                             ),
-                            activeTrackColor: ColorConstant.call4hepGreen,
+                            activeTrackColor: ColorConstant.call4helpGreen,
                             inactiveTrackColor: Colors.grey,
                             trackOutlineColor: WidgetStateProperty.all(
                               Colors.white.withOpacity(0),
@@ -111,7 +113,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                         child: LinearProgressIndicator(
                           backgroundColor: Colors.grey.shade200,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            ColorConstant.call4hepGreen,
+                            ColorConstant.call4helpGreen,
                           ),
                         ),
                       ),
@@ -174,7 +176,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                                     padding: EdgeInsets.all(10),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(16),
-                                      color: ColorConstant.call4hepOrangeFade,
+                                      color: ColorConstant.call4helpOrangeFade,
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
@@ -186,7 +188,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                                         Icon(
                                           Icons.business_center_outlined,
                                           color: isOnline
-                                              ? ColorConstant.call4hepOrange
+                                              ? ColorConstant.call4helpOrange
                                               : Colors.grey,
                                         ),
                                         SizedBox(height: 6),
@@ -395,7 +397,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
             SizedBox(
               width: double.infinity,
               child: Text(
-                "call4hep Offering's",
+                "call4help Offering's",
                 textAlign: TextAlign.start,
                 style: GoogleFonts.inter(
                   textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -479,6 +481,14 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                 );
               },
             ),
+            ElevatedButton(onPressed: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TesingScreen(),
+                ),
+              );
+            }, child: Text("data"))
           ],
         ),
       ),

@@ -54,13 +54,13 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
                 Container(
                   padding: EdgeInsets.all(12.w),
                   decoration: BoxDecoration(
-                    color: ColorConstant.call4hepOrangeFade,
+                    color: ColorConstant.call4helpOrangeFade,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.email_outlined,
                     size: 60.sp,
-                    color: ColorConstant.call4hepOrange,
+                    color: ColorConstant.call4helpOrange,
                   ),
                 ),
                 SizedBox(height: 17.h),
@@ -115,7 +115,7 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
                       borderSide: BorderSide(
-                        color: ColorConstant.call4hepOrange,
+                        color: ColorConstant.call4helpOrange,
                         width: 2.w,
                       ),
                     ),
@@ -155,7 +155,7 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
                             }
                           },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorConstant.call4hepOrange,
+                      backgroundColor: ColorConstant.call4helpOrange,
                       foregroundColor: ColorConstant.white,
                       padding: EdgeInsets.symmetric(vertical: 16.h),
                       shape: RoundedRectangleBorder(

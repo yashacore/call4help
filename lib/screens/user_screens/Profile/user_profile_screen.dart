@@ -39,7 +39,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           if (profileProvider.isLoading && !profileProvider.hasProfile) {
             return Center(
               child: CircularProgressIndicator(
-                color: ColorConstant.call4hepOrange,
+                color: ColorConstant.call4helpOrange,
               ),
             );
           }
@@ -51,7 +51,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
           return RefreshIndicator(
             onRefresh: () => profileProvider.refreshProfile(),
-            color: ColorConstant.call4hepOrange,
+            color: ColorConstant.call4helpOrange,
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               child: Padding(
@@ -74,7 +74,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ButtonLarge(
                       isIcon: false,
                       label: "Edit Profile",
-                      backgroundColor: ColorConstant.call4hepOrange,
+                      backgroundColor: ColorConstant.call4helpOrange,
                       labelColor: Colors.white,
                       onTap: () async {
                         final result = await Navigator.pushNamed(
@@ -128,7 +128,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               icon: Icon(Icons.refresh),
               label: Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.call4hepOrange,
+                backgroundColor: ColorConstant.call4helpOrange,
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               ),
@@ -149,7 +149,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(100),
         border: Border.all(
-          color: ColorConstant.call4hepOrange.withOpacity(0.3),
+          color: ColorConstant.call4helpOrange.withOpacity(0.3),
           width: 2,
         ),
       ),
@@ -162,7 +162,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               fit: BoxFit.cover,
               placeholder: (context, url) => Center(
                 child: CircularProgressIndicator(
-                  color: ColorConstant.call4hepOrange,
+                  color: ColorConstant.call4helpOrange,
                   strokeWidth: 2,
                 ),
               ),
@@ -203,46 +203,46 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           isLabel: true,
           label: "Full Name",
           title: profileProvider.fullName,
-          iconPath: 'assets/icons/call4hep_icon_info_card_full_name.svg',
+          iconPath: 'assets/icons/call4help_icon_info_card_full_name.svg',
         ),
         if (profileProvider.userProfile?.username != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Username",
             title: profileProvider.userProfile!.username!,
-            iconPath: 'assets/icons/call4hep_icon_info_card_full_name.svg',
+            iconPath: 'assets/icons/call4help_icon_info_card_full_name.svg',
           ),
         PersonalInfoCard(
           isLabel: true,
           label: "Email",
           title: profileProvider.email,
-          iconPath: 'assets/icons/call4hep_icon_info_card_email.svg',
+          iconPath: 'assets/icons/call4help_icon_info_card_email.svg',
         ),
         PersonalInfoCard(
           isLabel: true,
           label: "Phone Number",
           title: profileProvider.mobile,
-          iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
+          iconPath: 'assets/icons/call4help_icon_info_card_phone.svg',
         ),
         if (profileProvider.userProfile?.age != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Age",
             title: profileProvider.userProfile!.age.toString(),
-            iconPath: 'assets/icons/call4hep_icon_info_card_full_name.svg',
+            iconPath: 'assets/icons/call4help_icon_info_card_full_name.svg',
           ),
         if (profileProvider.userProfile?.gender != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Gender",
             title: profileProvider.userProfile!.gender!,
-            iconPath: 'assets/icons/call4hep_icon_info_card_full_name.svg',
+            iconPath: 'assets/icons/call4help_icon_info_card_full_name.svg',
           ),
         PersonalInfoCard(
           isLabel: false,
           label: "Address",
           title: 'Address Book',
-          iconPath: 'assets/icons/call4hep_icon_info_card_address.svg',
+          iconPath: 'assets/icons/call4help_icon_info_card_address.svg',
           showArrow: true,
           onPress: () {
             Navigator.push(
@@ -278,14 +278,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             isLabel: true,
             label: "Referral Code",
             title: profileProvider.referralCode,
-            iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
+            iconPath: 'assets/icons/call4help_icon_info_card_phone.svg',
           ),
         if (profileProvider.userProfile?.referredBy != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Referred By",
             title: profileProvider.userProfile!.referredBy!,
-            iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
+            iconPath: 'assets/icons/call4help_icon_info_card_phone.svg',
           ),
       ],
     );
@@ -336,7 +336,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             isLabel: true,
             label: "Member Since",
             title: _formatDate(profileProvider.userProfile!.createdAt),
-            iconPath: 'assets/icons/call4hep_icon_info_card_full_name.svg',
+            iconPath: 'assets/icons/call4help_icon_info_card_full_name.svg',
           ),
       ],
     );
@@ -378,28 +378,28 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           isLabel: true,
           label: "Work Radius",
           title: "${provider.workRadius} km",
-          iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
+          iconPath: 'assets/icons/call4help_icon_info_card_phone.svg',
         ),
         if (provider.education != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Education",
             title: provider.education!,
-            iconPath: 'assets/icons/call4hep_icon_info_card_full_name.svg',
+            iconPath: 'assets/icons/call4help_icon_info_card_full_name.svg',
           ),
         if (provider.adharNo != null)
           PersonalInfoCard(
             isLabel: true,
             label: "Aadhaar Number",
             title: provider.adharNo!,
-            iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
+            iconPath: 'assets/icons/call4help_icon_info_card_phone.svg',
           ),
         if (provider.panNo != null)
           PersonalInfoCard(
             isLabel: true,
             label: "PAN Number",
             title: provider.panNo!,
-            iconPath: 'assets/icons/call4hep_icon_info_card_phone.svg',
+            iconPath: 'assets/icons/call4help_icon_info_card_phone.svg',
           ),
         if (provider.isBlocked)
           _buildStatusCard(context, "Provider Status", "Blocked", false),

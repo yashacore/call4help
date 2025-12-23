@@ -139,7 +139,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                 await _uncheckSkill(skillId, skillName);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.call4hepOrange,
+                backgroundColor: ColorConstant.call4helpOrange,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -257,7 +257,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
     return Scaffold(
       backgroundColor: ColorConstant.scaffoldGray,
       appBar: AppBar(
-        backgroundColor: ColorConstant.call4hepOrange,
+        backgroundColor: ColorConstant.call4helpOrange,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -276,7 +276,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
         builder: (context, subcategoryProvider, skillProvider, child) {
           if (subcategoryProvider.isLoading) {
             return Center(
-              child: CircularProgressIndicator(color: ColorConstant.call4hepOrange),
+              child: CircularProgressIndicator(color: ColorConstant.call4helpOrange),
             );
           }
 
@@ -304,7 +304,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                       icon: Icon(Icons.refresh),
                       label: Text('Retry'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorConstant.call4hepOrange,
+                        backgroundColor: ColorConstant.call4helpOrange,
                         foregroundColor: Colors.white,
                       ),
                     ),
@@ -386,19 +386,19 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) => Icon(
                                       Icons.restaurant,
-                                      color: ColorConstant.call4hepOrange,
+                                      color: ColorConstant.call4helpOrange,
                                       size: 30,
                                     ),
                                     errorWidget: (context, url, error) =>
                                         Icon(
                                           Icons.restaurant,
-                                          color: ColorConstant.call4hepOrange,
+                                          color: ColorConstant.call4helpOrange,
                                           size: 30,
                                         ),
                                   )
                                       : Icon(
                                     Icons.restaurant,
-                                    color: ColorConstant.call4hepOrange,
+                                    color: ColorConstant.call4helpOrange,
                                     size: 30,
                                   ),
                                 ),
@@ -443,13 +443,13 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                     color: isAlreadyChecked
                                         ? Colors.green
                                         : isSelected
-                                        ? ColorConstant.call4hepOrange
+                                        ? ColorConstant.call4helpOrange
                                         : Colors.white,
                                     border: Border.all(
                                       color: isAlreadyChecked
                                           ? Colors.green
                                           : isSelected
-                                          ? ColorConstant.call4hepOrange
+                                          ? ColorConstant.call4helpOrange
                                           : Colors.grey[400]!,
                                       width: 2,
                                     ),
@@ -508,7 +508,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                               text: 'Max 5MB',
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                color: ColorConstant.call4hepOrange,
+                                                color: ColorConstant.call4helpOrange,
                                               ),
                                             ),
                                             TextSpan(text: ')'),
@@ -635,7 +635,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                       Container(
                                         padding: EdgeInsets.all(8),
                                         decoration: BoxDecoration(
-                                          color: ColorConstant.call4hepOrange,
+                                          color: ColorConstant.call4helpOrange,
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: Icon(
@@ -693,7 +693,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                       ? null
                                       : () => _submitSkill(index, subcategory),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: ColorConstant.call4hepOrange,
+                                    backgroundColor: ColorConstant.call4helpOrange,
                                     foregroundColor: Colors.white,
                                     padding: EdgeInsets.symmetric(vertical: 16),
                                     shape: RoundedRectangleBorder(
