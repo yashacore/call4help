@@ -243,7 +243,7 @@ class _ProviderMySkillScreenState extends State<ProviderMySkillScreen> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          skillProvider?.errorMessage ??
+                                          skillProvider.errorMessage ??
                                               'Failed to update skill',
                                         ),
                                         backgroundColor: Colors.red,

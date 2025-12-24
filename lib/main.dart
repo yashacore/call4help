@@ -25,6 +25,7 @@ import 'package:first_flutter/providers/splash_screen_provider.dart'
 import 'package:first_flutter/providers/time_slot_provider.dart';
 import 'package:first_flutter/providers/user_navigation_provider.dart';
 import 'package:first_flutter/providers/user_notification_provider.dart';
+import 'package:first_flutter/providers/vendor_bank_provider.dart';
 import 'package:first_flutter/providers/vendor_notification_provider.dart';
 import 'package:first_flutter/screens/SubCategory/SkillProvider.dart';
 import 'package:first_flutter/screens/provider_screens/LegalDocumentScreen.dart';
@@ -159,6 +160,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => BookingDetailProvider()),
         ChangeNotifierProvider(create: (_) => UserNotificationProvider()),
         ChangeNotifierProvider(create: (_) => VendorNotificationProvider()),
+        ChangeNotifierProvider(create: (_) => VendorBankProvider()),
       ],
       child: const MyApp(),
     ),

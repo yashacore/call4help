@@ -23,6 +23,7 @@ class _VendorNotificationScreenState extends State<VendorNotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorConstant.scaffoldGray,
       appBar: AppBar(
         backgroundColor: ColorConstant.appColor,
         foregroundColor: Colors.white,

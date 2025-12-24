@@ -96,20 +96,6 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
     }
   }
 
-  String _calculateAge(String dob) {
-    try {
-      final birthDate = DateTime.parse(dob);
-      final today = DateTime.now();
-      int age = today.year - birthDate.year;
-      if (today.month < birthDate.month ||
-          (today.month == birthDate.month && today.day < birthDate.day)) {
-        age--;
-      }
-      return age.toString();
-    } catch (e) {
-      return 'N/A';
-    }
-  }
 
   String _getDurationType(ServiceModel service) {
     if (service.serviceMode == 'hrs') return 'Hourly';

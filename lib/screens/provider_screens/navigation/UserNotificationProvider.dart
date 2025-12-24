@@ -52,9 +52,7 @@ class UserNotificationProvider extends ChangeNotifier {
   Future<bool> markAsRead(String token, int notificationId) async {
     try {
       final response = await http.put(
-        Uri.parse(
-          '$base_url/bid/api/notifications/read/$notificationId',
-        ),
+        Uri.parse('$base_url/bid/api/notifications/read/$notificationId'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -64,7 +62,7 @@ class UserNotificationProvider extends ChangeNotifier {
       debugPrint(response.body);
       if (response.statusCode == 200) {
         final index = _notifications.indexWhere(
-              (n) => n['id'] == notificationId,
+          (n) => n['id'] == notificationId,
         );
         if (index != -1) {
           _notifications[index]['is_read'] = true;
