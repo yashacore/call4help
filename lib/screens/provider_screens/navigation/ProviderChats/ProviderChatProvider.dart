@@ -1,11 +1,11 @@
 import 'package:first_flutter/config/baseControllers/APis.dart';
+import 'package:first_flutter/nats_service/NatsService.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dart_nats/dart_nats.dart';
 
-import '../../../../NATS Service/NatsService.dart';
 
 class ProviderChatProvider with ChangeNotifier {
   bool _isLoading = false;

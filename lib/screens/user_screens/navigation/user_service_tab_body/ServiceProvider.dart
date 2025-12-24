@@ -1,7 +1,7 @@
+import 'package:first_flutter/nats_service/NatsService.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
-import '../../../../NATS Service/NatsService.dart';
 import 'ServiceApiService.dart';
 import 'ServiceModel.dart';
 

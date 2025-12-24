@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
-import 'package:first_flutter/providers/MySkillProvider.dart';
+import 'package:first_flutter/providers/my_skill_provider.dart';
 import 'package:first_flutter/widgets/provider_only_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

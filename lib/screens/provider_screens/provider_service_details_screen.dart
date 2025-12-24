@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/nats_service/NatsService.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../NATS Service/NatsService.dart';
 import '../../widgets/ProviderConfirmServiceDetails.dart';
 
 class ProviderServiceDetailsScreen extends StatefulWidget {

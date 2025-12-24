@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/nats_service/NatsService.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:first_flutter/widgets/user_service_details.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'dart:math' show cos, sqrt, asin;
-import '../../NATS Service/NatsService.dart';
 import '../provider_screens/navigation/ServiceTimerScreen.dart';
 import 'navigation/user_service_tab_body/ServiceProvider.dart';
 import '../../providers/book_provider_provider.dart';

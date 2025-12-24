@@ -18,7 +18,7 @@ import '../screens/provider_screens/SettingScreen.dart';
 import '../screens/provider_screens/navigation/NotificationProvider.dart';
 import '../screens/provider_screens/navigation/UserNotificationProvider.dart';
 import '../screens/provider_screens/navigation/UserNotificationListScreen.dart';
-import '../providers/UserProfileProvider.dart';
+import '../providers/user_profile_provider.dart';
 
 class UserAppbar extends StatefulWidget implements PreferredSizeWidget {
   final String? type;

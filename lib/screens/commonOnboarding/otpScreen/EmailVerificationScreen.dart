@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../providers/EditProfileProvider.dart';
+import '../../../providers/edit_profile_provider.dart';
 
 class EmailVerificationDialog extends StatefulWidget {
   const EmailVerificationDialog({super.key});

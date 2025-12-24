@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
-import 'package:first_flutter/providers/ProviderProfileProvider.dart';
+import 'package:first_flutter/providers/provider_profile_provider.dart';
 import 'package:first_flutter/widgets/button_large.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';

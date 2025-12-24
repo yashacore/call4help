@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:first_flutter/nats_service/NatsService.dart';
 import 'package:first_flutter/screens/user_screens/navigation/SOSEmergencyScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../NATS Service/NatsService.dart';
 
 class ServiceTimerScreen extends StatefulWidget {
   final String serviceId;

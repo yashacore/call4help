@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:async'; // ✅ ADDED: For AlwaysStoppedAnimation
 
-import '../../providers/SubcategoryProvider.dart';
+import '../../providers/subcategory_provider.dart';
 import 'SkillProvider.dart';
 
 class SelectFromHomeScreen extends StatefulWidget {

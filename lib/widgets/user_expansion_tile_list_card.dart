@@ -6,14 +6,14 @@ class UserExpansionTileListCard extends StatelessWidget {
   final String dp;
   final String title;
   final String subtitle;
-  final void Function(String serviceType)? onServiceTypeSelected; // Changed to String and nullable
+  final void Function(String serviceType)? onServiceTypeSelected;
 
   const UserExpansionTileListCard({
     super.key,
     required this.dp,
     required this.title,
     required this.subtitle,
-    this.onServiceTypeSelected, // Made optional
+    this.onServiceTypeSelected,
   });
 
   @override
@@ -92,6 +92,7 @@ class UserExpansionTileListCard extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
+
               ),
             ),
           ),

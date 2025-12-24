@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
-import 'package:first_flutter/providers/SubcategoryProvider.dart';
+import 'package:first_flutter/providers/subcategory_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';

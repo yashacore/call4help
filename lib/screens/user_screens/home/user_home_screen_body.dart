@@ -1,3 +1,4 @@
+import 'package:first_flutter/providers/category_provider.dart';
 import 'package:first_flutter/screens/user_screens/Home/category_card.dart';
 import 'package:first_flutter/screens/user_screens/Home/top_services.dart';
 import 'package:first_flutter/screens/user_screens/cyber_cafe/demo_screen.dart';
@@ -6,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../data/models/BannerModel.dart';
 import '../../../widgets/image_slider.dart';
-import '../../../providers/CategoryProvider.dart';
 
 class UserHomeScreenBody extends StatefulWidget {
   const UserHomeScreenBody({super.key});

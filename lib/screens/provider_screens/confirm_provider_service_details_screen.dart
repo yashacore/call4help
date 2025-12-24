@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
-import 'package:first_flutter/providers/ServiceArrivalProvider.dart';
+import 'package:first_flutter/nats_service/NatsService.dart';
+import 'package:first_flutter/providers/service_arrival_provider.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,11 +14,10 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:provider/provider.dart';
 
-import '../../NATS Service/NatsService.dart';
 import '../../widgets/ProviderConfirmServiceDetails.dart';
 import '../user_screens/WidgetProviders/EndWorkOTPDialog.dart';
 import '../user_screens/WidgetProviders/OTPDialog.dart';
-import '../../providers/StartWorkProvider.dart';
+import '../../providers/start_work_provider.dart';
 import 'navigation/ServiceTimerScreen.dart';
 
 class ConfirmProviderServiceDetailsScreen extends StatefulWidget {

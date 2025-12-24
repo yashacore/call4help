@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:first_flutter/providers/CategoryProvider.dart';
+import 'package:first_flutter/providers/category_provider.dart';
 import 'package:first_flutter/screens/user_screens/SubCategory/SubCategoryProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

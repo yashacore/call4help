@@ -1,5 +1,5 @@
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
-import 'package:first_flutter/providers/EarningsProvider.dart';
+import 'package:first_flutter/providers/earnings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
