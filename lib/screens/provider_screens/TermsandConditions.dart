@@ -7,11 +7,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 
-// Model for Legal Document
 class LegalDocument {
   final int id;
   final String type;
-  final String? role; // Make role nullable
+  final String? role;
   final String title;
   final String content;
   final bool isActive;
@@ -237,7 +236,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                         Icon(
                           Icons.description_outlined,
                           size: 64.sp,
-                          color: ColorConstant.black.withOpacity(0.4),
+                          color: ColorConstant.black.withAlpha(04),
                         ),
                         SizedBox(height: 16.h),
                         Text(
@@ -254,7 +253,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: ColorConstant.black.withOpacity(0.6),
+                            color: ColorConstant.black.withAlpha(06),
                           ),
                         ),
                       ],
@@ -290,7 +289,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: ColorConstant.black.withOpacity(0.6),
+                            color: ColorConstant.black.withAlpha(06),
                           ),
                         ),
                         SizedBox(height: 24.h),
@@ -326,7 +325,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                     'No document available',
                     style: TextStyle(
                       fontSize: 16.sp,
-                      color: ColorConstant.black.withOpacity(0.6),
+                      color: ColorConstant.black.withAlpha(06),
                     ),
                   ),
                 );
@@ -433,15 +432,15 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                                   Icon(
                                     Icons.info_outline,
                                     size: 14.sp,
-                                    color: ColorConstant.black.withOpacity(0.6),
+                                    color: ColorConstant.black.withAlpha(06),
                                   ),
                                   SizedBox(width: 4.w),
                                   Text(
                                     'Version ${document.version}',
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: ColorConstant.black.withOpacity(
-                                        0.6,
+                                      color: ColorConstant.black.withAlpha(
+                                        06,
                                       ),
                                     ),
                                   ),
@@ -449,15 +448,15 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                                   Icon(
                                     Icons.calendar_today,
                                     size: 14.sp,
-                                    color: ColorConstant.black.withOpacity(0.6),
+                                    color: ColorConstant.black.withAlpha(06),
                                   ),
                                   SizedBox(width: 4.w),
                                   Text(
                                     'Updated: ${_formatDate(document.updatedAt)}',
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: ColorConstant.black.withOpacity(
-                                        0.6,
+                                      color: ColorConstant.black.withAlpha(
+                                        06,
                                       ),
                                     ),
                                   ),
@@ -465,7 +464,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                               ),
                               SizedBox(height: 16.h),
                               Divider(
-                                color: ColorConstant.black.withOpacity(0.1),
+                                color: ColorConstant.black.withAlpha(01),
                               ),
                               SizedBox(height: 16.h),
 
@@ -535,7 +534,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                                   'No content available',
                                   style: TextStyle(
                                     fontSize: 14.sp,
-                                    color: ColorConstant.black.withOpacity(0.6),
+                                    color: ColorConstant.black.withAlpha(06),
                                     fontStyle: FontStyle.italic,
                                   ),
                                 ),

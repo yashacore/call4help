@@ -12,7 +12,7 @@ import 'dart:math' show cos, sqrt, asin;
 import '../../NATS Service/NatsService.dart';
 import '../provider_screens/navigation/ServiceTimerScreen.dart';
 import 'navigation/user_service_tab_body/ServiceProvider.dart';
-import '../../providers/BookProviderProvider.dart';
+import '../../providers/book_provider_provider.dart';
 
 class AssignedandCompleteUserServiceDetailsScreen extends StatefulWidget {
   final String serviceId;

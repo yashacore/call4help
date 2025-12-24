@@ -101,29 +101,6 @@ class _CyberCafeRegisterScreenState
     );
   }
 
-  Widget _header() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [ColorConstant.appColor, ColorConstant.darkPrimary],
-        ),
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(28)),
-      ),
-      child: Center(
-        child: const Text(
-          "Register Cyber Cafe",
-          style: TextStyle(
-
-            color: ColorConstant.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _formCard() {
     return Container(

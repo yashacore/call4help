@@ -1,6 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -13,28 +11,18 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:label="Call4Help">
-
-        <!-- 🔥 FIX: Disable Impeller (VERY IMPORTANT for Razorpay) -->
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />
-
-        <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAkV6lz1n4MNS_lJaje3oIEXa2DN4QMz6U" />
-
-        <!-- Firebase Notification Icon -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher" />
-
-        <!-- Firebase Notification Channel -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="call4help_high_importance" />
-
-        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:allowBackup="false"

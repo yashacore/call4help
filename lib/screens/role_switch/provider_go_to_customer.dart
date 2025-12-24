@@ -140,7 +140,7 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
         ),
         if (_isLoading)
           Container(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withAlpha(03),
             child: const Center(child: CircularProgressIndicator()),
           ),
       ],

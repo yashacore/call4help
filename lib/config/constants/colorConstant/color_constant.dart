@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ColorConstant {
   // App Color
-  static const Color appColor = Color(0xFF243b50);
+  static const Color  appColor = Color(0xFF243b50);
 
   /// colors
   static const Color buttonBg = Color(0xFF243b50);

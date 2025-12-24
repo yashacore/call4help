@@ -50,15 +50,15 @@ class StartWorkProvider extends ChangeNotifier {
         // ✅ success case
         final responseData = jsonDecode(response.body);
         _isSuccess = true;
-        _errorMessage = null;        // <-- clear any old error
-        _isProcessing = false;       // <-- stop loader here
+        _errorMessage = null;
+        _isProcessing = false;
         notifyListeners();
         return true;
       } else {
         // ❌ error case
         final errorData = jsonDecode(response.body);
         _errorMessage = errorData['message'] ?? 'Failed to start work';
-        _isProcessing = false;       // <-- stop loader here also
+        _isProcessing = false;
         notifyListeners();
         return false;
       }

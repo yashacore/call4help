@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../widgets/user_interested_provider_list_card.dart';
 import 'navigation/user_service_tab_body/ServiceModel.dart';
 import 'navigation/user_service_tab_body/ServiceProvider.dart';
-import '../../providers/BookProviderProvider.dart';
+import '../../providers/book_provider_provider.dart';
 
 class UserServiceDetailsScreen extends StatefulWidget {
   const UserServiceDetailsScreen({super.key});

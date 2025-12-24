@@ -17,7 +17,7 @@ import '../../NATS Service/NatsService.dart';
 import '../../widgets/ProviderConfirmServiceDetails.dart';
 import '../user_screens/WidgetProviders/EndWorkOTPDialog.dart';
 import '../user_screens/WidgetProviders/OTPDialog.dart';
-import 'StartWorkProvider.dart';
+import '../../providers/StartWorkProvider.dart';
 import 'navigation/ServiceTimerScreen.dart';
 
 class ConfirmProviderServiceDetailsScreen extends StatefulWidget {

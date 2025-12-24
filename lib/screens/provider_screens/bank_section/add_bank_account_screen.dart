@@ -23,25 +23,35 @@ class _ProviderBankScreenState extends State<ProviderBankScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffF6F7FB),
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: ColorConstant.appColor,
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.transparent,
         title: const Text("Bank Details"),
       ),
+
       body: Consumer<VendorBankProvider>(
         builder: (context, provider, _) {
+          final double topOffset =
+              MediaQuery.of(context).padding.top + kToolbarHeight;
+
           return Stack(
             children: [
               /// 🔷 Header Gradient
               Container(
-                height: 160,
+                height: 180,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                     colors: [
                       ColorConstant.appColor,
-                      ColorConstant.appColor.withOpacity(0.85),
+                      ColorConstant.appColor.withOpacity(0.9),
                     ],
                   ),
                 ),
@@ -49,7 +59,12 @@ class _ProviderBankScreenState extends State<ProviderBankScreen> {
 
               /// 📄 Form Card
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 80, 16, 100),
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  topOffset-20 ,
+                  16,
+                  100,
+                ),
                 child: SingleChildScrollView(
                   child: Container(
                     padding: const EdgeInsets.all(20),
@@ -153,22 +168,27 @@ class _ProviderBankScreenState extends State<ProviderBankScreen> {
                       if (_formKey.currentState!.validate()) {
                         provider.addBankDetails(
                           ProviderBankModel(
-                            accountHolderName: _nameCtrl.text.trim(),
-                            accountNumber: _accCtrl.text.trim(),
+                            accountHolderName:
+                            _nameCtrl.text.trim(),
+                            accountNumber:
+                            _accCtrl.text.trim(),
                             ifsc: _ifscCtrl.text.trim(),
-                            bankName: _bankCtrl.text.trim(),
+                            bankName:
+                            _bankCtrl.text.trim(),
                           ),
                         );
                       }
                     },
                     child: provider.isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
+                        ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
                         : const Text(
                       "Save Bank Details",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -209,7 +229,11 @@ class _ProviderBankScreenState extends State<ProviderBankScreen> {
   }
 
   /// 🔔 Status Message
-  Widget _statusMessage(String text, Color color, IconData icon) {
+  Widget _statusMessage(
+      String text,
+      Color color,
+      IconData icon,
+      ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(

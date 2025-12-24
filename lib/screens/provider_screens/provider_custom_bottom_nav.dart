@@ -1,5 +1,5 @@
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
-import 'package:first_flutter/screens/RoleSwitch/provider_go_to_customer.dart';
+import 'package:first_flutter/screens/role_switch/provider_go_to_customer.dart';
 import 'package:first_flutter/widgets/user_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

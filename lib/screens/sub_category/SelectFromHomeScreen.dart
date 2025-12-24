@@ -59,7 +59,9 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('File size exceeds 5MB limit. Please select a smaller file.'),
+              content: Text(
+                'File size exceeds 5MB limit. Please select a smaller file.',
+              ),
               backgroundColor: Colors.red,
             ),
           );
@@ -72,9 +74,9 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error picking file: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error picking file: $e')));
     }
   }
 
@@ -209,7 +211,9 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('File size exceeds 5MB limit. Please select a smaller file.'),
+            content: Text(
+              'File size exceeds 5MB limit. Please select a smaller file.',
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -276,7 +280,9 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
         builder: (context, subcategoryProvider, skillProvider, child) {
           if (subcategoryProvider.isLoading) {
             return Center(
-              child: CircularProgressIndicator(color: ColorConstant.call4helpOrange),
+              child: CircularProgressIndicator(
+                color: ColorConstant.call4helpOrange,
+              ),
             );
           }
 
@@ -340,7 +346,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withAlpha(08),
                         blurRadius: 10,
                         offset: Offset(0, 2),
                       ),
@@ -352,17 +358,17 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                         onTap: isAlreadyChecked
                             ? null
                             : () {
-                          setState(() {
-                            if (isSelected && isExpanded) {
-                              expandedCardIndex = null;
-                            } else if (isSelected && !isExpanded) {
-                              expandedCardIndex = index;
-                            } else {
-                              selectedSubcategories[index] = true;
-                              expandedCardIndex = index;
-                            }
-                          });
-                        },
+                                setState(() {
+                                  if (isSelected && isExpanded) {
+                                    expandedCardIndex = null;
+                                  } else if (isSelected && !isExpanded) {
+                                    expandedCardIndex = index;
+                                  } else {
+                                    selectedSubcategories[index] = true;
+                                    expandedCardIndex = index;
+                                  }
+                                });
+                              },
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Row(
@@ -377,30 +383,35 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
-                                  child: subcategory.icon != null &&
-                                      subcategory.icon!.isNotEmpty
+                                  child:
+                                      subcategory.icon != null &&
+                                          subcategory.icon!.isNotEmpty
                                       ? CachedNetworkImage(
-                                    imageUrl: context
-                                        .read<SubcategoryProvider>()
-                                        .getFullImageUrl(subcategory.icon),
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) => Icon(
-                                      Icons.restaurant,
-                                      color: ColorConstant.call4helpOrange,
-                                      size: 30,
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(
+                                          imageUrl: context
+                                              .read<SubcategoryProvider>()
+                                              .getFullImageUrl(
+                                                subcategory.icon,
+                                              ),
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => Icon(
+                                            Icons.restaurant,
+                                            color:
+                                                ColorConstant.call4helpOrange,
+                                            size: 30,
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(
+                                                Icons.restaurant,
+                                                color: ColorConstant
+                                                    .call4helpOrange,
+                                                size: 30,
+                                              ),
+                                        )
+                                      : Icon(
                                           Icons.restaurant,
                                           color: ColorConstant.call4helpOrange,
                                           size: 30,
                                         ),
-                                  )
-                                      : Icon(
-                                    Icons.restaurant,
-                                    color: ColorConstant.call4helpOrange,
-                                    size: 30,
-                                  ),
                                 ),
                               ),
                               SizedBox(width: 16),
@@ -419,23 +430,24 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                               GestureDetector(
                                 onTap: isAlreadyChecked
                                     ? () {
-                                  _showUncheckDialog(
-                                    subcategory.id,
-                                    subcategory.name,
-                                  );
-                                }
+                                        _showUncheckDialog(
+                                          subcategory.id,
+                                          subcategory.name,
+                                        );
+                                      }
                                     : () {
-                                  setState(() {
-                                    selectedSubcategories[index] = !isSelected;
-                                    if (!isSelected) {
-                                      expandedCardIndex = index;
-                                    } else {
-                                      expandedCardIndex = null;
-                                      experienceYears[index] = "";
-                                      attachments[index] = null;
-                                    }
-                                  });
-                                },
+                                        setState(() {
+                                          selectedSubcategories[index] =
+                                              !isSelected;
+                                          if (!isSelected) {
+                                            expandedCardIndex = index;
+                                          } else {
+                                            expandedCardIndex = null;
+                                            experienceYears[index] = "";
+                                            attachments[index] = null;
+                                          }
+                                        });
+                                      },
                                 child: Container(
                                   width: 28,
                                   height: 28,
@@ -457,10 +469,10 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                   ),
                                   child: (isAlreadyChecked || isSelected)
                                       ? Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 20,
-                                  )
+                                          Icons.check,
+                                          color: Colors.white,
+                                          size: 20,
+                                        )
                                       : null,
                                 ),
                               ),
@@ -503,12 +515,16 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                             fontWeight: FontWeight.w500,
                                           ),
                                           children: [
-                                            TextSpan(text: 'Supported formats: PDF, PNG, JPG, JPEG ('),
+                                            TextSpan(
+                                              text:
+                                                  'Supported formats: PDF, PNG, JPG, JPEG (',
+                                            ),
                                             TextSpan(
                                               text: 'Max 5MB',
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                color: ColorConstant.call4helpOrange,
+                                                color: ColorConstant
+                                                    .call4helpOrange,
                                               ),
                                             ),
                                             TextSpan(text: ')'),
@@ -596,7 +612,8 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                       SizedBox(width: 8),
                                       Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             'Add Attachment',
@@ -636,7 +653,9 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                         padding: EdgeInsets.all(8),
                                         decoration: BoxDecoration(
                                           color: ColorConstant.call4helpOrange,
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
                                         child: Icon(
                                           Icons.description,
@@ -647,7 +666,8 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                       SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               _getFileName(attachments[index]),
@@ -693,7 +713,8 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                       ? null
                                       : () => _submitSkill(index, subcategory),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: ColorConstant.call4helpOrange,
+                                    backgroundColor:
+                                        ColorConstant.call4helpOrange,
                                     foregroundColor: Colors.white,
                                     padding: EdgeInsets.symmetric(vertical: 16),
                                     shape: RoundedRectangleBorder(
@@ -703,22 +724,23 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
                                   ),
                                   child: skillProvider.isLoading
                                       ? SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white,
-                                      ), // ✅ FIXED: Proper syntax
-                                    ),
-                                  )
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ), // ✅ FIXED: Proper syntax
+                                          ),
+                                        )
                                       : Text(
-                                    'Submit',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                                          'Submit',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                 ),
                               ),
                             ],

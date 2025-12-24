@@ -19,7 +19,7 @@ class SettingScreen extends StatefulWidget {
   final String? type;
   final List<String>? roles;
 
-  const SettingScreen({Key? key, this.type, this.roles}) : super(key: key);
+  const SettingScreen({super.key, this.type, this.roles});
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();
@@ -192,7 +192,7 @@ class _SettingScreenState extends State<SettingScreen>
             message,
             style: TextStyle(
               fontSize: 14.sp,
-              color: ColorConstant.black.withOpacity(0.7),
+              color: ColorConstant.black.withAlpha(07),
             ),
           ),
           actions: [
@@ -205,7 +205,7 @@ class _SettingScreenState extends State<SettingScreen>
                 'Cancel',
                 style: TextStyle(
                   fontSize: 14.sp,
-                  color: ColorConstant.black.withOpacity(0.6),
+                  color: ColorConstant.black.withAlpha(06),
                 ),
               ),
             ),
@@ -410,7 +410,7 @@ class _SettingScreenState extends State<SettingScreen>
                                           style: TextStyle(
                                             fontSize: 14.sp,
                                             color: ColorConstant.black
-                                                .withOpacity(0.6),
+                                                .withAlpha(06),
                                           ),
                                         ),
                                       ],
@@ -421,7 +421,7 @@ class _SettingScreenState extends State<SettingScreen>
                                     onChanged: (value) {
                                       _handleNotificationPermission(value);
                                     },
-                                    activeColor: ColorConstant.white,
+                                    activeThumbColor: ColorConstant.white,
                                     activeTrackColor: ColorConstant.call4helpOrange,
                                   ),
                                 ],
@@ -451,7 +451,7 @@ class _SettingScreenState extends State<SettingScreen>
                                           style: TextStyle(
                                             fontSize: 14.sp,
                                             color: ColorConstant.black
-                                                .withOpacity(0.6),
+                                                .withAlpha(06),
                                           ),
                                         ),
                                       ],
@@ -462,7 +462,7 @@ class _SettingScreenState extends State<SettingScreen>
                                     onChanged: (value) {
                                       _handleLocationPermission(value);
                                     },
-                                    activeColor: ColorConstant.white,
+                                    activeThumbColor: ColorConstant.white,
                                     activeTrackColor: ColorConstant.call4helpOrange,
                                   ),
                                 ],
@@ -518,7 +518,7 @@ class _SettingScreenState extends State<SettingScreen>
                                         ),
                                         decoration: BoxDecoration(
                                           color: ColorConstant.call4helpOrange
-                                              .withOpacity(0.1),
+                                              .withAlpha(01),
                                           borderRadius: BorderRadius.circular(
                                             8.r,
                                           ),
@@ -539,8 +539,8 @@ class _SettingScreenState extends State<SettingScreen>
                                     'Adjust your work radius to find jobs nearby',
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: ColorConstant.black.withOpacity(
-                                        0.6,
+                                      color: ColorConstant.black.withAlpha(
+                                        06,
                                       ),
                                     ),
                                   ),
@@ -551,10 +551,10 @@ class _SettingScreenState extends State<SettingScreen>
                                           ColorConstant.call4helpOrange,
                                       inactiveTrackColor: ColorConstant
                                           .call4helpOrange
-                                          .withOpacity(0.3),
+                                          .withAlpha(03),
                                       thumbColor: ColorConstant.call4helpOrange,
                                       overlayColor: ColorConstant.call4helpOrange
-                                          .withOpacity(0.2),
+                                          .withAlpha(02),
                                       trackHeight: 4.h,
                                       thumbShape: RoundSliderThumbShape(
                                         enabledThumbRadius: 12.r,
@@ -683,7 +683,7 @@ class _SettingScreenState extends State<SettingScreen>
                                             style: TextStyle(
                                               fontSize: 14.sp,
                                               color: ColorConstant.black
-                                                  .withOpacity(0.6),
+                                                  .withAlpha(06),
                                             ),
                                           ),
                                           SizedBox(width: 4.w),
@@ -700,7 +700,7 @@ class _SettingScreenState extends State<SettingScreen>
                               ),
 
                               Divider(
-                                color: ColorConstant.black.withOpacity(0.1),
+                                color: ColorConstant.black.withAlpha(01),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -710,7 +710,7 @@ class _SettingScreenState extends State<SettingScreen>
                                     _navigateToLegalDocument('privacy_policy'),
                               ),
                               Divider(
-                                color: ColorConstant.black.withOpacity(0.1),
+                                color: ColorConstant.black.withAlpha(01),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -719,7 +719,7 @@ class _SettingScreenState extends State<SettingScreen>
                                 onTap: () => _navigateToLegalDocument('terms'),
                               ),
                               Divider(
-                                color: ColorConstant.black.withOpacity(0.1),
+                                color: ColorConstant.black.withAlpha(01),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -729,7 +729,7 @@ class _SettingScreenState extends State<SettingScreen>
                                     _navigateToLegalDocument('code_of_conduct'),
                               ),
                               Divider(
-                                color: ColorConstant.black.withOpacity(0.1),
+                                color: ColorConstant.black.withAlpha(01),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -745,7 +745,7 @@ class _SettingScreenState extends State<SettingScreen>
                                 },
                               ),
                               Divider(
-                                color: ColorConstant.black.withOpacity(0.1),
+                                color: ColorConstant.black.withAlpha(01),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -754,7 +754,7 @@ class _SettingScreenState extends State<SettingScreen>
                                 onTap: _contactSupport,
                               ),
                               Divider(
-                                color: ColorConstant.black.withOpacity(0.1),
+                                color: ColorConstant.black.withAlpha(01),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -763,7 +763,7 @@ class _SettingScreenState extends State<SettingScreen>
                                 onTap: _shareApp,
                               ),
                               Divider(
-                                color: ColorConstant.black.withOpacity(0.1),
+                                color: ColorConstant.black.withAlpha(01),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -810,7 +810,7 @@ class _SettingScreenState extends State<SettingScreen>
                                   Container(
                                     padding: EdgeInsets.all(8.w),
                                     decoration: BoxDecoration(
-                                      color: Colors.red.withOpacity(0.1),
+                                      color: Colors.red.withAlpha(01),
                                       borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: Icon(
@@ -848,7 +848,7 @@ class _SettingScreenState extends State<SettingScreen>
                   // Loading overlay
                   if (settingsProvider.isLoading)
                     Container(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withAlpha(03),
                       child: Center(
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
@@ -891,7 +891,7 @@ class _SettingScreenState extends State<SettingScreen>
             ),
             Icon(
               Icons.chevron_right,
-              color: ColorConstant.black.withOpacity(0.4),
+              color: ColorConstant.black.withAlpha(04),
               size: 20.sp,
             ),
           ],
@@ -920,7 +920,7 @@ class _SettingScreenState extends State<SettingScreen>
             'Are you sure you want to logout?',
             style: TextStyle(
               fontSize: 14.sp,
-              color: ColorConstant.black.withOpacity(0.7),
+              color: ColorConstant.black.withAlpha(07),
             ),
           ),
           actions: [
@@ -932,7 +932,7 @@ class _SettingScreenState extends State<SettingScreen>
                 'Cancel',
                 style: TextStyle(
                   fontSize: 14.sp,
-                  color: ColorConstant.black.withOpacity(0.6),
+                  color: ColorConstant.black.withAlpha(06),
                 ),
               ),
             ),

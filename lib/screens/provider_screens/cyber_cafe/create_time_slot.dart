@@ -197,12 +197,7 @@ class _CreateSlotScreenState extends State<CreateSlotScreen> {
                 : () async {
               if (!_formKey.currentState!.validate()) return;
 
-              final success = await provider.createSlot(
-                date: dateCtrl.text,
-                startTime: startCtrl.text,
-                endTime: endCtrl.text,
-                totalSeats: seatCtrl.text,
-              );
+
               ScaffoldMessenger.of(context).showSnackBar(
 
                 SnackBar(

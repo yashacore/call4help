@@ -48,6 +48,7 @@ class UserSearchProvider extends ChangeNotifier {
           } else if (dataList != null) {
             _users = dataList
                 .map((user) => UserSearchData.fromJson(user))
+                // ignore: unnecessary_null_comparison
                 .where((user) => user != null)
                 .cast<UserSearchData>()
                 .toList();
