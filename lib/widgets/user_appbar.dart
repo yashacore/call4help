@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/baseControllers/APis.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/NotificationListScreen.dart';
+import 'package:first_flutter/screens/provider_screens/vendor_notification_screen.dart';
 import 'package:first_flutter/screens/user_screens/UserMyRating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -477,7 +478,7 @@ class _UserAppbarState extends State<UserAppbar> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => NotificationListScreen(),
+                          builder: (context) => VendorNotificationScreen(),
                         ),
                       );
                     },

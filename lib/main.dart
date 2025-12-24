@@ -20,10 +20,12 @@ import 'package:first_flutter/providers/provider_navigation_provider.dart';
 import 'package:first_flutter/providers/register_cafe_provider.dart';
 import 'package:first_flutter/providers/search_cyber_provider.dart';
 import 'package:first_flutter/providers/slot_list_provider.dart';
-import 'package:first_flutter/providers/splash_screen_provider.dart' show SplashProvider;
+import 'package:first_flutter/providers/splash_screen_provider.dart'
+    show SplashProvider;
 import 'package:first_flutter/providers/time_slot_provider.dart';
 import 'package:first_flutter/providers/user_navigation_provider.dart';
 import 'package:first_flutter/providers/user_notification_provider.dart';
+import 'package:first_flutter/providers/vendor_notification_provider.dart';
 import 'package:first_flutter/screens/SubCategory/SkillProvider.dart';
 import 'package:first_flutter/screens/provider_screens/LegalDocumentScreen.dart';
 import 'package:first_flutter/screens/provider_screens/ProviderProfile/EditProviderProfileScreen.dart';
@@ -75,20 +77,19 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await NotificationService.showLocalNotificationStatic(message);
 }
 
-
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 Future<void> initLocalNotifications() async {
   const AndroidInitializationSettings androidInit =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
+      AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  const InitializationSettings initSettings =
-  InitializationSettings(android: androidInit);
+  const InitializationSettings initSettings = InitializationSettings(
+    android: androidInit,
+  );
 
   await flutterLocalNotificationsPlugin.initialize(initSettings);
 }
-
 
 /// ================== MAIN ==================
 void main() async {
@@ -96,9 +97,7 @@ void main() async {
 
   await Firebase.initializeApp();
 
-  FirebaseMessaging.onBackgroundMessage(
-    firebaseMessagingBackgroundHandler,
-  );
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   await NotificationService.initializeNotifications();
   NotificationService.setupTokenRefreshListener();
@@ -152,13 +151,14 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserSOSProvider()),
         ChangeNotifierProvider(create: (_) => CyberCafeProvider()),
         ChangeNotifierProvider(create: (_) => RegisterCafeProvider()),
-        ChangeNotifierProvider(create: (_) => CreateSlotProvider ()),
-        ChangeNotifierProvider(create: (_) => SlotListProvider ()),
-        ChangeNotifierProvider(create: (_) => ProviderSlotsStatusProvider ()),
-        ChangeNotifierProvider(create: (_) => NearbyCafesProvider ()),
-        ChangeNotifierProvider(create: (_) => BookingCyberServiceProvider ()),
-        ChangeNotifierProvider(create: (_) => BookingDetailProvider ()),
-        ChangeNotifierProvider(create: (_) => UserNotificationProvider ()),
+        ChangeNotifierProvider(create: (_) => CreateSlotProvider()),
+        ChangeNotifierProvider(create: (_) => SlotListProvider()),
+        ChangeNotifierProvider(create: (_) => ProviderSlotsStatusProvider()),
+        ChangeNotifierProvider(create: (_) => NearbyCafesProvider()),
+        ChangeNotifierProvider(create: (_) => BookingCyberServiceProvider()),
+        ChangeNotifierProvider(create: (_) => BookingDetailProvider()),
+        ChangeNotifierProvider(create: (_) => UserNotificationProvider()),
+        ChangeNotifierProvider(create: (_) => VendorNotificationProvider()),
       ],
       child: const MyApp(),
     ),
@@ -176,29 +176,22 @@ class MyApp extends StatelessWidget {
       builder: (_, __) => MaterialApp(
         debugShowCheckedModeBanner: false,
         navigatorKey: NotificationService.navigatorKey,
-        theme: ThemeData(
-          textTheme: GoogleFonts.interTextTheme(),
-        ),
+        theme: ThemeData(textTheme: GoogleFonts.interTextTheme()),
         initialRoute: '/splash',
         routes: {
           '/splash': (_) => const SplashScreen(),
           '/login': (_) => const LoginScreen(),
           '/UserCustomBottomNav': (_) => const UserCustomBottomNav(),
-          '/UserServiceDetailsScreen': (_) =>
-          const UserServiceDetailsScreen(),
+          '/UserServiceDetailsScreen': (_) => const UserServiceDetailsScreen(),
           '/editProfile': (_) => const EditProfileScreen(),
-          '/ProviderCustomBottomNav': (_) =>
-          const ProviderCustomBottomNav(),
+          '/ProviderCustomBottomNav': (_) => const ProviderCustomBottomNav(),
           '/UserProfileScreen': (_) => const UserProfileScreen(),
           '/SubCatOfCatScreen': (_) => const SubCatOfCatScreen(),
           '/providerProfile': (_) => ProviderProfileScreen(),
           '/editProviderProfile': (_) => EditProviderProfileScreen(),
           '/ProviderOnboarding': (_) => const ProviderOnboardingDialog(),
           '/UserInstantServiceScreen': (_) =>
-          const UserInstantServiceScreen(
-            categoryId: 1,
-            serviceType: '',
-          ),
+              const UserInstantServiceScreen(categoryId: 1, serviceType: ''),
         },
       ),
     );
