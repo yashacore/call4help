@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
-import 'package:first_flutter/nats_service/NatsService.dart';
+import 'package:first_flutter/nats_service/nats_service.dart';
 import 'package:first_flutter/providers/service_arrival_provider.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';

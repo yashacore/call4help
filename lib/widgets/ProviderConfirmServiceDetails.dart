@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/baseControllers/APis.dart' show base_url;
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/service_arrival_provider.dart';
-import 'package:first_flutter/screens/provider_screens/ProviderProfile/EditProviderProfileScreen.dart';
+import 'package:first_flutter/screens/provider_screens/ProviderProfile/edit_provider_profile_screen.dart';
 import 'package:first_flutter/screens/user_screens/Profile/EditProfileScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

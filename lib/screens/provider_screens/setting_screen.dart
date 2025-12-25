@@ -12,8 +12,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:app_settings/app_settings.dart';
 
 import '../user_screens/Profile/FAQScreen.dart';
-import 'ContactFormScreen.dart';
-import 'TermsandConditions.dart';
+import 'contact_form_screen.dart';
+import 'terms_and_conditions.dart';
 
 class SettingScreen extends StatefulWidget {
   final String? type;
@@ -41,8 +41,6 @@ class _SettingScreenState extends State<SettingScreen>
     _loadAppVersion();
     _loadPreferences();
     _checkPermissions();
-
-    // Load saved radius from provider
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<SettingsProvider>(context, listen: false).loadSavedRadius();
     });

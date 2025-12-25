@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:first_flutter/data/models/ProviderBidModel.dart';
-import 'package:first_flutter/nats_service/NatsService.dart';
+import 'package:first_flutter/nats_service/nats_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

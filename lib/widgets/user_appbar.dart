@@ -14,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 
-import '../screens/provider_screens/SettingScreen.dart';
+import '../screens/provider_screens/setting_screen.dart';
 import '../screens/provider_screens/navigation/NotificationProvider.dart';
 import '../screens/provider_screens/navigation/UserNotificationProvider.dart';
 import '../screens/provider_screens/navigation/UserNotificationListScreen.dart';

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:first_flutter/config/baseControllers/APis.dart';
 import 'package:first_flutter/data/models/SubcategoryResponse.dart';
-import 'package:first_flutter/nats_service/NatsService.dart';
+import 'package:first_flutter/nats_service/nats_service.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';

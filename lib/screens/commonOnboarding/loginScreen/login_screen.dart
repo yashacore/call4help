@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/api_services/NotificationService.dart';
-import '../../provider_screens/TermsandConditions.dart';
+import '../../../data/api_services/notification_service.dart';
+import '../../provider_screens/terms_and_conditions.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

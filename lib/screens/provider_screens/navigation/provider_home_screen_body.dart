@@ -13,7 +13,7 @@ import '../../../data/models/BannerModel.dart';
 import '../../../widgets/image_slider.dart';
 import '../../../providers/category_provider.dart';
 import '../../Skills/ProviderMySkillScreen.dart';
-import '../CompletedServicesScreen.dart';
+import '../completed_services_screen.dart';
 
 class ProviderHomeScreenBody extends StatefulWidget {
   const ProviderHomeScreenBody({super.key});

@@ -8,8 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../commonOnboarding/loginScreen/MobileVerificationScreen.dart';
-import '../../commonOnboarding/otpScreen/EmailVerificationScreen.dart';
+import '../../commonOnboarding/loginScreen/mobile_verification_screen.dart';
+import '../../commonOnboarding/otpScreen/email_verification_screen.dart';
 import '../../../providers/edit_profile_provider.dart';
 import '../../../providers/user_profile_provider.dart';
 

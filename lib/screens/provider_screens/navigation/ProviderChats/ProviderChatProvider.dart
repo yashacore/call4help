@@ -1,5 +1,5 @@
 import 'package:first_flutter/config/baseControllers/APis.dart';
-import 'package:first_flutter/nats_service/NatsService.dart';
+import 'package:first_flutter/nats_service/nats_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
