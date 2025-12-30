@@ -50,19 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBH_X1V6u5Af8FFJmMmN2kYkMx2Sh6SJ3Y',
-    appId: '1:858073979116:android:3c7358f3a0e7452d372dc9',
-    messagingSenderId: '858073979116',
-    projectId: 'call4help-159ed',
-    storageBucket: 'call4help-159ed.firebasestorage.app',
+    apiKey: 'AIzaSyBK5plsj1-Vepck2fNdsZM3UL-Kv3SltqY',
+    appId: '1:63793142080:android:d0cdc95c5db588d408c2a5',
+    messagingSenderId: '63793142080',
+    projectId: 'call4help-291ba',
+    storageBucket: 'call4help-291ba.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBU-9QrJBntM7m5f4FSz-PnYk79oYI3Pvk',
-    appId: '1:858073979116:ios:6e76ee6438b34ba4372dc9',
-    messagingSenderId: '858073979116',
-    projectId: 'call4help-159ed',
-    storageBucket: 'call4help-159ed.firebasestorage.app',
-    iosBundleId: 'com.acore.call4help',
+    apiKey: 'AIzaSyB-6vyqDosSIbN9atE3YXdZ5LSf1kPiUGs',
+    appId: '1:63793142080:ios:c6ab22bdd6ebd35208c2a5',
+    messagingSenderId: '63793142080',
+    projectId: 'call4help-291ba',
+    storageBucket: 'call4help-291ba.firebasestorage.app',
+    iosClientId: '63793142080-7oq013jan877urjio52ak76i95tl8snv.apps.googleusercontent.com',
+    iosBundleId: 'com.acore.app.call4help',
   );
+
 }

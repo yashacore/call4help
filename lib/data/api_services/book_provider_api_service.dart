@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookProviderApiService {
-  static const String baseUrl = 'https://api.moyointernational.com/bid/api';
+  static const String baseUrl = 'https://api.call4help.in/bid/api';
 
   /// Confirm/Book a provider for a service
   Future<Map<String, dynamic>> confirmProvider({

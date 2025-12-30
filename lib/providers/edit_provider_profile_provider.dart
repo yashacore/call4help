@@ -16,7 +16,7 @@ class EditProviderProfileProvider extends ChangeNotifier {
 
   Future<bool> updateProviderProfile({
     required String adharNo,
-    required String panNo,
+    // required String panNo,
     required bool isActive,
     required bool isRegistered,
     File? aadhaarPhoto,
@@ -38,7 +38,7 @@ class EditProviderProfileProvider extends ChangeNotifier {
         throw Exception('No authentication token found. Please login again.');
       }
 
-      final url = '$base_url/api/provider/update-profile';
+      final url = 'https://api.call4help.in/api/provider/update-profile';
       debugPrint('API URL: $url');
 
       // Create multipart request
@@ -50,7 +50,7 @@ class EditProviderProfileProvider extends ChangeNotifier {
 
       // Add text fields
       request.fields['adhar_no'] = adharNo;
-      request.fields['pan_no'] = panNo;
+      // request.fields['pan_no'] = panNo;
       request.fields['isactive'] = isActive.toString();
       request.fields['isregistered'] = isRegistered.toString();
 
@@ -107,54 +107,54 @@ class EditProviderProfileProvider extends ChangeNotifier {
       }
 
       // Add PAN photo if provided
-      if (panPhoto != null) {
-        debugPrint('Checking PAN photo...');
-        bool exists = await panPhoto.exists();
-        debugPrint('PAN photo exists: $exists');
-
-        if (exists) {
-          try {
-            String fileName = path.basename(panPhoto.path);
-            String extension = path.extension(panPhoto.path).toLowerCase();
-            debugPrint('PAN file: $fileName, Extension: $extension');
-
-            MediaType? contentType;
-            if (extension == '.jpg' || extension == '.jpeg') {
-              contentType = MediaType('image', 'jpeg');
-            } else if (extension == '.png') {
-              contentType = MediaType('image', 'png');
-            } else if (extension == '.gif') {
-              contentType = MediaType('image', 'gif');
-            } else if (extension == '.webp') {
-              contentType = MediaType('image', 'webp');
-            } else {
-              // Default to jpeg if unknown
-              contentType = MediaType('image', 'jpeg');
-            }
-
-            debugPrint('Content type: $contentType');
-
-            var panBytes = await panPhoto.readAsBytes();
-            debugPrint('PAN bytes length: ${panBytes.length}');
-
-            var panFile = http.MultipartFile.fromBytes(
-              'pan_photo',
-              panBytes,
-              filename: fileName,
-              contentType: contentType,
-            );
-            request.files.add(panFile);
-            debugPrint('PAN photo added to request');
-          } catch (e) {
-            debugPrint('Error reading pan photo: $e');
-            throw Exception('Failed to read PAN photo: $e');
-          }
-        } else {
-          debugPrint('PAN photo file does not exist at path: ${panPhoto.path}');
-        }
-      } else {
-        debugPrint('No PAN photo provided');
-      }
+      // if (panPhoto != null) {
+      //   debugPrint('Checking PAN photo...');
+      //   bool exists = await panPhoto.exists();
+      //   debugPrint('PAN photo exists: $exists');
+      //
+      //   if (exists) {
+      //     try {
+      //       String fileName = path.basename(panPhoto.path);
+      //       String extension = path.extension(panPhoto.path).toLowerCase();
+      //       debugPrint('PAN file: $fileName, Extension: $extension');
+      //
+      //       MediaType? contentType;
+      //       if (extension == '.jpg' || extension == '.jpeg') {
+      //         contentType = MediaType('image', 'jpeg');
+      //       } else if (extension == '.png') {
+      //         contentType = MediaType('image', 'png');
+      //       } else if (extension == '.gif') {
+      //         contentType = MediaType('image', 'gif');
+      //       } else if (extension == '.webp') {
+      //         contentType = MediaType('image', 'webp');
+      //       } else {
+      //         // Default to jpeg if unknown
+      //         contentType = MediaType('image', 'jpeg');
+      //       }
+      //
+      //       debugPrint('Content type: $contentType');
+      //
+      //       var panBytes = await panPhoto.readAsBytes();
+      //       debugPrint('PAN bytes length: ${panBytes.length}');
+      //
+      //       // var panFile = http.MultipartFile.fromBytes(
+      //       //   'pan_photo',
+      //       //   panBytes,
+      //       //   filename: fileName,
+      //       //   contentType: contentType,
+      //       // );
+      //       // request.files.add(panFile);
+      //       debugPrint('PAN photo added to request');
+      //     } catch (e) {
+      //       debugPrint('Error reading pan photo: $e');
+      //       throw Exception('Failed to read PAN photo: $e');
+      //     }
+      //   } else {
+      //     debugPrint('PAN photo file does not exist at path: ${panPhoto.path}');
+      //   }
+      // } else {
+      //   debugPrint('No PAN photo provided');
+      // }
 
       debugPrint('Total files in request: ${request.files.length}');
       debugPrint('Sending request...');
@@ -239,13 +239,13 @@ class UpdateProfileResult {
   final String? adharNo;
   final String? isActive;
   final String? isRegistered;
-  final String? panNo;
+  // final String? panNo;
 
   UpdateProfileResult({
     this.adharNo,
     this.isActive,
     this.isRegistered,
-    this.panNo,
+    // this.panNo,
   });
 
   factory UpdateProfileResult.fromJson(Map<String, dynamic> json) {
@@ -253,7 +253,7 @@ class UpdateProfileResult {
       adharNo: json['adhar_no'],
       isActive: json['isactive'],
       isRegistered: json['isregistered'],
-      panNo: json['pan_no'],
+      // panNo: json['pan_no'],
     );
   }
 }

@@ -20,7 +20,7 @@ class VendorNotificationProvider extends ChangeNotifier {
 
       final response = await http.get(
         Uri.parse(
-          'https://api.call4help.in/cyber-service/notifications/provider',
+          'https://api.call4help.in/cyber/notifications/provider',
         ),
         headers: {
           'Authorization': 'Bearer $token',

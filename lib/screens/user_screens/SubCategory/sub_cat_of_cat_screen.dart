@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/screens/user_screens/cyber_cafe/time_slot_screen.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -283,42 +284,97 @@ class UserExpansionTileListCard extends StatelessWidget {
       ],
     );
   }
-
   void _handleServiceTypeSelection(
-    BuildContext context,
-    String serviceType,
-  ) async {
+      BuildContext context,
+      String serviceType,
+      ) async {
+    debugPrint('==============================');
+    debugPrint('➡️ Service type selected: $serviceType');
+
     final prefs = await SharedPreferences.getInstance();
     final isEmailVerified = prefs.getBool('is_email_verified') ?? false;
     final userMobile = prefs.getString('user_mobile') ?? '';
 
+    debugPrint('📧 Email verified: $isEmailVerified');
+    debugPrint('📱 User mobile: $userMobile');
+
     if (!isEmailVerified || userMobile.isEmpty) {
-      debugPrint(
-        'Email not verified or mobile missing, showing update profile dialog',
-      );
+      debugPrint('⚠️ Profile incomplete, showing UpdateProfileDialog');
 
       await UpdateProfileDialog.show(context);
+
       final updatedPrefs = await SharedPreferences.getInstance();
       final updatedEmailVerified =
           updatedPrefs.getBool('is_email_verified') ?? false;
       final updatedMobile = updatedPrefs.getString('user_mobile') ?? '';
 
+      debugPrint('🔁 After dialog → Email verified: $updatedEmailVerified');
+      debugPrint('🔁 After dialog → Mobile: $updatedMobile');
+
       if (!updatedEmailVerified || updatedMobile.isEmpty) {
-        debugPrint('Profile still incomplete after dialog');
+        debugPrint('❌ Profile still incomplete. Navigation stopped.');
         return;
       }
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => UserInstantServiceScreen(
-          categoryId: subcategory.id,
-          categoryName: subcategory.name,
-          serviceType: serviceType,
+    debugPrint('✅ Profile verified. Proceeding with navigation.');
+
+    // 🔎 GET CATEGORY FROM ROUTE
+    final args = ModalRoute.of(context)?.settings.arguments;
+    debugPrint('📦 Route arguments: $args');
+
+    int categoryId = 0;
+    String categoryName = '';
+
+    if (args is Category) {
+      categoryId = args.id;
+      categoryName = args.name;
+      debugPrint('🟢 Category from args (Category object)');
+    } else if (args is Map<String, dynamic>) {
+      categoryId = args['id'] ?? args['categoryId'] ?? 0;
+      categoryName = args['name'] ?? '';
+      debugPrint('🟢 Category from args (Map)');
+    } else {
+      debugPrint('🔴 No category found in route arguments');
+    }
+
+    debugPrint('🆔 Category ID: $categoryId');
+    debugPrint('🏷️ Category Name (raw): $categoryName');
+
+    final normalizedCategoryName =
+    categoryName.toLowerCase().trim();
+
+    debugPrint('🏷️ Category Name (normalized): $normalizedCategoryName');
+
+    // 🧠 FINAL CONDITION
+    if (categoryId == 4 || normalizedCategoryName.contains('cyber')) {
+      debugPrint('🚀 CONDITION MATCHED → Navigating to SlotScreen');
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const SlotScreen(),
         ),
-      ),
-    );
+      );
+    } else {
+      debugPrint('➡️ CONDITION NOT MATCHED → Navigating to UserInstantServiceScreen');
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => UserInstantServiceScreen(
+            categoryId: categoryId,
+            categoryName: categoryName.isNotEmpty
+                ? categoryName
+                : subcategory.name,
+            serviceType: serviceType,
+          ),
+        ),
+      );
+    }
+
+    debugPrint('==============================');
   }
+
 }
 

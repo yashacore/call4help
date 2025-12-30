@@ -89,19 +89,236 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
-  Future<void> signInWithGoogle(
-    Function(Map<String, dynamic>) onSuccess,
-  ) async {
+
+  Future<void> signInWitgghGoogle(
+      Function(Map<String, dynamic>) onSuccess,
+      ) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
+      debugPrint("🚀 === Google Sign-In Started ===");
+
+      // Clear previous sessions
+      await _googleSignIn.signOut();
+      await _auth.signOut();
+      debugPrint("🔄 Signed out from previous sessions");
+
+      // Start sign-in
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        debugPrint("⚠️ User cancelled Google Sign-In");
+        _isLoading = false;
+        _errorMessage = "Google sign-in cancelled";
+        notifyListeners();
+        return;
+      }
+
+      debugPrint("✅ Google account selected: ${googleUser.email}");
+      debugPrint("   Display Name: ${googleUser.displayName}");
+      debugPrint("   ID: ${googleUser.id}");
+
+      // 🔥 FORCE TOKEN REFRESH
+      debugPrint("🔄 Clearing cached authentication...");
+      await googleUser.clearAuthCache();
+
+      debugPrint("🔄 Getting fresh authentication tokens...");
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
+
+      debugPrint("🔐 Google auth tokens received:");
+      debugPrint("   accessToken: ${googleAuth.accessToken != null ? 'YES (${googleAuth.accessToken!.substring(0, 20)}...)' : 'NULL ❌'}");
+      debugPrint("   idToken: ${googleAuth.idToken != null ? 'YES (${googleAuth.idToken!.substring(0, 20)}...)' : 'NULL ❌'}");
+
+      // 🔥 SPECIFIC ERROR MESSAGES
+      if (googleAuth.idToken == null) {
+        debugPrint("❌ CRITICAL: idToken is NULL");
+        debugPrint("📋 Common causes:");
+        debugPrint("   1. SHA-1 fingerprint not added to Firebase Console");
+        debugPrint("   2. google-services.json not updated after adding SHA");
+        debugPrint("   3. OAuth 2.0 Client ID not configured in Google Cloud Console");
+        debugPrint("   4. Package name mismatch");
+
+        _isLoading = false;
+        _errorMessage = "Authentication failed. Please check Firebase SHA-1 configuration.";
+        notifyListeners();
+        return;
+      }
+
+      if (googleAuth.accessToken == null) {
+        debugPrint("❌ CRITICAL: accessToken is NULL");
+        _isLoading = false;
+        _errorMessage = "Failed to get access token from Google";
+        notifyListeners();
+        return;
+      }
+
+      debugPrint("✅ All tokens received successfully");
+
+      // Create Firebase credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      debugPrint("🔑 Firebase credential created");
+
+      // Sign in to Firebase
+      final UserCredential userCredential =
+      await _auth.signInWithCredential(credential);
+
+      final user = userCredential.user;
+
+      if (user == null) {
+        debugPrint("❌ Firebase user is null");
+        _isLoading = false;
+        _errorMessage = "Firebase authentication failed";
+        notifyListeners();
+        return;
+      }
+
+      debugPrint("✅ Firebase sign-in successful");
+      debugPrint("   UID: ${user.uid}");
+      debugPrint("   Email: ${user.email}");
+
+      // Get Firebase ID Token
+      debugPrint("🔄 Fetching Firebase ID Token (force refresh)");
+      final String? firebaseIdToken = await user.getIdToken(true);
+
+      if (firebaseIdToken == null) {
+        debugPrint("❌ Firebase ID Token is null");
+        _isLoading = false;
+        _errorMessage = "Failed to get Firebase ID token";
+        notifyListeners();
+        return;
+      }
+
+      debugPrint("🔥 Firebase ID Token received");
+      debugPrint("   Length: ${firebaseIdToken.length}");
+      debugPrint("   Preview: ${firebaseIdToken.substring(0, 40)}...");
+
+      // Validate JWT format
+      final parts = firebaseIdToken.split('.');
+      if (parts.length != 3) {
+        debugPrint("❌ Invalid Firebase ID token format");
+        _isLoading = false;
+        _errorMessage = "Invalid Firebase ID token format";
+        notifyListeners();
+        return;
+      }
+
+      debugPrint("✅ Firebase ID Token format valid (JWT)");
+
+      // Send to backend
+      final url = "$base_url/api/auth/google-login";
+      debugPrint("🌐 Sending request to backend: $url");
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $firebaseIdToken',
+        },
+        body: jsonEncode({
+          'email': user.email,
+          'displayName': user.displayName,
+          'photoURL': user.photoURL,
+          'uid': user.uid,
+        }),
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          throw Exception("Backend request timeout");
+        },
+      );
+
+      debugPrint("📡 Backend response: ${response.statusCode}");
+
+      _isLoading = false;
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+
+        // Save user data
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('auth_token', data['token']);
+        await prefs.setString('user_data', jsonEncode(data['user']));
+
+        onSuccess(data);
+        notifyListeners();
+        debugPrint("🎉 === Google Sign-In Completed Successfully ===");
+      } else {
+        _errorMessage = "Backend error: ${response.statusCode}";
+        notifyListeners();
+      }
+
+    } on FirebaseAuthException catch (e) {
+      _isLoading = false;
+      _errorMessage = "Firebase error: ${e.message}";
+      notifyListeners();
+      debugPrint("🔥 FirebaseAuthException: ${e.code} - ${e.message}");
+    } catch (e, stackTrace) {
+      _isLoading = false;
+      _errorMessage = "Error: $e";
+      notifyListeners();
+      debugPrint("🔥 Error: $e");
+      debugPrint("📌 StackTrace:\n$stackTrace");
+    }
+  }
+
+
+  Future<void> signOutGoogle() async {
+    try {
+      await _googleSignIn.signOut();
+      await _auth.signOut();
+
+      // Clear SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('auth_token');
+      await prefs.remove('user_id');
+      await prefs.remove('user_data');
+      await prefs.remove('user_email');
+      await prefs.remove('is_registered');
+      await prefs.remove('user_firstname');
+      await prefs.remove('user_lastname');
+      await prefs.remove('referral_code');
+      await prefs.remove('is_email_verified');
+
+      debugPrint("✓ Google and Firebase sign-out successful");
+      notifyListeners();
+    } catch (e) {
+      debugPrint("✗ Error signing out: $e");
+    }
+  }
+
+  User? get currentUser => _auth.currentUser;
+
+  bool get isSignedIn => _auth.currentUser != null;
+
+  void clearError() {
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+
+  Future<void> signInWithGoogle(
+      Function(Map<String, dynamic>) onSuccess,
+      ) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      // Sign out first to ensure clean state
       await _googleSignIn.signOut();
       await _auth.signOut();
 
       debugPrint("=== Starting Google Sign-In ===");
 
+      // Trigger Google Sign-In flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
@@ -114,11 +331,13 @@ class LoginProvider with ChangeNotifier {
 
       debugPrint("✓ Google user signed in: ${googleUser.email}");
 
+      // Get authentication details from Google
       final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      await googleUser.authentication;
 
       debugPrint("✓ Got Google Auth tokens");
 
+      // Validate Google tokens
       if (googleAuth.accessToken == null || googleAuth.idToken == null) {
         _isLoading = false;
         _errorMessage = "Failed to get Google authentication tokens";
@@ -127,12 +346,15 @@ class LoginProvider with ChangeNotifier {
         return;
       }
 
+      // Create Firebase credential
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
       debugPrint("✓ Created Firebase credential");
+
+      // Sign in to Firebase with the Google credential
       final UserCredential userCredential = await _auth.signInWithCredential(
         credential,
       );
@@ -172,7 +394,7 @@ class LoginProvider with ChangeNotifier {
       if (firebaseIdToken == null) {
         _isLoading = false;
         _errorMessage =
-            "Failed to get Firebase ID token after $maxRetries attempts";
+        "Failed to get Firebase ID token after $maxRetries attempts";
         notifyListeners();
         debugPrint("✗ Could not obtain Firebase token");
         return;
@@ -201,7 +423,7 @@ class LoginProvider with ChangeNotifier {
         final payload = jsonDecode(payloadJson);
         debugPrint(
           "  Token project: ${payload['aud']}",
-        ); // Should be 'call4help-159ed'
+        ); // Should be 'moyo-159ed'
         debugPrint("  Token issuer: ${payload['iss']}");
         debugPrint("  Token email: ${payload['email']}");
       } catch (e) {
@@ -223,21 +445,21 @@ class LoginProvider with ChangeNotifier {
       // Send Firebase ID Token to backend with timeout
       final response = await http
           .post(
-            Uri.parse('$base_url/api/auth/google-login'),
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: requestBody,
-          )
+        Uri.parse('$base_url/api/auth/google-login'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: requestBody,
+      )
           .timeout(
-            Duration(seconds: 30),
-            onTimeout: () {
-              throw Exception(
-                'Connection timeout - Server took too long to respond',
-              );
-            },
+        Duration(seconds: 30),
+        onTimeout: () {
+          throw Exception(
+            'Connection timeout - Server took too long to respond',
           );
+        },
+      );
 
       debugPrint("=== Backend Response ===");
       debugPrint("  Status: ${response.statusCode}");
@@ -296,7 +518,7 @@ class LoginProvider with ChangeNotifier {
         // Check verification requirements
         final userMobile = userData['mobile'];
         final needsMobileVerification =
-            (userMobile == null || userMobile.toString().isEmpty);
+        (userMobile == null || userMobile.toString().isEmpty);
         final needsEmailVerification = !(userData['email_verified'] ?? false);
 
         debugPrint("  Mobile verification needed: $needsMobileVerification");
@@ -323,8 +545,8 @@ class LoginProvider with ChangeNotifier {
             final errorData = jsonDecode(response.body);
             _errorMessage =
                 errorData['message'] ??
-                errorData['error']?['message'] ??
-                _errorMessage;
+                    errorData['error']?['message'] ??
+                    _errorMessage;
             debugPrint("  Error message: $_errorMessage");
 
             // Log detailed error for debugging
@@ -359,42 +581,5 @@ class LoginProvider with ChangeNotifier {
       debugPrint("Stack trace: $stackTrace");
       return;
     }
-  }
-
-  // Sign out from Google and Firebase
-  Future<void> signOutGoogle() async {
-    try {
-      await _googleSignIn.signOut();
-      await _auth.signOut();
-
-      // Clear SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('auth_token');
-      await prefs.remove('user_id');
-      await prefs.remove('user_data');
-      await prefs.remove('user_email');
-      await prefs.remove('is_registered');
-      await prefs.remove('user_firstname');
-      await prefs.remove('user_lastname');
-      await prefs.remove('referral_code');
-      await prefs.remove('is_email_verified');
-
-      debugPrint("✓ Google and Firebase sign-out successful");
-      notifyListeners();
-    } catch (e) {
-      debugPrint("✗ Error signing out: $e");
-    }
-  }
-
-  // Get current Firebase user
-  User? get currentUser => _auth.currentUser;
-
-  // Check if user is signed in
-  bool get isSignedIn => _auth.currentUser != null;
-
-  // Clear error message
-  void clearError() {
-    _errorMessage = null;
-    notifyListeners();
   }
 }

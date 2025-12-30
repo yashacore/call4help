@@ -7,34 +7,42 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:63793142080:android:a49b46d91c67708c08c2a5",
+        "mobilesdk_app_id": "1:63793142080:android:d0cdc95c5db588d408c2a5",
         "android_client_info": {
-          "package_name": "com.acore.call4help"
+          "package_name": "com.acore.app.call4help"
         }
       },
       "oauth_client": [
         {
-          "client_id": "63793142080-il7ni76ghn2m5bn0jvpiq20nb8i7aij5.apps.googleusercontent.com",
+          "client_id": "63793142080-heauibpbtnrhcnpkmvbd4semrjb04pmd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.acore.app.call4help",
+            "certificate_hash": "7cb03bbc952d84f701928f42b472f7ed371cc4c4"
+          }
+        },
+        {
+          "client_id": "63793142080-v9omg6rvrthjbonkd4tirpt80d01voqo.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAGowPF1rBvle0viPqx8YO1dqd-JaS3nsg"
+          "current_key": "AIzaSyBK5plsj1-Vepck2fNdsZM3UL-Kv3SltqY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "63793142080-il7ni76ghn2m5bn0jvpiq20nb8i7aij5.apps.googleusercontent.com",
+              "client_id": "63793142080-v9omg6rvrthjbonkd4tirpt80d01voqo.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "63793142080-bl17gd8ovvm47ln2j62orhndi4ika3v0.apps.googleusercontent.com",
+              "client_id": "63793142080-7oq013jan877urjio52ak76i95tl8snv.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.acore.call4help"
+                "bundle_id": "com.acore.app.call4help"
               }
             }
           ]

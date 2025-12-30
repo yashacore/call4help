@@ -104,7 +104,7 @@ void main() async {
   NotificationService.setupTokenRefreshListener();
 
   await NatsService().initialize(
-    url: 'nats://api.moyointernational.com',
+    url: 'nats://api.call4help.in:4222',
     autoReconnect: true,
     reconnectInterval: const Duration(seconds: 5),
   );

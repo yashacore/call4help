@@ -36,7 +36,7 @@ class _ProviderServiceDetailsScreenState
       // Connect to NATS if not already connected
       if (!_natsService.isConnected) {
         final connected = await _natsService.connect(
-          url: 'nats://api.moyointernational.com:4222',
+          url: 'nats://api.call4help.in:4222',
         );
 
         if (!connected) {

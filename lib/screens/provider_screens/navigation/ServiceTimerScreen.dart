@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class ServiceTimerScreen extends StatefulWidget {
   final String serviceId;
   final int durationValue;
@@ -130,7 +129,7 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
     try {
       if (!_natsService.isConnected) {
         await _natsService.connect(
-          url: 'nats://api.moyointernational.com:4222',
+          url: 'nats://api.call4help.in:4222',
         );
       }
 
@@ -232,7 +231,7 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                       ),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.3),
+                        Colors.black.withValues(alpha: 0.3),
                         BlendMode.darken,
                       ),
                     ),
@@ -362,8 +361,8 @@ class _ServiceTimerScreenState extends State<ServiceTimerScreen> {
                                 ),
                                 decoration: BoxDecoration(
                                   color: _isExtraTime
-                                      ? Colors.red.withOpacity(0.1)
-                                      : Colors.green.withOpacity(0.1),
+                                      ? Colors.red.withValues(alpha: 0.1)
+                                      : Colors.green.withValues(alpha: 0.1),
                                   border: Border.all(
                                     color: _isExtraTime
                                         ? Colors.red

@@ -433,7 +433,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             label,
             style: Theme.of(
               context,
-            ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -450,7 +450,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ? Colors.green.shade700
                     : Colors.orange.shade700,
                 fontWeight: FontWeight.w600,
-                fontSize: 12,
+                fontSize: 10,
               ),
             ),
           ),

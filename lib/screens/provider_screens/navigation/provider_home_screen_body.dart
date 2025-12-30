@@ -195,7 +195,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                                           'Max 10 ',
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
+                                          // maxLines: 2,
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelMedium
@@ -210,7 +210,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                                           'Job Offering ',
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
+                                          // maxLines: 2,
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelMedium
@@ -480,14 +480,14 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                 );
               },
             ),
-            ElevatedButton(onPressed: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TesingScreen(),
-                ),
-              );
-            }, child: Text("data"))
+            // ElevatedButton(onPressed: (){
+            //   Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (context) => TesingScreen(),
+            //     ),
+            //   );
+            // }, child: Text("data"))
           ],
         ),
       ),

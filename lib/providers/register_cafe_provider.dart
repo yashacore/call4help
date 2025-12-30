@@ -32,7 +32,7 @@ class RegisterCafeProvider extends ChangeNotifier {
       final token = prefs.getString('provider_auth_token');
 
       final uri = Uri.parse(
-        "https://api.call4help.in/cyber-service/api/cyber/provider/cafe/register",
+        "https://api.call4help.in/cyber/api/cyber/provider/cafe/register",
       );
 
       print("🌐 Register Cafe URL: $uri");

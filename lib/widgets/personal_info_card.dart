@@ -91,7 +91,7 @@ class PersonalInfoCard extends StatelessWidget {
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
         style: GoogleFonts.inter(
-          textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+          textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: const Color(0xFF000000),
             fontSize: 19,
             fontWeight: FontWeight.w500,

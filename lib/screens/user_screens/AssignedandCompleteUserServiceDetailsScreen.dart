@@ -55,7 +55,7 @@ class _AssignedandCompleteUserServiceDetailsScreenState
     try {
       if (!_natsService.isConnected) {
         final connected = await _natsService.connect(
-          url: 'nats://api.moyointernational.com:4222',
+          url: 'nats://api.call4help.in:4222',
         );
 
         if (!connected) {

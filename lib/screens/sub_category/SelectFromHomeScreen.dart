@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/screens/provider_screens/cyber_cafe/create_time_slot.dart';
+import 'package:first_flutter/screens/provider_screens/cyber_cafe/register_cafe.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -189,13 +191,38 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
   }
 
   Future<void> _submitSkill(int index, dynamic subcategory) async {
+    debugPrint('==============================');
+    debugPrint('➡️ Submitting skill at index: $index');
+    debugPrint('🆔 Category ID: ${widget.categoryId}');
+    debugPrint('🏷️ Category Name: ${widget.categoryName}');
+    debugPrint('🏷️ Subcategory Name: ${subcategory.name}');
+
+    // ✅ CONDITION FIRST
+    if (widget.categoryId == 4) {
+      debugPrint('🚀 Category ID is 4 → Navigating to CreateSlotScreen');
+
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const CyberCafeRegisterScreen(),
+        ),
+      );
+      debugPrint('==============================');
+      return; // ⛔ STOP further execution
+    }
+
+    debugPrint('➡️ Category ID is NOT 4 → Continuing normal skill flow');
+
+    // ===== EXISTING LOGIC BELOW (UNCHANGED) =====
+
     if (!selectedSubcategories[index]!) return;
 
     final experience = experienceYears[index];
     if (experience == null || experience.isEmpty) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please enter years of experience'),
           backgroundColor: Colors.red,
         ),
@@ -203,14 +230,13 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
       return;
     }
 
-    // ✅ Double-check file size before submission
     final attachment = attachments[index];
     if (attachment != null) {
       final fileSize = attachment.lengthSync();
       if (fileSize > maxFileSizeBytes) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text(
               'File size exceeds 5MB limit. Please select a smaller file.',
             ),
@@ -223,6 +249,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
 
     final skillProvider = context.read<SkillProvider>();
 
+    debugPrint('📤 Calling addSkill API...');
     final result = await skillProvider.addSkill(
       skillName: subcategory.name,
       serviceName: widget.categoryName,
@@ -233,13 +260,15 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
     if (!mounted) return;
 
     if (result != null) {
+      debugPrint('✅ Skill added successfully');
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Skill added successfully!'),
           backgroundColor: Colors.green,
         ),
       );
-      // Reset the card
+
       setState(() {
         selectedSubcategories[index] = false;
         experienceYears[index] = "";
@@ -247,6 +276,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
         expandedCardIndex = null;
       });
     } else if (skillProvider.errorMessage != null) {
+      debugPrint('❌ Skill add failed: ${skillProvider.errorMessage}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(skillProvider.errorMessage!),
@@ -254,6 +284,8 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
         ),
       );
     }
+
+    debugPrint('==============================');
   }
 
   @override

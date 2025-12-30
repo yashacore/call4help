@@ -19,7 +19,7 @@ class NotificationProviderUser extends ChangeNotifier {
       final token = prefs.getString('auth_token');
 
       final response = await http.get(
-        Uri.parse('https://api.call4help.in/cyber-service/notifications/user'),
+        Uri.parse('https://api.call4help.in/cyber/notifications/user'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

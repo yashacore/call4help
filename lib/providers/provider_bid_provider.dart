@@ -24,163 +24,215 @@ class ProviderBidProvider extends ChangeNotifier {
   int? get providerId => _providerId;
 
   ProviderBidProvider() {
-    _connectionSubscription = _natsService.connectionStream.listen((connected) {
-      _isConnected = connected;
+    debugPrint('🧩 ProviderBidProvider initialized');
 
-      if (connected) {
-        _error = null;
-        if (_currentTopic != null) {
-          debugPrint(
-            '✅ NATS reconnected. Subscription to $_currentTopic restored automatically',
-          );
-        }
-      } else {
-        _error = 'Connection lost. Reconnecting...';
-      }
+    _connectionSubscription =
+        _natsService.connectionStream.listen((connected) {
+          debugPrint('🌐 NATS connection state changed → $connected');
 
-      notifyListeners();
-    });
+          _isConnected = connected;
+
+          if (connected) {
+            _error = null;
+            debugPrint('✅ NATS connected');
+
+            if (_currentTopic != null) {
+              debugPrint(
+                '🔁 Reconnected → subscription active for $_currentTopic',
+              );
+            }
+          } else {
+            _error = 'Connection lost. Reconnecting...';
+            debugPrint('❌ NATS disconnected');
+          }
+
+          notifyListeners();
+        });
 
     _isConnected = _natsService.isConnected;
+    debugPrint('📡 Initial NATS connection: $_isConnected');
   }
 
   /// Remove bid from list (called when timer expires)
   void removeBid(String bidId) {
+    debugPrint('🗑️ removeBid called → bidId: $bidId');
+
     final bidIndex = _bids.indexWhere((bid) => bid.id == bidId);
     if (bidIndex != -1) {
       final bid = _bids[bidIndex];
       _bids.removeAt(bidIndex);
       notifyListeners();
-      debugPrint('🗑️ Removed bid: ${bid.title} (ID: $bidId) - Timer expired');
+
+      debugPrint(
+        '🗑️ Bid removed: ${bid.title} (ID: $bidId) – timer expired',
+      );
+    } else {
+      debugPrint('⚠️ removeBid: bid not found');
     }
   }
 
   /// Initialize subscription to provider-specific topic
   Future<void> initialize() async {
+    debugPrint('🚀 initialize() called');
+
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
+      debugPrint('🔐 Fetching provider_id from SharedPreferences');
+
       final prefs = await SharedPreferences.getInstance();
       _providerId = prefs.getInt('provider_id');
+
+      debugPrint('👤 providerId: $_providerId');
 
       if (_providerId == null) {
         _error = 'Provider ID not found. Please login again.';
         _isLoading = false;
         notifyListeners();
+
+        debugPrint('❌ Provider ID missing');
         return;
       }
 
-      // Wait for NATS connection
       if (!_natsService.isConnected) {
-        debugPrint('⚠️ NATS not connected yet, waiting...');
+        debugPrint('⏳ Waiting for NATS connection...');
 
         int attempts = 0;
         while (!_natsService.isConnected && attempts < 10) {
           await Future.delayed(const Duration(milliseconds: 500));
           attempts++;
+          debugPrint('⏳ NATS connect attempt: $attempts');
         }
 
         if (!_natsService.isConnected) {
           _error = 'Failed to connect to NATS server';
           _isLoading = false;
           notifyListeners();
+
+          debugPrint('❌ NATS connection failed');
           return;
         }
       }
 
       _isConnected = true;
+      debugPrint('✅ NATS is connected');
 
-      // Unsubscribe from previous topic if exists
       if (_currentTopic != null) {
+        debugPrint('🔕 Unsubscribing from old topic: $_currentTopic');
         _natsService.unsubscribe(_currentTopic!);
-        debugPrint('🔕 Unsubscribed from previous topic: $_currentTopic');
       }
 
-      // Subscribe to provider-specific topic
       _currentTopic = 'services.provider.$_providerId';
-      _natsService.subscribe(_currentTopic!, _handleBidNotification);
+      debugPrint('📡 Subscribing to topic: $_currentTopic');
 
-      debugPrint('✅ Successfully subscribed to: $_currentTopic');
+      _natsService.subscribe(
+        _currentTopic!,
+        _handleBidNotification,
+      );
+
       debugPrint('🎧 Listening for service requests...');
       _error = null;
 
       _isLoading = false;
       notifyListeners();
+
+      debugPrint('✅ initialize() completed');
     } catch (e) {
-      _error = 'Initialization error: ${e.toString()}';
+      _error = 'Initialization error: $e';
       _isLoading = false;
       _isConnected = false;
       notifyListeners();
-      debugPrint('❌ Initialization Error: $e');
+
+      debugPrint('❌ Initialization exception: $e');
     }
   }
 
   /// Handle incoming bid notifications
   void _handleBidNotification(String message) {
-    try {
-      debugPrint('📥 Received service request: $message');
+    debugPrint('📩 Incoming NATS message');
+    debugPrint('📄 Raw payload: $message');
 
+    try {
       final data = jsonDecode(message);
       final bid = ProviderBidModel.fromJson(data);
 
-      // Only process 'open' status bids
+      debugPrint('📦 Parsed bid → ID: ${bid.id}');
+      debugPrint('📌 Status: ${bid.status}');
+
       if (bid.status == 'open') {
         final existingIndex = _bids.indexWhere((b) => b.id == bid.id);
 
         if (existingIndex != -1) {
-          // Update existing bid with new receivedAt time
-          _bids[existingIndex] = bid.copyWith(receivedAt: DateTime.now());
-          debugPrint('🔄 Updated existing service: ${bid.title}');
-        } else {
-          // Add new bid with current timestamp (timer starts from now)
-          final newBid = bid.copyWith(receivedAt: DateTime.now());
-          _bids.insert(0, newBid); // Add at top of list
-          debugPrint('✅ New service request added: ${bid.title}');
-          debugPrint('⏱️ Timer will start immediately for this service');
-        }
+          _bids[existingIndex] =
+              bid.copyWith(receivedAt: DateTime.now());
 
-        notifyListeners();
+          debugPrint('🔄 Updated existing bid: ${bid.title}');
+        } else {
+          final newBid =
+          bid.copyWith(receivedAt: DateTime.now());
+
+          _bids.insert(0, newBid);
+
+          debugPrint('🆕 New bid added: ${bid.title}');
+          debugPrint('⏱️ Timer started at ${newBid.receivedAt}');
+        }
 
         debugPrint('💰 Budget: ${bid.formattedBudget}');
         debugPrint('📍 Location: ${bid.location}');
-        debugPrint('⏰ Schedule: ${bid.scheduleDate} at ${bid.scheduleTime}');
+        debugPrint(
+          '🗓️ Schedule: ${bid.scheduleDate} ${bid.scheduleTime}',
+        );
+
+        notifyListeners();
       } else {
-        debugPrint('ℹ️ Skipped service (status: ${bid.status})');
+        debugPrint(
+          '⏭️ Ignored bid (status: ${bid.status})',
+        );
       }
     } catch (e) {
-      debugPrint('❌ Error parsing service notification: $e');
-      debugPrint('📄 Raw message: $message');
-      _error = 'Error processing notification: ${e.toString()}';
+      debugPrint('❌ Error handling notification: $e');
+      debugPrint('📄 Failed message: $message');
+
+      _error = 'Error processing notification: $e';
       notifyListeners();
     }
   }
 
-  /// Manually add a bid (for testing)
+  /// Manually add a bid (testing)
   void addBid(ProviderBidModel bid) {
-    final existingIndex = _bids.indexWhere((b) => b.id == bid.id);
-    if (existingIndex != -1) {
-      _bids[existingIndex] = bid.copyWith(receivedAt: DateTime.now());
+    debugPrint('➕ addBid called → ${bid.id}');
+
+    final index = _bids.indexWhere((b) => b.id == bid.id);
+
+    if (index != -1) {
+      _bids[index] =
+          bid.copyWith(receivedAt: DateTime.now());
+
+      debugPrint('🔄 Updated manual bid');
     } else {
       _bids.insert(0, bid.copyWith(receivedAt: DateTime.now()));
+
+      debugPrint('🆕 Manually added new bid');
     }
+
     notifyListeners();
-    debugPrint('➕ Manually added bid: ${bid.title}');
   }
 
   /// Clear all bids
   void clearBids() {
+    debugPrint('🧹 Clearing all bids (${_bids.length})');
     _bids.clear();
     notifyListeners();
-    debugPrint('🗑️ Cleared all bids');
   }
 
   /// Retry connection and subscription
   Future<void> retry() async {
-    debugPrint('🔄 Retrying connection...');
+    debugPrint('🔁 Retry requested');
 
     if (!_natsService.isConnected) {
+      debugPrint('🔌 Attempting NATS reconnect');
       await _natsService.reconnect();
       await Future.delayed(const Duration(seconds: 1));
     }
@@ -190,26 +242,32 @@ class ProviderBidProvider extends ChangeNotifier {
 
   /// Get bid by ID
   ProviderBidModel? getBidById(String id) {
+    debugPrint('🔍 getBidById called → $id');
+
     try {
       return _bids.firstWhere((bid) => bid.id == id);
-    } catch (e) {
+    } catch (_) {
+      debugPrint('⚠️ Bid not found');
       return null;
     }
   }
 
-  /// Refresh/reload bids
+  /// Refresh UI
   Future<void> refresh() async {
+    debugPrint('🔄 refresh() called');
     await Future.delayed(const Duration(seconds: 1));
     notifyListeners();
   }
 
   @override
   void dispose() {
+    debugPrint('🧨 Disposing ProviderBidProvider');
+
     _connectionSubscription?.cancel();
 
     if (_currentTopic != null) {
+      debugPrint('🔕 Unsubscribing from $_currentTopic');
       _natsService.unsubscribe(_currentTopic!);
-      debugPrint('🔕 Unsubscribed from topic: $_currentTopic');
     }
 
     super.dispose();

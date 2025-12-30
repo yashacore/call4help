@@ -17,7 +17,7 @@ class SubcategoryService {
     try {
       debugPrint("Service Id: $categoryId");
       final response = await http.get(
-        Uri.parse('$baseUrl/user/moiz/$categoryId'),
+        Uri.parse('https://api.call4help.in/api/user/moiz/$categoryId'),
         headers: {'Content-Type': 'application/json'},
       );
 

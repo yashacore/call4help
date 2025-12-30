@@ -71,7 +71,6 @@ class NotificationService {
       importance: Importance.max,
       playSound: true,
       sound: androidSound,
-      // 🔊 Custom sound
       enableVibration: true,
       showBadge: true,
       enableLights: true,

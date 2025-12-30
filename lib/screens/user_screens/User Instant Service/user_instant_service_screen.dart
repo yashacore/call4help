@@ -213,7 +213,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                         _tenureField(context),
 
                       _preRequisiteIncludesExcludes(context),
-                      _preRequisiteItems(context),
+                      // _preRequisiteItems(context),
 
                       _findServiceproviders(
                         context,

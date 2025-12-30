@@ -17,7 +17,7 @@ class NatsService {
   Timer? _reconnectTimer;
 
   // Configuration
-  String _url = 'nats://api.moyointernational.com';
+  String _url = 'nats://api.call4help.in:4222';
   String? _username;
   String? _password;
 
@@ -40,7 +40,7 @@ class NatsService {
   /// Initialize NATS service with configuration
   /// Call this once in main() or in your app's entry point
   Future<void> initialize({
-    String url = 'nats://api.moyointernational.com',
+    String url = 'nats://api.call4help.in:4222',
     String? username,
     String? password,
     bool autoReconnect = true,

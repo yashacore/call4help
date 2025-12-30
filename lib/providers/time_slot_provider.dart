@@ -24,7 +24,7 @@ class SlotProvider extends ChangeNotifier {
     print("⏳ Loading started");
 
     final url =
-        'https://api.call4help.in/cyber-service/provider/slots/slots'
+        'https://api.call4help.in/cyber/provider/slots/slots'
         '?cyber_cafe_id=$cyberCafeId&date=$date';
 
     print("🌐 API URL: $url");

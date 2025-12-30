@@ -27,7 +27,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
 
   // Controllers
   late TextEditingController _aadhaarController;
-  late TextEditingController _panController;
+  // late TextEditingController _panController;
 
   File? _aadhaarImage;
   File? _panImage;
@@ -38,7 +38,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
   void initState() {
     super.initState();
     _aadhaarController = TextEditingController();
-    _panController = TextEditingController();
+    // _panController = TextEditingController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadProfileData();
@@ -76,7 +76,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
   @override
   void dispose() {
     _aadhaarController.dispose();
-    _panController.dispose();
+    // _panController.dispose();
     super.dispose();
   }
 
@@ -184,7 +184,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
 
     debugPrint('=== Starting Profile Update ===');
     debugPrint('Aadhaar: $cleanAadhaar');
-    debugPrint('PAN: ${_panController.text.trim()}');
+    // debugPrint('PAN: ${_panController.text.trim()}');
     debugPrint('IsActive: $_isActive');
     debugPrint('IsRegistered: $_isRegistered');
     debugPrint('Has Aadhaar Image: ${_aadhaarImage != null}');
@@ -195,7 +195,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
 
     final success = await editProvider.updateProviderProfile(
       adharNo: cleanAadhaar,
-      panNo: _panController.text.trim(),
+      // panNo: _panController.text.trim(),
       isActive: _isActive,
       isRegistered: _isRegistered,
       aadhaarPhoto: _aadhaarImage,
@@ -267,7 +267,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                   children: [
                     _buildSectionTitle(context, "Document Information"),
                     _buildAadhaarTextField(),
-                    _buildPANTextField(),
+                    // _buildPANTextField(),
 
                     _buildSectionTitle(context, "Document Photos"),
                     _buildImagePicker(
@@ -277,12 +277,12 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
                           profileProvider.providerProfile?.aadhaarPhoto,
                       onTap: () => _showImagePickerDialog(true),
                     ),
-                    _buildImagePicker(
-                      label: "PAN Photo",
-                      image: _panImage,
-                      existingImageUrl: null,
-                      onTap: () => _showImagePickerDialog(false),
-                    ),
+                    // _buildImagePicker(
+                    //   label: "PAN Photo",
+                    //   image: _panImage,
+                    //   existingImageUrl: null,
+                    //   onTap: () => _showImagePickerDialog(false),
+                    // ),
 
                     _buildSectionTitle(context, "Account Status"),
                     _buildSwitchTile(
@@ -411,7 +411,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         ],
       ),
       child: TextFormField(
-        controller: _panController,
+        // controller: _panController,
         textCapitalization: TextCapitalization.characters,
         inputFormatters: [
           LengthLimitingTextInputFormatter(10),
