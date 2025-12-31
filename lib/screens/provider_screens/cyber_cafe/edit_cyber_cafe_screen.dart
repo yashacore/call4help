@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
-import 'package:first_flutter/providers/landing_screen_provider.dart';
 import 'package:first_flutter/providers/register_cafe_provider.dart';
 import 'package:first_flutter/widgets/button_large.dart';
 import 'package:flutter/material.dart';

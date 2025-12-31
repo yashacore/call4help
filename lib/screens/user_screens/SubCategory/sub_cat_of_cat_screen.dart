@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
+import 'package:first_flutter/screens/user_screens/cyber_cafe/nearby_cafe_screen.dart';
 import 'package:first_flutter/screens/user_screens/cyber_cafe/time_slot_screen.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
 import 'package:flutter/material.dart';
@@ -353,7 +354,7 @@ class UserExpansionTileListCard extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => const SlotScreen(),
+          builder: (_) => const NearbyCafesScreen(),
         ),
       );
     } else {

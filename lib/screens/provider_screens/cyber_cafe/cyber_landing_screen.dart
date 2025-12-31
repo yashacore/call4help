@@ -1,7 +1,6 @@
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/landing_screen_provider.dart';
 import 'package:first_flutter/screens/provider_screens/cyber_cafe/booking_list.dart';
-import 'package:first_flutter/screens/provider_screens/cyber_cafe/create_time_slot.dart';
 import 'package:first_flutter/screens/provider_screens/cyber_cafe/edit_cyber_cafe_screen.dart';
 import 'package:first_flutter/screens/provider_screens/cyber_cafe/get_working_hour.dart';
 import 'package:first_flutter/screens/provider_screens/cyber_cafe/register_cafe.dart';

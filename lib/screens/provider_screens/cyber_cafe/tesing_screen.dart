@@ -1,8 +1,7 @@
 import 'package:first_flutter/screens/provider_screens/bank_section/add_bank_account_screen.dart';
 import 'package:first_flutter/screens/provider_screens/bank_section/vendor_bank_details_screen.dart';
 import 'package:first_flutter/screens/provider_screens/cyber_cafe/booking_list.dart';
-import 'package:first_flutter/screens/provider_screens/cyber_cafe/create_time_slot.dart';
-import 'package:first_flutter/screens/provider_screens/cyber_cafe/nearby_cafe_screen.dart';
+import 'package:first_flutter/screens/user_screens/cyber_cafe/nearby_cafe_screen.dart';
 import 'package:first_flutter/screens/provider_screens/cyber_cafe/register_cafe.dart';
 import 'package:first_flutter/screens/provider_screens/cyber_cafe/time_slot_list_screen.dart';
 import 'package:flutter/material.dart';

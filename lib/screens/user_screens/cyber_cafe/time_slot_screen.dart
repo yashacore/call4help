@@ -1,176 +1,131 @@
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/time_slot_provider.dart';
+import 'package:first_flutter/screens/user_screens/cyber_cafe/book_cafe_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-class SlotScreen extends StatefulWidget {
-  const SlotScreen({super.key});
+class FullDaySlotScreen extends StatelessWidget {
+  final String cyberCafeId;
+  final String date;
 
-  @override
-  State<SlotScreen> createState() => _SlotScreenState();
-}
-
-class _SlotScreenState extends State<SlotScreen> {
-  final String cyberCafeId =
-      "dd51bd94-5d1c-422c-9d0f-1312d440bb09";
-  final String date = "2025-12-18";
-
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      context.read<SlotProvider>().fetchSlots(
-        cyberCafeId: cyberCafeId,
-        date: date,
-      );
-    });
-  }
+  const FullDaySlotScreen({
+    super.key,
+    required this.cyberCafeId,
+    required this.date,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: ColorConstant.call4helpOrange,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: ColorConstant.white),
-          onPressed: () => Navigator.pop(context),
+    return ChangeNotifierProvider(
+      create: (_) => SlotProvider()
+        ..fetchFullDaySlots(
+          cyberCafeId: cyberCafeId,
+          date: date,
         ),
-        title: Text(
-          'Select Time Slot',
-          style: TextStyle(
-            color: ColorConstant.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: ColorConstant.call4helpOrange,
+          foregroundColor: Colors.white,
+          title: const Text("All Time Slots"),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: Consumer<SlotProvider>(
-        builder: (context, provider, _) {
-          if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        body: Consumer<SlotProvider>(
+          builder: (context, provider, _) {
+            if (provider.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          return Column(
-            children: [
-              _header(date, cyberCafeId),
-              Expanded(
-                child: GridView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: provider.slots.length,
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 1.8,
-                  ),
-                  itemBuilder: (context, index) {
-                    final slot = provider.slots[index];
-                    final isSelected =
-                        provider.selectedSlotId == slot.id;
-                    final isDisabled =
-                        slot.isLocked || slot.availableSeats == 0;
+            if (provider.slots.isEmpty) {
+              return const Center(child: Text("No slots available"));
+            }
 
-                    return GestureDetector(
-                      onTap: isDisabled
-                          ? null
-                          : () => provider.selectSlot(slot.id),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(14),
-                          color: isDisabled
-                              ? Colors.grey.shade300
-                              : isSelected
-                              ? Colors.orange.shade100
-                              : Colors.white,
-                          border: Border.all(
-                            color: isSelected
-                                ? Colors.orange
-                                : Colors.grey.shade300,
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "${slot.startTime} - ${slot.endTime}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              isDisabled
-                                  ? "Not Available"
-                                  : "${slot.availableSeats} seats left",
-                              style: TextStyle(
-                                color: isDisabled
-                                    ? Colors.red
-                                    : Colors.green,
-                              ),
-                            ),
-                          ],
-                        ),
+            return GridView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: provider.slots.length,
+              gridDelegate:
+              const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 1.8,
+              ),
+              itemBuilder: (context, index) {
+                final slot = provider.slots[index];
+
+                Color bg;
+                Color border;
+                String label;
+
+                switch (slot.status) {
+                  case SlotUIStatus.available:
+                    bg = Colors.white;
+                    border = Colors.green;
+                    label =
+                    "${slot.apiSlot!.availableSeats} seats";
+                    break;
+                  case SlotUIStatus.full:
+                    bg = Colors.orange.shade100;
+                    border = Colors.orange;
+                    label = "Full";
+                    break;
+                  case SlotUIStatus.locked:
+                    bg = Colors.grey.shade300;
+                    border = Colors.grey;
+                    label = "Locked";
+                    break;
+                  case SlotUIStatus.notCreated:
+                    bg = Colors.red.shade50;
+                    border = Colors.red;
+                    label = "Not Created";
+                    break;
+                }
+
+                final disabled =
+                    slot.status != SlotUIStatus.available;
+
+                return InkWell(
+                  onTap: disabled
+                    ? null
+                    : () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BookSlotScreen(
+                        slotId: slot.apiSlot!.id,
+
                       ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-      bottomNavigationBar:
-      Consumer<SlotProvider>(builder: (context, provider, _) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: ElevatedButton(
-               onPressed: provider.selectedSlotId == null || provider.isLoading
-          ? null
-              : () async {
-        await provider.bookSlot();
-        provider.showSuccessSnackBar(
-            "Slot booked successfully", context);
-        },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorConstant.call4helpOrange,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(vertical: 14.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              elevation: 2,
-            ),
-            child: Text(
-              'Instant',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        );
-      }),
-    );
-  }Widget _header(String date, String cafeId) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Date: $date",
-            style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            cafeId,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-        ],
+                    ),
+                  );
+                },
+
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: bg,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: border),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)}",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          label,
+                          style: TextStyle(color: border),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
-
 }

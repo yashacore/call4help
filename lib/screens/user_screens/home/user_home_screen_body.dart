@@ -1,8 +1,6 @@
-import 'package:first_flutter/config/notification_test.dart';
 import 'package:first_flutter/providers/category_provider.dart';
 import 'package:first_flutter/screens/user_screens/Home/category_card.dart';
 import 'package:first_flutter/screens/user_screens/Home/top_services.dart';
-import 'package:first_flutter/screens/user_screens/cyber_cafe/time_slot_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';

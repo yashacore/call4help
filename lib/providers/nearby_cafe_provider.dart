@@ -17,22 +17,20 @@ class NearbyCafesProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      /// 1️⃣ Get current location
       final position = await LocationService.getCurrentLocation();
 
       print("📍 Current Location → "
           "Lat: ${position.latitude}, Lng: ${position.longitude}");
 
       final url = Uri.parse(
-        'https://api.call4help.in/cyber-service/api/user/cafes/nearby'
+        'https://api.call4help.in/cyber/api/user/cafes/nearby'
             '?lat=${position.latitude}'
             '&lng=${position.longitude}'
-            '&radius=5',
+            '&radius=50',
       );
 
       print("🌐 API URL: $url");
 
-      /// 2️⃣ Call API
       final response = await http.get(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -49,6 +47,12 @@ class NearbyCafesProvider extends ChangeNotifier {
             .toList();
 
         print("✅ Cafes Found: ${cafes.length}");
+
+        /// 🔥 PRINT CYBER CAFE IDs
+        for (final cafe in cafes) {
+          print("🏪 Cyber Cafe ID: ${cafe.id}");
+        }
+
       } else {
         error = 'Failed to load nearby cafes';
       }
@@ -61,6 +65,7 @@ class NearbyCafesProvider extends ChangeNotifier {
     notifyListeners();
     print("🏁 fetchNearbyCafes finished");
   }
+
 }
 
 

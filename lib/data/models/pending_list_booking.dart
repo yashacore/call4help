@@ -1,60 +1,63 @@
 class PendingSlotBooking {
+  final String id;
   final String orderId;
-  final int userId;
-  final String slotId;
-  final String totalAmount;
+
   final String status;
-  final DateTime createdAt;
-  final PendingSlot slot;
+  final String paymentStatus;
+  final String totalAmount;
+  final String orderType;
+  final String createdAt;
+  final Slot slot;
 
   PendingSlotBooking({
+    required this.id,
     required this.orderId,
-    required this.userId,
-    required this.slotId,
-    required this.totalAmount,
+
     required this.status,
+    required this.paymentStatus,
+    required this.totalAmount,
+    required this.orderType,
     required this.createdAt,
     required this.slot,
   });
 
   factory PendingSlotBooking.fromJson(Map<String, dynamic> json) {
     return PendingSlotBooking(
+      id: json['id']?.toString() ?? '',
       orderId: json['order_id'],
-      userId: json['user_id'],
-      slotId: json['slot_id'],
-      totalAmount: json['total_amount'],
-      status: json['status'],
-      createdAt: DateTime.parse(json['created_at']),
-      slot: PendingSlot.fromJson(json['slot']),
+
+      status: json['status']?.toString() ?? '',
+      paymentStatus: json['payment_status']?.toString() ?? '',
+      totalAmount: json['total_amount']?.toString() ?? '0',
+      orderType: json['order_type']?.toString() ?? '',
+      createdAt: json['created_at']?.toString() ?? '',
+      slot: Slot.fromJson(json['slot'] ?? {}),
+
     );
   }
 }
-
-class PendingSlot {
+class Slot {
   final String id;
-  final DateTime date;
   final String startTime;
   final String endTime;
   final int totalSeats;
   final int availableSeats;
 
-  PendingSlot({
+  Slot({
     required this.id,
-    required this.date,
     required this.startTime,
     required this.endTime,
     required this.totalSeats,
     required this.availableSeats,
   });
 
-  factory PendingSlot.fromJson(Map<String, dynamic> json) {
-    return PendingSlot(
-      id: json['id'],
-      date: DateTime.parse(json['date']),
-      startTime: json['start_time'],
-      endTime: json['end_time'],
-      totalSeats: json['total_seats'],
-      availableSeats: json['available_seats'],
+  factory Slot.fromJson(Map<String, dynamic> json) {
+    return Slot(
+      id: json['id']?.toString() ?? '',
+      startTime: json['start_time']?.toString() ?? '',
+      endTime: json['end_time']?.toString() ?? '',
+      totalSeats: json['total_seats'] ?? 0,
+      availableSeats: json['available_seats'] ?? 0,
     );
   }
 }

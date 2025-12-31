@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:first_flutter/data/models/pending_list_booking.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,34 +11,31 @@ class ProviderSlotsStatusProvider extends ChangeNotifier {
   List<PendingSlotBooking> bookings = [];
   String currentStatus = 'pending';
 
-  Future<void> fetchByStatus(String status) async {
-    print("📡 fetchByStatus called with status: $status");
+  Future<String?> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('provider_auth_token');
+  }
 
+  /// ================= FETCH BY STATUS =================
+  Future<void> fetchByStatus(String status) async {
     currentStatus = status;
     isLoading = true;
     error = null;
     notifyListeners();
 
-    final prefs = await SharedPreferences.getInstance();
-    final authToken = prefs.getString('provider_auth_token');
-
-    print("🔐 Auth Token: $authToken");
-
     try {
-      final url =
-          'https://api.call4help.in/cyber/provider/slots/provider/$status';
-      print("🌐 GET URL: $url");
+      final token = await _getToken();
+      if (token == null) throw Exception("Token missing");
 
       final response = await http.get(
-        Uri.parse(url),
+        Uri.parse(
+          'https://api.call4help.in/cyber/provider/slots/provider/$status',
+        ),
         headers: {
-          'Authorization': 'Bearer $authToken',
+          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
       );
-
-      print("📥 Status Code: ${response.statusCode}");
-      print("📥 Raw Response: ${response.body}");
 
       final decoded = jsonDecode(response.body);
 
@@ -47,133 +43,182 @@ class ProviderSlotsStatusProvider extends ChangeNotifier {
         bookings = (decoded['data'] as List)
             .map((e) => PendingSlotBooking.fromJson(e))
             .toList();
-
-        print("✅ Bookings Loaded: ${bookings.length}");
       } else {
-        error = 'Failed to load $status bookings';
-        print("❌ API Error: $error");
+        error = decoded['message'] ?? 'Failed to load bookings';
       }
     } catch (e) {
       error = e.toString();
-      print("🔥 Exception: $error");
     }
 
     isLoading = false;
     notifyListeners();
   }
 
-  // Future<bool> acceptBooking(String orderId) async {
-  //   return _approveBooking(
-  //     orderId: orderId,
-  //     notes: "Booking approved for customer",
-  //   );
-  // }
+  /// ================= FETCH ALL BOOKINGS =================
+  Future<void> fetchAllBookings() async {
+    print("📡 ===== FETCH ALL BOOKINGS START =====");
 
-  Future<void> acceptBooking(String orderId) async {
-    print("✅ approve booking pressed for orderId: $orderId");
-    await _action(orderId, 'approve');
-  }
+    isLoading = true;
+    notifyListeners();
 
-  void showErrorSnackBar(String message, BuildContext? context) {
-    ScaffoldMessenger.of(context!).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.all(16.w),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-      ),
-    );
-  }
-
-  Future<bool> approveBooking({
-    required String orderId,
-    required String notes,
-  }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('provider_auth_token');
+      print("🔑 Getting auth token...");
+      final token = await _getToken();
 
-      if (token == null || token.isEmpty) {
-        throw Exception("Auth token missing");
+      if (token == null) {
+        print("❌ ERROR: Token missing");
+        throw Exception("Token missing");
       }
 
-      final uri = Uri.parse(
-        "https://api.call4help.in/cyber/provider/slots/provider/approve",
-      );
+      print("✅ Token received");
 
-      final payload = {"order_id": orderId, "notes": notes};
+      final url = 'https://api.call4help.in/cyber/provider/slots/bookings';
+      print("🌐 GET URL: $url");
 
-      print("======================================");
-      print("✅ APPROVE BOOKING");
-      print("🌐 URL: $uri");
-      print("🧾 PAYLOAD: $payload");
-
-      final response = await http.post(
-        uri,
+      final response = await http.get(
+        Uri.parse(url),
         headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json",
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
         },
-        body: jsonEncode(payload),
       );
 
-      print("📡 STATUS: ${response.statusCode}");
-      print("📦 BODY: ${response.body}");
+      print("📡 STATUS CODE: ${response.statusCode}");
+      print("📦 RAW RESPONSE: ${response.body}");
 
       final decoded = jsonDecode(response.body);
 
-      return response.statusCode == 200 && decoded['success'] == true;
+      print("🔍 DECODED RESPONSE: $decoded");
+
+      if (response.statusCode == 200 && decoded['success'] == true) {
+        bookings = (decoded['data'] as List)
+            .map((e) => PendingSlotBooking.fromJson(e))
+            .toList();
+
+        print("✅ BOOKINGS LOADED SUCCESSFULLY");
+        print("📊 TOTAL BOOKINGS COUNT: ${bookings.length}");
+      } else {
+        print("❌ API ERROR: ${decoded['message']}");
+      }
     } catch (e, stack) {
-      showErrorSnackBar("error$e", null);
-      print("🔥 APPROVE ERROR: $e");
-      print(stack);
-      return false;
+      print("🔥 EXCEPTION IN fetchAllBookings()");
+      print("❗ ERROR: $e");
+      print("📍 STACKTRACE: $stack");
     }
+
+    isLoading = false;
+    notifyListeners();
+
+    print("🏁 ===== FETCH ALL BOOKINGS END =====");
   }
 
-  Future<void> rejectBooking(String orderId) async {
-    print("❌ Reject booking pressed for orderId: $orderId");
-    await _action(orderId, 'reject');
-  }
-
-  Future<void> completeBooking(String orderId) async {
-    print("✔ Complete booking pressed for orderId: $orderId");
-    await _action(orderId, 'complete');
-  }
-
-  Future<void> _action(String orderId, String action) async {
-    final prefs = await SharedPreferences.getInstance();
-    final authToken = prefs.getString('provider_auth_token');
-
-    final url =
-        'https://api.call4help.in/cyber/provider/slots/provider/$action';
-
-    print("➡ ACTION: $action");
-    print("🌐 POST URL: $url");
-    print("🔐 Token: $authToken");
-    print("📦 Payload: { order_id: $orderId }");
+  /// ================= APPROVE =================
+  Future<void> approveBooking({
+    required String orderId,
+    required String notes,
+  }) async {
+    isLoading = true;
+    notifyListeners();
 
     try {
+      final token = await _getToken();
+      if (token == null) throw Exception("Token missing");
+
       final response = await http.post(
-        Uri.parse(url),
+        Uri.parse(
+          'https://api.call4help.in/cyber/provider/slots/provider/approve',
+        ),
         headers: {
-          'Authorization': 'Bearer $authToken',
+          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({'order_id': orderId}),
+        body: jsonEncode({
+          "order_id": orderId,
+          "notes": notes,
+        }),
       );
 
-      print("📥 Action Status Code: ${response.statusCode}");
-      print("📥 Action Response: ${response.body}");
+      final decoded = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
-        fetchByStatus(currentStatus);
+      if (response.statusCode == 200 && decoded['success'] == true) {
+        await fetchByStatus('accepted');
+        return;
       }
     } catch (e) {
-      print("🔥 Action Exception: $e");
+      debugPrint("Approve error: $e");
     }
+
+    isLoading = false;
+    notifyListeners();
+  }
+
+  /// ================= REJECT =================
+  Future<void> rejectBooking(String orderId) async {
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      final token = await _getToken();
+      if (token == null) throw Exception("Token missing");
+
+      await http.post(
+        Uri.parse(
+          'https://api.call4help.in/cyber/provider/slots/provider/reject',
+        ),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({"order_id": orderId}),
+      );
+
+      await fetchByStatus('pending');
+    } catch (e) {
+      debugPrint("Reject error: $e");
+    }
+
+    isLoading = false;
+    notifyListeners();
+  }
+
+  /// ================= COMPLETE =================
+  Future<void> completeBooking({
+    required String orderId,
+    required String notes,
+  }) async {
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      final token = await _getToken();
+      if (token == null) throw Exception("Token missing");
+
+      final response = await http.post(
+        Uri.parse(
+          'https://api.call4help.in/cyber/provider/slots/provider/complete',
+        ),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "order_id": orderId,
+          "notes": notes,
+        }),
+      );
+
+      final decoded = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && decoded['success'] == true) {
+        await fetchByStatus('completed');
+
+        return;
+      }
+    } catch (e) {
+      debugPrint("Complete error: $e");
+    }
+
+    isLoading = false;
+    notifyListeners();
   }
 }

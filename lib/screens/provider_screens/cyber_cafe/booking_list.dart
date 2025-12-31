@@ -1,5 +1,7 @@
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/data/models/pending_list_booking.dart';
 import 'package:first_flutter/providers/booking_status_provider.dart';
+import 'package:first_flutter/screens/provider_screens/cyber_cafe/booking_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,12 +17,10 @@ class _ProviderSlotsDashboardState extends State<ProviderSlotsDashboard>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  final tabs = ['pending', 'approve', 'rejected', 'completed'];
-
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: tabs.length, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
 
     Future.microtask(() {
       context.read<ProviderSlotsStatusProvider>().fetchByStatus('pending');
@@ -28,9 +28,15 @@ class _ProviderSlotsDashboardState extends State<ProviderSlotsDashboard>
 
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
-        context
-            .read<ProviderSlotsStatusProvider>()
-            .fetchByStatus(tabs[_tabController.index]);
+        if (_tabController.index == 0) {
+          context
+              .read<ProviderSlotsStatusProvider>()
+              .fetchByStatus('pending');
+        } else {
+          context
+              .read<ProviderSlotsStatusProvider>()
+              .fetchAllBookings();
+        }
       }
     });
   }
@@ -40,15 +46,14 @@ class _ProviderSlotsDashboardState extends State<ProviderSlotsDashboard>
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7FB),
       appBar: AppBar(
+        backgroundColor: ColorConstant.appColor,
+        foregroundColor: Colors.white,
         title: const Text("Slot Bookings"),
         bottom: TabBar(
           controller: _tabController,
-          indicatorWeight: 3,
           tabs: const [
             Tab(text: "Pending"),
-            Tab(text: "approve"),
-            Tab(text: "Rejected"),
-            Tab(text: "Completed"),
+            Tab(text: "All Bookings"),
           ],
         ),
       ),
@@ -67,61 +72,7 @@ class _ProviderSlotsDashboardState extends State<ProviderSlotsDashboard>
             itemCount: provider.bookings.length,
             itemBuilder: (context, index) {
               final booking = provider.bookings[index];
-              final slot = booking.slot;
-
-              return Container(
-                margin: const EdgeInsets.only(bottom: 14),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.06),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    )
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    /// Time
-                    Text(
-                      "${slot.startTime} - ${slot.endTime}",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    /// Seats
-                    Text(
-                      "Seats: ${slot.availableSeats}/${slot.totalSeats}",
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "₹${booking.totalAmount}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                          ),
-                        ),
-
-                        _actionButtons(provider, booking),
-                      ],
-                    ),
-                  ],
-                ),
-              );
+              return _bookingCard(booking);
             },
           );
         },
@@ -129,54 +80,98 @@ class _ProviderSlotsDashboardState extends State<ProviderSlotsDashboard>
     );
   }
 
-  Widget _actionButtons(
-      ProviderSlotsStatusProvider provider,
-      PendingSlotBooking booking,
-      ) {
-    if (provider.currentStatus == 'pending') {
-      return Row(
-        children: [
-          _actionBtn(
-            "Reject",
-            Colors.red,
-                () => provider.rejectBooking(booking.orderId),
-          ),
-          const SizedBox(width: 8),
-          _actionBtn(
-            "approve",
-            Colors.green,
-                () => provider.approveBooking(orderId: booking.orderId, notes: "Booking approved for customer"),
-          ),
-        ],
-      );
-    }
+  Widget _bookingCard(PendingSlotBooking booking) {
+    final slot = booking.slot;
 
-    if (provider.currentStatus == 'approve') {
-      return _actionBtn(
-        "Complete",
-        Colors.blue,
-            () => provider.completeBooking(booking.orderId),
-      );
-    }
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BookingDetailsScreen(booking: booking),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.all(16),
+        decoration: _cardDecoration(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// SLOT TIME
+            Text(
+              "${slot.startTime} - ${slot.endTime}",
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 6),
+
+            /// SEATS
+            Text(
+              "Seats: ${slot.availableSeats}/${slot.totalSeats}",
+              style: const TextStyle(color: Colors.grey),
+            ),
+
+            const SizedBox(height: 10),
+
+            /// PRICE + STATUS TAG
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "₹${booking.totalAmount}",
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                /// ✅ ONLY STATUS CHIP (NO ACTIONS)
+                _statusChip(booking.status),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _statusChip(String status) {
+    final Color color = switch (status) {
+      'completed' => Colors.green,
+      'accepted' => Colors.blue,
+      'rejected' => Colors.red,
+      'pending' => Colors.orange,
+      _ => Colors.grey,
+    };
 
     return Chip(
       label: Text(
-        provider.currentStatus.toUpperCase(),
+        status.toUpperCase(),
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
       ),
+      backgroundColor: color.withOpacity(0.12),
+      side: BorderSide(color: color.withOpacity(0.3)),
     );
   }
 
-  Widget _actionBtn(String text, Color color, VoidCallback onTap) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+  BoxDecoration _cardDecoration() => BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(14),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.06),
+        blurRadius: 8,
+        offset: const Offset(0, 4),
       ),
-      onPressed: onTap,
-      child: Text(text),
-    );
-  }
+    ],
+  );
 }

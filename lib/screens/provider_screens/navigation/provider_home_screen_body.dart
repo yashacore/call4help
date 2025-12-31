@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/availability_provider.dart';
-import 'package:first_flutter/screens/provider_screens/cyber_cafe/tesing_screen.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/ProviderRatingScreen.dart';
 import 'package:first_flutter/screens/sub_category/SelectFromHomeScreen.dart';
 import 'package:flutter/material.dart';

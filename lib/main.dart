@@ -6,9 +6,11 @@ import 'package:first_flutter/providers/availability_provider.dart';
 import 'package:first_flutter/providers/earnings_provider.dart';
 import 'package:first_flutter/providers/edit_provider_profile_provider.dart';
 import 'package:first_flutter/providers/landing_screen_provider.dart';
+import 'package:first_flutter/providers/my_bookings_user_provider.dart';
 import 'package:first_flutter/providers/my_skill_provider.dart';
 import 'package:first_flutter/providers/provider_bid_provider.dart';
 import 'package:first_flutter/providers/provider_profile_provider.dart';
+import 'package:first_flutter/providers/provider_slots_booking_provider.dart';
 import 'package:first_flutter/providers/service_arrival_provider.dart';
 import 'package:first_flutter/providers/settings_provider.dart';
 import 'package:first_flutter/providers/subcategory_provider.dart';
@@ -165,6 +167,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => VendorNotificationProvider()),
         ChangeNotifierProvider(create: (_) => VendorBankProvider()),
         ChangeNotifierProvider(create: (_) => WorkingHoursProvider()),
+        ChangeNotifierProvider(create: (_) => ProviderSlotBookingProvider()),
+        ChangeNotifierProvider(create: (_) => MyBookingsUserProvider()),
       ],
       child: const MyApp(),
     ),

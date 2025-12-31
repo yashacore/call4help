@@ -1,14 +1,12 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
-import 'package:first_flutter/screens/provider_screens/cyber_cafe/create_time_slot.dart';
 import 'package:first_flutter/screens/provider_screens/cyber_cafe/cyber_landing_screen.dart';
-import 'package:first_flutter/screens/provider_screens/cyber_cafe/register_cafe.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
-import 'dart:async'; // ✅ ADDED: For AlwaysStoppedAnimation
+import 'dart:async';
 
 import '../../providers/subcategory_provider.dart';
 import 'SkillProvider.dart';

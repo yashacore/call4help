@@ -23,15 +23,21 @@ class NearbyCafeModel {
 
   factory NearbyCafeModel.fromJson(Map<String, dynamic> json) {
     return NearbyCafeModel(
-      id: json['id'],
-      shopName: json['shop_name'],
-      city: json['city'],
-      state: json['state'],
-      address: json['address_line1'],
-      latitude: double.parse(json['latitude']),
-      longitude: double.parse(json['longitude']),
-      availableComputers: json['available_computers'],
-      distanceMeters: double.parse(json['distance_meters']),
+      id: json['id']?.toString() ?? '',
+      shopName: json['shop_name']?.toString() ?? '',
+      city: json['city']?.toString() ?? '',
+      state: json['state']?.toString() ?? '',
+      address: json['address_line1']?.toString() ?? '',
+
+      /// 🔥 SAFE NUMBER PARSING
+      latitude: double.tryParse(json['latitude'].toString()) ?? 0.0,
+      longitude: double.tryParse(json['longitude'].toString()) ?? 0.0,
+
+      availableComputers: json['available_computers'] ?? 0,
+
+      /// distance_meters can be int OR double
+      distanceMeters:
+      (json['distance_meters'] as num?)?.toDouble() ?? 0.0,
     );
   }
 }
