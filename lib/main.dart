@@ -5,6 +5,7 @@ import 'package:first_flutter/nats_service/nats_service.dart';
 import 'package:first_flutter/providers/availability_provider.dart';
 import 'package:first_flutter/providers/earnings_provider.dart';
 import 'package:first_flutter/providers/edit_provider_profile_provider.dart';
+import 'package:first_flutter/providers/landing_screen_provider.dart';
 import 'package:first_flutter/providers/my_skill_provider.dart';
 import 'package:first_flutter/providers/provider_bid_provider.dart';
 import 'package:first_flutter/providers/provider_profile_provider.dart';
@@ -28,6 +29,7 @@ import 'package:first_flutter/providers/user_navigation_provider.dart';
 import 'package:first_flutter/providers/user_notification_provider.dart';
 import 'package:first_flutter/providers/vendor_bank_provider.dart';
 import 'package:first_flutter/providers/vendor_notification_provider.dart';
+import 'package:first_flutter/providers/working_hour_provider.dart';
 import 'package:first_flutter/screens/provider_screens/legal_document_screen.dart';
 import 'package:first_flutter/screens/provider_screens/ProviderProfile/edit_provider_profile_screen.dart';
 import 'package:first_flutter/screens/provider_screens/ProviderProfile/provider_onboarding_screen.dart';
@@ -154,6 +156,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => RegisterCafeProvider()),
         ChangeNotifierProvider(create: (_) => CreateSlotProvider()),
         ChangeNotifierProvider(create: (_) => SlotListProvider()),
+        ChangeNotifierProvider(create: (_) => ProviderCafeProvider()),
         ChangeNotifierProvider(create: (_) => ProviderSlotsStatusProvider()),
         ChangeNotifierProvider(create: (_) => NearbyCafesProvider()),
         ChangeNotifierProvider(create: (_) => BookingCyberServiceProvider()),
@@ -161,6 +164,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserNotificationProvider()),
         ChangeNotifierProvider(create: (_) => VendorNotificationProvider()),
         ChangeNotifierProvider(create: (_) => VendorBankProvider()),
+        ChangeNotifierProvider(create: (_) => WorkingHoursProvider()),
       ],
       child: const MyApp(),
     ),

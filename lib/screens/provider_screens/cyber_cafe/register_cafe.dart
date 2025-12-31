@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/register_cafe_provider.dart';
+import 'package:first_flutter/widgets/button_large.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +32,7 @@ class _CyberCafeRegisterScreenState
   final closingCtrl = TextEditingController();
   final gstCtrl = TextEditingController();
 
+  String? shopImagePath;
   String? documentPath;
 
   Future<void> pickTime(TextEditingController controller) async {
@@ -39,7 +41,15 @@ class _CyberCafeRegisterScreenState
       initialTime: TimeOfDay.now(),
     );
     if (time != null) {
-      controller.text = time.format(context);
+      controller.text =
+      "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+    }
+  }
+
+  Future<void> pickShopImage() async {
+    final result = await FilePicker.platform.pickFiles(type: FileType.image);
+    if (result?.files.single.path != null) {
+      setState(() => shopImagePath = result!.files.single.path!);
     }
   }
 
@@ -48,42 +58,20 @@ class _CyberCafeRegisterScreenState
       type: FileType.custom,
       allowedExtensions: ['pdf', 'jpg', 'png'],
     );
-    if (result != null && result.files.single.path != null) {
-      setState(() {
-        documentPath = result.files.single.path!;
-      });
+    if (result?.files.single.path != null) {
+      setState(() => documentPath = result!.files.single.path!);
     }
-  }
-
-  @override
-  void dispose() {
-    shopNameCtrl.dispose();
-    ownerNameCtrl.dispose();
-    phoneCtrl.dispose();
-    emailCtrl.dispose();
-    cityCtrl.dispose();
-    stateCtrl.dispose();
-    pincodeCtrl.dispose();
-    address1Ctrl.dispose();
-    address2Ctrl.dispose();
-    totalComputerCtrl.dispose();
-    openingCtrl.dispose();
-    closingCtrl.dispose();
-    gstCtrl.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-
-        title: Text("Register Cafe"),
-        centerTitle: true,
-        foregroundColor: Colors.white,
-        backgroundColor: ColorConstant.appColor,
-      ),
       backgroundColor: ColorConstant.scaffoldGray,
+      appBar: AppBar(
+        title: const Text("Register Cyber Cafe"),
+        backgroundColor: ColorConstant.appColor,
+        foregroundColor: Colors.white,
+      ),
       body: Column(
         children: [
           Expanded(
@@ -101,12 +89,11 @@ class _CyberCafeRegisterScreenState
     );
   }
 
-
   Widget _formCard() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: ColorConstant.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Column(
@@ -128,7 +115,10 @@ class _CyberCafeRegisterScreenState
           _timeInput("Opening Time", openingCtrl),
           _timeInput("Closing Time", closingCtrl),
           _input("GST Number", Icons.receipt_long, gstCtrl),
-          _uploadButton(),
+          const SizedBox(height: 12),
+          _filePicker("Upload Shop Image", shopImagePath, pickShopImage),
+          const SizedBox(height: 10),
+          _filePicker("Upload Document", documentPath, pickDocument),
         ],
       ),
     );
@@ -145,8 +135,7 @@ class _CyberCafeRegisterScreenState
       child: TextFormField(
         controller: controller,
         keyboardType: keyboard,
-        validator: (v) =>
-        v == null || v.isEmpty ? "$label required" : null,
+        validator: (v) => v == null || v.isEmpty ? "$label required" : null,
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(icon, color: ColorConstant.appColor),
@@ -167,9 +156,8 @@ class _CyberCafeRegisterScreenState
       child: TextFormField(
         controller: controller,
         readOnly: true,
-        validator: (v) =>
-        v == null || v.isEmpty ? "$label required" : null,
         onTap: () => pickTime(controller),
+        validator: (v) => v == null || v.isEmpty ? "$label required" : null,
         decoration: InputDecoration(
           labelText: label,
           prefixIcon:
@@ -185,9 +173,10 @@ class _CyberCafeRegisterScreenState
     );
   }
 
-  Widget _uploadButton() {
-    return GestureDetector(
-      onTap: pickDocument,
+  Widget _filePicker(
+      String label, String? path, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
@@ -200,9 +189,7 @@ class _CyberCafeRegisterScreenState
             const SizedBox(width: 10),
             Expanded(
               child: Text(
-                documentPath != null
-                    ? File(documentPath!).path.split('/').last
-                    : "Upload Documents",
+                path != null ? File(path).path.split('/').last : label,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -217,23 +204,17 @@ class _CyberCafeRegisterScreenState
       builder: (context, provider, _) {
         return Padding(
           padding: const EdgeInsets.all(12),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              backgroundColor: ColorConstant.buttonBg,
-              foregroundColor: Colors.white,
-              minimumSize: const Size(double.infinity, 52),
-            ),
-            onPressed: provider.isLoading
+          child: ButtonLarge(
+            onTap: provider.isLoading
                 ? null
                 : () async {
               if (!_formKey.currentState!.validate()) return;
-              if (documentPath == null) {
+
+              if (shopImagePath == null || documentPath == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text("Please upload document"),
+                    content: Text(
+                        "Upload shop image and document"),
                     backgroundColor: Colors.red,
                   ),
                 );
@@ -252,26 +233,27 @@ class _CyberCafeRegisterScreenState
                 addressLine2: address2Ctrl.text,
                 latitude: "22.7196",
                 longitude: "75.8577",
-                totalComputers: totalComputerCtrl.text,
+                totalComputers:
+                int.parse(totalComputerCtrl.text),
                 openingTime: openingCtrl.text,
                 closingTime: closingCtrl.text,
                 gstNumber: gstCtrl.text,
                 documentPath: documentPath!,
+                shopImagePath: shopImagePath!,
               );
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(success
-                      ? "✅ Cyber Cafe registered successfully"
-                      : "❌ Registration failed"),
+                      ? "✅ Cafe registered"
+                      : "❌ Failed"),
                   backgroundColor:
                   success ? Colors.green : Colors.red,
                 ),
               );
             },
-            child: provider.isLoading
-                ? const CircularProgressIndicator(color: Colors.white)
-                : const Text("Register Cafe"),
+
+            label:"Register Cafe"
           ),
         );
       },

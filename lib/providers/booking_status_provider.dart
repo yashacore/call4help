@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:first_flutter/data/models/pending_list_booking.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,7 +27,7 @@ class ProviderSlotsStatusProvider extends ChangeNotifier {
 
     try {
       final url =
-          'https://api.call4help.in/cyber-service/provider/slots/provider/$status';
+          'https://api.call4help.in/cyber/provider/slots/provider/$status';
       print("🌐 GET URL: $url");
 
       final response = await http.get(
@@ -61,9 +62,76 @@ class ProviderSlotsStatusProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Future<bool> acceptBooking(String orderId) async {
+  //   return _approveBooking(
+  //     orderId: orderId,
+  //     notes: "Booking approved for customer",
+  //   );
+  // }
+
   Future<void> acceptBooking(String orderId) async {
     print("✅ approve booking pressed for orderId: $orderId");
     await _action(orderId, 'approve');
+  }
+
+  void showErrorSnackBar(String message, BuildContext? context) {
+    ScaffoldMessenger.of(context!).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(16.w),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+      ),
+    );
+  }
+
+  Future<bool> approveBooking({
+    required String orderId,
+    required String notes,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('provider_auth_token');
+
+      if (token == null || token.isEmpty) {
+        throw Exception("Auth token missing");
+      }
+
+      final uri = Uri.parse(
+        "https://api.call4help.in/cyber/provider/slots/provider/approve",
+      );
+
+      final payload = {"order_id": orderId, "notes": notes};
+
+      print("======================================");
+      print("✅ APPROVE BOOKING");
+      print("🌐 URL: $uri");
+      print("🧾 PAYLOAD: $payload");
+
+      final response = await http.post(
+        uri,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(payload),
+      );
+
+      print("📡 STATUS: ${response.statusCode}");
+      print("📦 BODY: ${response.body}");
+
+      final decoded = jsonDecode(response.body);
+
+      return response.statusCode == 200 && decoded['success'] == true;
+    } catch (e, stack) {
+      showErrorSnackBar("error$e", null);
+      print("🔥 APPROVE ERROR: $e");
+      print(stack);
+      return false;
+    }
   }
 
   Future<void> rejectBooking(String orderId) async {
@@ -81,7 +149,7 @@ class ProviderSlotsStatusProvider extends ChangeNotifier {
     final authToken = prefs.getString('provider_auth_token');
 
     final url =
-        'https://api.call4help.in/cyber-service/provider/slots/provider/$action';
+        'https://api.call4help.in/cyber/provider/slots/provider/$action';
 
     print("➡ ACTION: $action");
     print("🌐 POST URL: $url");

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/screens/provider_screens/cyber_cafe/create_time_slot.dart';
+import 'package:first_flutter/screens/provider_screens/cyber_cafe/cyber_landing_screen.dart';
 import 'package:first_flutter/screens/provider_screens/cyber_cafe/register_cafe.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -205,7 +206,7 @@ class _SelectFromHomeScreenState extends State<SelectFromHomeScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => const CyberCafeRegisterScreen(),
+          builder: (_) => const CyberLandingScreen(),
         ),
       );
       debugPrint('==============================');

@@ -12,77 +12,147 @@ class CreateSlotProvider extends ChangeNotifier {
     required String endTime,
     required String totalSeats,
   }) async {
-    print("🔵 createSlot() called");
-    print("➡️ date: $date");
-    print("➡️ startTime: $startTime");
-    print("➡️ endTime: $endTime");
-    print("➡️ totalSeats: $totalSeats");
-
     isLoading = true;
     notifyListeners();
-    print("⏳ isLoading = true");
 
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('provider_auth_token');
 
-      print("🔐 Token present: ${token != null && token.isNotEmpty}");
+      if (token == null || token.isEmpty) {
+        throw Exception("Auth token missing");
+      }
 
       final uri = Uri.parse(
-        "https://api.call4help.in/cyber-service/api/provider/slots/create-slot",
+        "https://api.call4help.in/cyber/provider/slots/create",
       );
 
-      print("🌐 API URL: $uri");
 
-      final requestBody = {
+      final payload = {
         "date": date,
         "start_time": startTime,
         "end_time": endTime,
         "total_seats": int.parse(totalSeats),
       };
 
-      print("📤 Request Body: $requestBody");
+      print("======================================");
+      print("🟦 CREATE SLOT");
+      print("🌐 URL: $uri");
+      print("🧾 PAYLOAD: $payload");
 
       final response = await http.post(
         uri,
         headers: {
-          "Content-Type": "application/json",
           "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
         },
-        body: jsonEncode(requestBody),
+        body: jsonEncode(payload),
       );
 
-      print("📡 Status Code: ${response.statusCode}");
-      print("📦 Raw Response Body: ${response.body}");
+      print("📡 STATUS: ${response.statusCode}");
+      print("📦 BODY: ${response.body}");
 
-      final data = json.decode(response.body);
-      print("✅ Decoded JSON: $data");
+      final decoded = jsonDecode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print("🎉 Slot created successfully");
         return ApiResponse(
-          success: data['success'] ?? true,
-          message: data['message'] ?? "Slot created successfully",
+          success: true,
+          message: decoded['message'] ?? "Slot created successfully",
         );
       }
 
-      print("❌ Slot creation failed (API error)");
       return ApiResponse(
         success: false,
-        message: data['message'] ?? "Failed to create slot",
+        message: decoded['message'] ?? "Failed to create slot",
       );
-    } catch (e) {
-      print("🔥 Exception in createSlot(): $e");
-      return ApiResponse(
-        success: false,
-        message: e.toString(),
-      );
+    } catch (e, stack) {
+      print("🔥 CREATE SLOT ERROR: $e");
+      print(stack);
+      return ApiResponse(success: false, message: e.toString());
     } finally {
       isLoading = false;
       notifyListeners();
-      print("✅ isLoading = false");
+      print("🛑 CREATE SLOT FLOW ENDED");
+      print("======================================");
     }
   }
+
+
+  Future<ApiResponse> autoGenerateSlots({
+    required String date,
+    required int durationMinutes,
+    required int bufferMinutes,
+    required int seatsPerSlot,
+  }) async {
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('provider_auth_token');
+
+      if (token == null || token.isEmpty) {
+        throw Exception("Auth token missing");
+      }
+
+      final uri = Uri.parse(
+        "https://api.call4help.in/cyber/provider/slots/auto-generate",
+      );
+
+      final payload = {
+        "date": date,
+        "durationMinutes": durationMinutes,
+        "bufferMinutes": bufferMinutes,
+        "seatsPerSlot": seatsPerSlot,
+      };
+
+      print("======================================");
+      print("🟩 AUTO GENERATE SLOTS");
+      print("🌐 URL: $uri");
+      print("🧾 PAYLOAD: $payload");
+
+      final response = await http.post(
+        uri,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(payload),
+      );
+
+      print("📡 STATUS: ${response.statusCode}");
+      print("📦 BODY: ${response.body}");
+
+      final decoded = jsonDecode(response.body);
+
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+
+        return ApiResponse(
+
+          success: true,
+          message: decoded['message'] ?? "Slots generated successfully",
+        );
+      }
+
+      return ApiResponse(
+        success: false,
+        message: decoded['message'] ?? "Failed to auto-generate slots",
+      );
+    } catch (e, stack) {
+      print("🔥 AUTO GENERATE ERROR: $e");
+      print(stack);
+      return ApiResponse(success: false, message: e.toString());
+    } finally {
+
+      isLoading = false;
+      notifyListeners();
+      print("🛑 AUTO GENERATE FLOW ENDED");
+      print("======================================");
+    }
+  }
+
+
 }
 
 class ApiResponse {

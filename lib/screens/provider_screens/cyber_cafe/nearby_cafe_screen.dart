@@ -15,9 +15,7 @@ class _NearbyCafesScreenState extends State<NearbyCafesScreen> {
     super.initState();
 
     Future.microtask(() {
-      context.read<NearbyCafesProvider>().fetchNearbyCafes(
-
-      );
+      context.read<NearbyCafesProvider>().fetchNearbyCafes();
     });
   }
 
@@ -25,9 +23,7 @@ class _NearbyCafesScreenState extends State<NearbyCafesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7FB),
-      appBar: AppBar(
-        title: const Text("Nearby Cyber Cafes"),
-      ),
+      appBar: AppBar(title: const Text("Nearby Cyber Cafes")),
       body: Consumer<NearbyCafesProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
@@ -59,7 +55,7 @@ class _NearbyCafesScreenState extends State<NearbyCafesScreen> {
                       color: Colors.black.withOpacity(0.06),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
-                    )
+                    ),
                   ],
                 ),
                 child: Column(
@@ -90,9 +86,7 @@ class _NearbyCafesScreenState extends State<NearbyCafesScreen> {
                         /// Distance
                         Text(
                           "${cafe.distanceMeters} m away",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.w500),
                         ),
 
                         /// Available PCs

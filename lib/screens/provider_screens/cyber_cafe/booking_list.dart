@@ -145,7 +145,7 @@ class _ProviderSlotsDashboardState extends State<ProviderSlotsDashboard>
           _actionBtn(
             "approve",
             Colors.green,
-                () => provider.acceptBooking(booking.orderId),
+                () => provider.approveBooking(orderId: booking.orderId, notes: "Booking approved for customer"),
           ),
         ],
       );

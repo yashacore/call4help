@@ -32,15 +32,6 @@ class TesingScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CreateSlotScreen()),
-              );
-            },
-            child: Text("Create Time"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
                 MaterialPageRoute(builder: (context) => SlotsList()),
               );
             },

@@ -20,7 +20,7 @@ class SlotListProvider extends ChangeNotifier {
 
     try {
       final url = Uri.parse(
-        'https://api.call4help.in/cyber-service/provider/slots/list?date=$date',
+        'https://api.call4help.in/cyber/provider/slots/list?date=$date',
       );
 
       final prefs = await SharedPreferences.getInstance();
@@ -68,4 +68,55 @@ class SlotListProvider extends ChangeNotifier {
     selectedSlot = slot;
     notifyListeners();
   }
+
+
+  Future<bool> deleteSlot(String slotId) async {
+    isLoading = true;
+    error = null;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('provider_auth_token');
+
+      if (token == null || token.isEmpty) {
+        throw Exception("Auth token missing");
+      }
+
+      final uri = Uri.parse(
+        "https://api.call4help.in/cyber/provider/slots/delete/$slotId",
+      );
+
+      print("======================================");
+      print("🗑️ DELETE SLOT");
+      print("🌐 URL: $uri");
+
+      final response = await http.delete(
+        uri,
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      print("📡 STATUS: ${response.statusCode}");
+      print("📦 BODY: ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return true;
+      }
+
+      error = "Failed to delete slot";
+      return false;
+    } catch (e) {
+      error = e.toString();
+      print("🔥 DELETE SLOT ERROR: $e");
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+      print("🛑 DELETE SLOT FLOW ENDED");
+      print("======================================");
+    }
+  }
+
 }

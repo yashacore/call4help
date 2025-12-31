@@ -14,11 +14,11 @@ class PendingSlotsProvider extends ChangeNotifier {
     error = null;
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
-    final authToken = prefs.getString('auth_token');
+    final authToken = prefs.getString('provider_auth_token');
     try {
       final response = await http.get(
         Uri.parse(
-          'https://api.call4help.in/cyber-service/provider/slots/provider/pending',
+          'https://api.call4help.in/cyber/provider/slots/provider/pending',
         ),
         headers: {
           'Authorization': 'Bearer $authToken',

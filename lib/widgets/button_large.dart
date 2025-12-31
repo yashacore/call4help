@@ -1,3 +1,4 @@
+import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
 
 class ButtonLarge extends StatelessWidget {
@@ -25,8 +26,8 @@ class ButtonLarge extends StatelessWidget {
 
     /// Colors
     this.borderColor = const Color(0xFFD2008F),
-    this.labelColor = const Color(0xFFC0BEBD),
-    this.backgroundColor = const Color(0xFFFD8405),
+    this.labelColor = const Color(0xFFFFFFFF),
+    this.backgroundColor = ColorConstant.appColor,
     this.iconColor = const Color(0xFFC0BEBD),
     this.borderRadius = 12,
     this.iconPath = "assets/icons/call4help_add_new_address.svg",
