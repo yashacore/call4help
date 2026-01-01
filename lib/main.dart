@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:first_flutter/data/api_services/provider_confirmed_service.dart';
 import 'package:first_flutter/nats_service/nats_service.dart';
 import 'package:first_flutter/providers/availability_provider.dart';
+import 'package:first_flutter/providers/dashboard_summary_provider.dart';
 import 'package:first_flutter/providers/earnings_provider.dart';
 import 'package:first_flutter/providers/edit_provider_profile_provider.dart';
 import 'package:first_flutter/providers/landing_screen_provider.dart';
@@ -169,6 +170,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => WorkingHoursProvider()),
         ChangeNotifierProvider(create: (_) => ProviderSlotBookingProvider()),
         ChangeNotifierProvider(create: (_) => MyBookingsUserProvider()),
+        ChangeNotifierProvider(create: (_) => DashboardSummaryProvider()),
       ],
       child: const MyApp(),
     ),

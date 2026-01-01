@@ -97,8 +97,6 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
                 return ImageSlider(imageLinks: imageLinks);
               },
             ),
-
-            const HomeTopServices(),
             SizedBox(
               width: double.infinity,
               child: Text(

@@ -17,6 +17,8 @@ class CyberLandingScreen extends StatefulWidget {
 }
 
 class _CyberLandingScreenState extends State<CyberLandingScreen> {
+  bool _dialogShown = false;
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +36,6 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
         foregroundColor: Colors.white,
         title: const Text("My Cyber Cafe"),
         centerTitle: true,
-        elevation: 0,
       ),
       body: Consumer<ProviderCafeProvider>(
         builder: (context, provider, _) {
@@ -47,8 +48,13 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
           }
 
           final cafe = provider.cafe;
-          if (cafe == null) {
-            return const Center(child: Text("No cafe registered yet"));
+
+          /// 🔔 SHOW POPUP ONCE IF NO CAFE
+          if (cafe == null && !_dialogShown) {
+            _dialogShown = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _showRegisterCafeDialog(context);
+            });
           }
 
           return SingleChildScrollView(
@@ -56,12 +62,12 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// 🟢 HEADER CARD
-                _headerCard(cafe),
+                /// HEADER
+                cafe == null ? _emptyHeaderCard() : _headerCard(cafe),
 
                 const SizedBox(height: 16),
 
-                /// ⚡ ACTION CARDS
+                /// ACTIONS
                 Row(
                   children: [
                     _actionCard(
@@ -80,7 +86,9 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
                     _actionCard(
                       icon: Icons.schedule,
                       title: "Time Slot",
-                      onTap: () {
+                      onTap: cafe == null
+                          ? () => _showRegisterCafeDialog(context)
+                          : () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -91,17 +99,22 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 8,),
+
+                const SizedBox(height: 8),
+
                 Row(
                   children: [
                     _actionCard(
                       icon: Icons.watch_later,
                       title: "Set Working Hour",
-                      onTap: () {
+                      onTap: cafe == null
+                          ? () => _showRegisterCafeDialog(context)
+                          : () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const SetWorkingHoursScreen(),
+                            builder: (_) =>
+                            const SetWorkingHoursScreen(),
                           ),
                         );
                       },
@@ -110,11 +123,14 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
                     _actionCard(
                       icon: Icons.schedule,
                       title: "Working Hour List",
-                      onTap: () {
+                      onTap: cafe == null
+                          ? () => _showRegisterCafeDialog(context)
+                          : () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const WorkingHoursViewScreen(),
+                            builder: (_) =>
+                            const WorkingHoursViewScreen(),
                           ),
                         );
                       },
@@ -128,7 +144,9 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
                   fullWidth: true,
                   icon: Icons.book_online,
                   title: "View Bookings",
-                  onTap: () {
+                  onTap: cafe == null
+                      ? () => _showRegisterCafeDialog(context)
+                      : () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -138,11 +156,12 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
                   },
                 ),
 
-                const SizedBox(height: 20),
-
-                /// 📋 DETAILS SECTION
-                _sectionTitle("Cafe Details"),
-                _infoGrid(cafe),
+                /// DETAILS ONLY IF CAFE EXISTS
+                if (cafe != null) ...[
+                  const SizedBox(height: 20),
+                  _sectionTitle("Cafe Details"),
+                  _infoGrid(cafe),
+                ],
               ],
             ),
           );
@@ -151,7 +170,34 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
     );
   }
 
-  // ===================== UI COMPONENTS =====================
+  // ===================== UI =====================
+
+  Widget _emptyHeaderCard() {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 10),
+        ],
+      ),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "No Cafe Registered",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            "Please register your cyber cafe to manage bookings, slots and working hours.",
+            style: TextStyle(color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _headerCard(cafe) {
     return Container(
@@ -160,11 +206,7 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
         boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
+          BoxShadow(color: Colors.black12, blurRadius: 10),
         ],
       ),
       child: Column(
@@ -175,33 +217,23 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
             children: [
               Text(
                 cafe.shopName,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style:
+                const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               OutlinedButton(
                 onPressed: () async {
-                  final provider = context.read<ProviderCafeProvider>();
-                  final cafe = provider.cafe;
-
-                  if (cafe == null) return;
-
                   final updated = await Navigator.push<bool>(
                     context,
                     MaterialPageRoute(
                       builder: (_) => EditCafeScreen(cafe: cafe),
                     ),
                   );
-
-                  /// 🔄 REFRESH AFTER UPDATE
                   if (updated == true) {
-                    provider.fetchMyCafe();
+                    context.read<ProviderCafeProvider>().fetchMyCafe();
                   }
                 },
-                child: const Text("Edit Cafe"),
+                child: const Text("Edit"),
               ),
-
             ],
           ),
           const SizedBox(height: 6),
@@ -238,17 +270,12 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          width: fullWidth ? double.infinity : null,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
             boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 8,
-                offset: Offset(0, 4),
-              ),
+              BoxShadow(color: Colors.black12, blurRadius: 8),
             ],
           ),
           child: Row(
@@ -259,13 +286,11 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
                 child: Icon(icon, color: Colors.blue),
               ),
               const SizedBox(width: 8),
-              Flexible(
+              Expanded(
                 child: Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                      fontSize: 14, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -280,10 +305,7 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
       padding: const EdgeInsets.only(bottom: 10),
       child: Text(
         text,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -295,29 +317,15 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
         boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
+          BoxShadow(color: Colors.black12, blurRadius: 10),
         ],
       ),
       child: Column(
         children: [
           _infoRow(Icons.phone, "Phone", cafe.phone),
           _infoRow(Icons.email, "Email", cafe.email),
-          _infoRow(Icons.receipt_long, "GST", cafe.gstNumber),
           _infoRow(Icons.location_on, "Address",
               "${cafe.addressLine1}, ${cafe.addressLine2}"),
-          _infoRow(Icons.location_city, "City", cafe.city),
-          _infoRow(Icons.map, "State", cafe.state),
-          _infoRow(Icons.pin, "Pincode", cafe.pincode),
-          _infoRow(Icons.computer, "Total Computers",
-              cafe.totalComputers.toString()),
-          _infoRow(Icons.devices, "Available Computers",
-              cafe.availableComputers.toString()),
-          _infoRow(Icons.access_time, "Opening Time", cafe.openingTime),
-          _infoRow(Icons.access_time_filled, "Closing Time", cafe.closingTime),
         ],
       ),
     );
@@ -327,7 +335,6 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 20, color: Colors.blueGrey),
           const SizedBox(width: 12),
@@ -335,21 +342,12 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                Text(title,
+                    style:
+                    const TextStyle(fontSize: 13, color: Colors.grey)),
+                Text(value,
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w500)),
               ],
             ),
           ),
@@ -365,16 +363,43 @@ class _CyberLandingScreenState extends State<CyberLandingScreen> {
         color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: color,
-          fontWeight: FontWeight.bold,
-          fontSize: 12,
+      child: Text(text,
+          style: TextStyle(
+              color: color, fontWeight: FontWeight.bold, fontSize: 12)),
+    );
+  }
+
+  // ===================== POPUP =====================
+
+  void _showRegisterCafeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        title: const Text("Cafe Not Registered"),
+        content: const Text(
+          "You haven’t registered your cyber cafe yet. Please register your cafe to continue.",
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Later"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const CyberCafeRegisterScreen(),
+                ),
+              );
+            },
+            child: const Text("Register Now"),
+          ),
+        ],
       ),
     );
   }
 }
-
-

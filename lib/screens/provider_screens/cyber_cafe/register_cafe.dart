@@ -32,8 +32,6 @@ class _CyberCafeRegisterScreenState
   final closingCtrl = TextEditingController();
   final gstCtrl = TextEditingController();
 
-  String? shopImagePath;
-  String? documentPath;
 
   Future<void> pickTime(TextEditingController controller) async {
     final time = await showTimePicker(
@@ -46,22 +44,7 @@ class _CyberCafeRegisterScreenState
     }
   }
 
-  Future<void> pickShopImage() async {
-    final result = await FilePicker.platform.pickFiles(type: FileType.image);
-    if (result?.files.single.path != null) {
-      setState(() => shopImagePath = result!.files.single.path!);
-    }
-  }
 
-  Future<void> pickDocument() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'jpg', 'png'],
-    );
-    if (result?.files.single.path != null) {
-      setState(() => documentPath = result!.files.single.path!);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,9 +99,6 @@ class _CyberCafeRegisterScreenState
           _timeInput("Closing Time", closingCtrl),
           _input("GST Number", Icons.receipt_long, gstCtrl),
           const SizedBox(height: 12),
-          _filePicker("Upload Shop Image", shopImagePath, pickShopImage),
-          const SizedBox(height: 10),
-          _filePicker("Upload Document", documentPath, pickDocument),
         ],
       ),
     );
@@ -210,16 +190,7 @@ class _CyberCafeRegisterScreenState
                 : () async {
               if (!_formKey.currentState!.validate()) return;
 
-              if (shopImagePath == null || documentPath == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                        "Upload shop image and document"),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return;
-              }
+
 
               final success = await provider.registerCafe(
                 shopName: shopNameCtrl.text,
@@ -238,8 +209,6 @@ class _CyberCafeRegisterScreenState
                 openingTime: openingCtrl.text,
                 closingTime: closingCtrl.text,
                 gstNumber: gstCtrl.text,
-                documentPath: documentPath!,
-                shopImagePath: shopImagePath!,
               );
 
               ScaffoldMessenger.of(context).showSnackBar(

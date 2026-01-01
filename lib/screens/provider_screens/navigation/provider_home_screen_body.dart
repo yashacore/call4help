@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/availability_provider.dart';
+import 'package:first_flutter/screens/provider_screens/cyber_cafe/vendor_dashboard_card.dart';
 import 'package:first_flutter/screens/provider_screens/navigation/ProviderRatingScreen.dart';
 import 'package:first_flutter/screens/sub_category/SelectFromHomeScreen.dart';
 import 'package:flutter/material.dart';
@@ -479,6 +480,27 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                 );
               },
             ),
+            SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+
+              child: Text(
+                "Cyber Cafe's Dashboard",
+                textAlign: TextAlign.start,
+                style: GoogleFonts.inter(
+                  textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Color(0xFF000000),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: ProviderDashboardScreen(),
+            )
             // ElevatedButton(onPressed: (){
             //   Navigator.push(
             //     context,
@@ -571,6 +593,8 @@ class _ProviderCategoryCard extends StatelessWidget {
                   textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: Color(0xFF000000),
                     fontSize: 10,
+                    fontWeight: FontWeight.bold
+                    ,
                     height: 1.2,
                   ),
                 ),

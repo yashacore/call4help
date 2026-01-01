@@ -25,8 +25,6 @@ class RegisterCafeProvider extends ChangeNotifier {
     required String openingTime, // HH:mm
     required String closingTime, // HH:mm
     required String gstNumber,
-    required String documentPath,
-    required String shopImagePath,
   }) async {
     isLoading = true;
     notifyListeners();
@@ -76,21 +74,21 @@ class RegisterCafeProvider extends ChangeNotifier {
       print("🧾 REQUEST FIELDS:");
       fields.forEach((k, v) => print("   $k : $v"));
 
-      print("📎 Attaching shop image: $shopImagePath");
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          "shop_images",
-          shopImagePath,
-        ),
-      );
-
-      print("📎 Attaching document: $documentPath");
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          "documents",
-          documentPath,
-        ),
-      );
+      // print("📎 Attaching shop image: $shopImagePath");
+      // request.files.add(
+      //   await http.MultipartFile.fromPath(
+      //     "shop_images",
+      //     shopImagePath,
+      //   ),
+      // );
+      //
+      // print("📎 Attaching document: $documentPath");
+      // request.files.add(
+      //   await http.MultipartFile.fromPath(
+      //     "documents",
+      //     documentPath,
+      //   ),
+      // );
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);

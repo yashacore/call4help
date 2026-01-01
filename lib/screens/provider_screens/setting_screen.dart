@@ -498,31 +498,39 @@ class _SettingScreenState extends State<SettingScreen>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        'Maximum Search Distance',
-                                        style: TextStyle(
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: ColorConstant.black,
+                                      // LEFT TEXT (CONSTRAINED)
+                                      Expanded(
+                                        child: Text(
+                                          'Maximum Search Distance',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: ColorConstant.black,
+                                          ),
                                         ),
                                       ),
+
+                                      SizedBox(width: 8.w),
+
+                                      // RIGHT VALUE CHIP (FIXED WIDTH BEHAVIOR)
                                       Container(
                                         padding: EdgeInsets.symmetric(
                                           horizontal: 12.w,
                                           vertical: 6.h,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: ColorConstant.call4helpOrange
-                                              .withAlpha(01),
-                                          borderRadius: BorderRadius.circular(
-                                            8.r,
-                                          ),
+                                          color: ColorConstant.call4helpOrange.withAlpha(20),
+                                          borderRadius: BorderRadius.circular(8.r),
                                         ),
                                         child: Text(
-                                          '${settingsProvider.maxSearchDistance.toStringAsFixed(1)} ${selectedDistanceUnit == 'Kilometers' ? 'km' : 'miles'}',
+                                          '${settingsProvider.maxSearchDistance.toStringAsFixed(1)} '
+                                              '${selectedDistanceUnit == 'Kilometers' ? 'km' : 'miles'}',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.bold,
@@ -537,9 +545,9 @@ class _SettingScreenState extends State<SettingScreen>
                                     'Adjust your work radius to find jobs nearby',
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: ColorConstant.black.withAlpha(
-                                        06,
-                                      ),
+                                      overflow: TextOverflow.ellipsis,
+
+                                      color: ColorConstant.black
                                     ),
                                   ),
                                   SizedBox(height: 8.h),

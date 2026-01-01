@@ -8,12 +8,12 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// Load keystore properties - KOTLIN DSL SYNTAX
-//val keystoreProperties = Properties()
-//val keystorePropertiesFile = rootProject.file("key.properties")
-//if (keystorePropertiesFile.exists()) {
-//    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-//}
+/* 🔐 Load keystore properties */
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
 
 android {
     namespace = "com.acore.app.call4help"
@@ -31,8 +31,7 @@ android {
     }
 
     defaultConfig {
-        applicationId =  "com.acore.app.call4help"
-
+        applicationId = "com.acore.app.call4help"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -40,30 +39,39 @@ android {
         multiDexEnabled = true
     }
 
-//    signingConfigs {
-//        create("release") {
-//            keyAlias = keystoreProperties["keyAlias"] as String
-//            keyPassword = keystoreProperties["keyPassword"] as String
-//            storeFile = file(keystoreProperties["storeFile"] as String)
-//            storePassword = keystoreProperties["storePassword"] as String
-//        }
-//    }
+    /* ✅ CREATE RELEASE SIGNING CONFIG (THIS WAS MISSING) */
+    signingConfigs {
+        create("release") {
+            keyAlias = "upload"
+            keyPassword = "acorecall4help"
+            storeFile = file("upload-keystore.jks")
+            storePassword = "acorecall4help"
+        }
+    }
+
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
         }
+
         debug {
             isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 
+    /* ✅ FIX WINDOWS LINT FILE-LOCK ISSUE */
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
+    }
 
     packaging {
         resources {
@@ -84,6 +92,7 @@ android {
     }
 }
 
+/* 🔧 Dependency conflict fixes */
 configurations.all {
     resolutionStrategy {
         force("com.google.android.play:core:1.10.3")
