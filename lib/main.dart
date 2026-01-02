@@ -12,6 +12,7 @@ import 'package:first_flutter/providers/my_skill_provider.dart';
 import 'package:first_flutter/providers/provider_bid_provider.dart';
 import 'package:first_flutter/providers/provider_profile_provider.dart';
 import 'package:first_flutter/providers/provider_slots_booking_provider.dart';
+import 'package:first_flutter/providers/rating_reasons_provider.dart';
 import 'package:first_flutter/providers/service_arrival_provider.dart';
 import 'package:first_flutter/providers/settings_provider.dart';
 import 'package:first_flutter/providers/subcategory_provider.dart';
@@ -171,6 +172,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ProviderSlotBookingProvider()),
         ChangeNotifierProvider(create: (_) => MyBookingsUserProvider()),
         ChangeNotifierProvider(create: (_) => DashboardSummaryProvider()),
+        ChangeNotifierProvider(create: (_) => RatingReasonsProvider()),
       ],
       child: const MyApp(),
     ),

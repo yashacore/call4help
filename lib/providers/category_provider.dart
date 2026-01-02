@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:first_flutter/config/baseControllers/APis.dart';
 import 'package:first_flutter/data/models/dashboard_summary_model.dart';
 import 'package:flutter/material.dart';
@@ -96,6 +97,23 @@ class CategoryProvider with ChangeNotifier {
 
   DashboardSummary? summary;
 
+  CategoryProvider(){
+    printFcmToken();
+  }
+
+
+  Future<void> printFcmToken() async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+
+      debugPrint("🔥 FCM TOKEN 🔥");
+      debugPrint(token ?? "❌ Token is null");
+    } catch (e) {
+      debugPrint("❌ Error getting FCM token: $e");
+    }
+  }
+
+
   Future<void> fetchDashboardSummary() async {
     _isLoading = true;
     _errorMessage = null;
@@ -104,6 +122,8 @@ class CategoryProvider with ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('provider_auth_token');
+      final token2 = prefs.getString('auth_token');
+      print("token user-----$token2");
 
       final response = await http.get(
         Uri.parse('https://api.call4help.in/cyber/api/provider/dashboard/summary'),
@@ -117,6 +137,7 @@ class CategoryProvider with ChangeNotifier {
 
       if (response.statusCode == 200 && decoded['success'] == true) {
         summary = DashboardSummary.fromJson(decoded['data']);
+        printFcmToken();
       } else {
         _errorMessage = decoded['message'] ?? 'Something went wrong';
       }

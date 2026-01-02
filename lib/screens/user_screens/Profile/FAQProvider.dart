@@ -59,7 +59,7 @@ class FAQProvider with ChangeNotifier {
 
     try {
       final response = await http.get(
-        Uri.parse('https://api.moyointernational.com/api/faq'),
+        Uri.parse('http://api.call4help.in/api/faq'),
         headers: {
           'Content-Type': 'application/json',
         },

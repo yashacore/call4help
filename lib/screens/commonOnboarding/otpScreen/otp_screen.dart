@@ -260,10 +260,15 @@ class _OtpScreenState extends State<OtpScreen> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.15,
                       ),
-                      Image.asset(
-                        "assets/icons/app_icon_radius.png.png",
-                        width: 100.w,
-                        height: 100.h,
+                      Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white
+                        ),
+                        child: Image.asset(
+                          "assets/images/logo.png",
+                          height: 100.h,
+                        ),
                       ),
                       SizedBox(height: 24.h),
                       Text(

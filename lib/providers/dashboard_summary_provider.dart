@@ -17,6 +17,7 @@ class DashboardSummaryProvider extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('provider_auth_token');
+      print("provider token$token");
 
       final response = await http.get(
         Uri.parse('https://api.call4help.in/cyber/api/provider/dashboard/summary'),

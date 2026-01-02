@@ -30,7 +30,7 @@ class UserSearchProvider extends ChangeNotifier {
 
     try {
       final response = await http.post(
-        Uri.parse('https://api.moyointernational.com/api/user/search'),
+        Uri.parse('http://api.call4help.in/api/user/search'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'keyword': keyword}),
       );

@@ -18,14 +18,22 @@ class DashboardSummary {
   });
 
   factory DashboardSummary.fromJson(Map<String, dynamic> json) {
+    int parseInt(dynamic value) {
+      if (value == null) return 0;
+      if (value is int) return value;
+      if (value is double) return value.toInt();
+      if (value is String) return int.tryParse(value.split('.').first) ?? 0;
+      return 0;
+    }
+
     return DashboardSummary(
-      totalBookings: int.parse(json['totalBookings'].toString()),
-      todayBookings: int.parse(json['todayBookings'].toString()),
-      pending: int.parse(json['pending'].toString()),
-      completed: int.parse(json['completed'].toString()),
-      cancelled: int.parse(json['cancelled'].toString()),
-      totalEarnings: json['totalEarnings'] ?? 0,
-      todayEarnings: json['todayEarnings'] ?? 0,
+      totalBookings: parseInt(json['totalBookings']),
+      todayBookings: parseInt(json['todayBookings']),
+      pending: parseInt(json['pending']),
+      completed: parseInt(json['completed']),
+      cancelled: parseInt(json['cancelled']),
+      totalEarnings: parseInt(json['totalEarnings']),
+      todayEarnings: parseInt(json['todayEarnings']),
     );
   }
 }

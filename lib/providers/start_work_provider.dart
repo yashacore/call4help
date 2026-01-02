@@ -103,17 +103,25 @@ class StartWorkProvider extends ChangeNotifier {
       debugPrint('End Work Response - Status: ${response.statusCode}');
       debugPrint('End Work Response - Body: ${response.body}');
 
+      final responseData = jsonDecode(response.body);
+
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        debugPrint(responseData);
         _isSuccess = true;
         _errorMessage = null;
         _isProcessing = false;
         notifyListeners();
         return true;
       } else {
-        final errorData = jsonDecode(response.body);
-        _errorMessage = errorData['message'] ?? 'Failed to end work';
+        final message = responseData['message'];
+
+        if (message is String) {
+          _errorMessage = message;
+        } else if (message is Map) {
+          _errorMessage = message.values.join(', ');
+        } else {
+          _errorMessage = 'Failed to end work';
+        }
+
         _isProcessing = false;
         notifyListeners();
         return false;

@@ -48,6 +48,7 @@ class ProviderSlotsStatusProvider extends ChangeNotifier {
       }
     } catch (e) {
       error = e.toString();
+      print("🔥 Error--------: $error");
     }
 
     isLoading = false;

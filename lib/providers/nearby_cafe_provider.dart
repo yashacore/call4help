@@ -29,15 +29,15 @@ class NearbyCafesProvider extends ChangeNotifier {
             '&radius=50',
       );
 
-      print("🌐 API URL: $url");
+      debugPrint("🌐 API URL: $url");
 
       final response = await http.get(
         url,
         headers: {'Content-Type': 'application/json'},
       );
 
-      print("📥 Status Code: ${response.statusCode}");
-      print("📥 Response: ${response.body}");
+      debugPrint("📥 Status Code: ${response.statusCode}");
+      debugPrint("📥 Response: ${response.body}");
 
       final decoded = jsonDecode(response.body);
 
@@ -46,13 +46,12 @@ class NearbyCafesProvider extends ChangeNotifier {
             .map((e) => NearbyCafeModel.fromJson(e))
             .toList();
 
-        print("✅ Cafes Found: ${cafes.length}");
+        debugPrint("✅ Cafes Found: ${cafes.length}");
 
         /// 🔥 PRINT CYBER CAFE IDs
         for (final cafe in cafes) {
-          print("🏪 Cyber Cafe ID: ${cafe.id}");
+          debugPrint("🏪 Cyber Cafe ID: ${cafe.id}");
         }
-
       } else {
         error = 'Failed to load nearby cafes';
       }

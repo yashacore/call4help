@@ -1,6 +1,7 @@
 // otp_screen_provider.dart
 import 'dart:async';
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:first_flutter/config/baseControllers/APis.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -308,6 +309,63 @@ class OtpScreenProvider extends ChangeNotifier {
   }
 
   /// Verify OTP with API and save data
+  ///
+  Future<void> updateUserFcmToken() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final authToken = prefs.getString('auth_token');
+       final FirebaseMessaging _firebaseMessaging =
+          FirebaseMessaging.instance;
+      final fcmToken = await _firebaseMessaging.getToken();
+
+
+      if (authToken == null || authToken.isEmpty) {
+        throw Exception('User auth token not found');
+      }
+
+      final url =
+      Uri.parse('https://api.call4help.in/cyber/api/fcm/user/token');
+
+      final body = {
+        "token": fcmToken,
+        "device_type": "android",
+      };
+
+      debugPrint('📤 FCM TOKEN API URL: $url');
+      debugPrint('📤 Request Body: ${jsonEncode(body)}');
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+        body: jsonEncode(body),
+      );
+
+      debugPrint('📡 Status Code: ${response.statusCode}');
+      debugPrint('📄 Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decoded = jsonDecode(response.body);
+
+        if (decoded is Map<String, dynamic>) {
+          debugPrint('✅ FCM Token updated: ${decoded['message']}');
+        } else {
+          debugPrint('✅ FCM Token updated successfully');
+        }
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthorized. Please login again.');
+      } else {
+        throw Exception(
+          'Failed to update FCM token (${response.statusCode})',
+        );
+      }
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error updating FCM token: $e');
+      debugPrint('❌ StackTrace: $stackTrace');
+    }
+  }
   /// Returns a map with success status and needsEmailVerification flag
   Future<Map<String, dynamic>?> verifyOtp({
     required String mobile,
@@ -333,43 +391,57 @@ class OtpScreenProvider extends ChangeNotifier {
     try {
       final response = await _verifyOtpApi(mobile: mobile, otp: otp);
 
-      if (response != null) {
-        final token = response['token'] as String?;
-        final userData = response['user'] as Map<String, dynamic>?;
-
-        if (token != null && token.isNotEmpty && userData != null) {
-          final saved = await _saveAuthData(token: token, userData: userData);
-
-          if (saved) {
-            isLoading = false;
-            notifyListeners();
-
-            // Check if email verification is needed
-            final isEmailVerified = userData['is_email_verified'] ?? false;
-
-            return {
-              'success': true,
-              'needsEmailVerification': !isEmailVerified,
-              'userEmail': userData['email'],
-            };
-          } else {
-            errorMessage = "Failed to save user data";
-            isLoading = false;
-            notifyListeners();
-            return null;
-          }
-        } else {
-          errorMessage = "Invalid response from server";
-          isLoading = false;
-          notifyListeners();
-          return null;
-        }
-      } else {
+      if (response == null) {
         errorMessage = "Failed to verify OTP";
         isLoading = false;
         notifyListeners();
         return null;
       }
+
+      final token = response['token'] as String?;
+      final userData = response['user'] as Map<String, dynamic>?;
+
+      if (token == null || token.isEmpty || userData == null) {
+        errorMessage = "Invalid response from server";
+        isLoading = false;
+        notifyListeners();
+        return null;
+      }
+
+      final saved = await _saveAuthData(token: token, userData: userData);
+
+      if (!saved) {
+        errorMessage = "Failed to save user data";
+        isLoading = false;
+        notifyListeners();
+        return null;
+      }
+
+      /// ✅ LOGIN SUCCESS – UPDATE FCM TOKEN
+      try {
+        final fcmToken = await FirebaseMessaging.instance.getToken();
+
+        if (fcmToken != null && fcmToken.isNotEmpty) {
+          await updateUserFcmToken();
+          debugPrint('✅ FCM token sent to server----------');
+        } else {
+          debugPrint('⚠️ FCM token is null');
+        }
+      } catch (e) {
+        // ⚠️ Do NOT fail login if FCM fails
+        debugPrint('❌ Failed to update FCM token: $e');
+      }
+
+      isLoading = false;
+      notifyListeners();
+
+      final isEmailVerified = userData['is_email_verified'] ?? false;
+
+      return {
+        'success': true,
+        'needsEmailVerification': !isEmailVerified,
+        'userEmail': userData['email'],
+      };
     } catch (e) {
       errorMessage = e.toString().replaceAll('Exception: ', '');
       isLoading = false;
@@ -377,6 +449,7 @@ class OtpScreenProvider extends ChangeNotifier {
       return null;
     }
   }
+
 
   /// Send OTP to email for verification
   Future<bool> sendEmailOtp({required String email}) async {

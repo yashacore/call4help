@@ -26,6 +26,8 @@ class _ProviderGoToCustomerState extends State<ProviderGoToCustomer> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final authToken = prefs.getString('auth_token');
+      print("token user-----$authToken");
+
 
       if (authToken == null || authToken.isEmpty) {
         _showErrorDialog('Authentication token not found. Please login again.');

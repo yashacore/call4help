@@ -247,9 +247,9 @@ class _UserAppbarState extends State<UserAppbar> {
   }
 
   Future<void> _updateLocationToServer(
-    double latitude,
-    double longitude,
-  ) async {
+      double latitude,
+      double longitude,
+      ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
@@ -257,48 +257,55 @@ class _UserAppbarState extends State<UserAppbar> {
           ? prefs.getString('provider_auth_token')
           : prefs.getString('auth_token');
 
-      String apiEndpoint = widget.type == "provider"
+      final apiEndpoint = widget.type == "provider"
           ? '$base_url/api/provider/update-location'
           : '$base_url/api/auth/update-location';
 
+      final body = jsonEncode({
+        'latitude': latitude.toString(),
+        'longitude': longitude.toString(),
+      });
+
       final response = widget.type == "provider"
           ? await http.put(
-              Uri.parse(apiEndpoint),
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer $token',
-              },
-              body: json.encode({
-                'latitude': latitude.toString(),
-                'longitude': longitude.toString(),
-              }),
-            )
+        Uri.parse(apiEndpoint),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: body,
+      )
           : await http.post(
-              Uri.parse(apiEndpoint),
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer $token',
-              },
-              body: json.encode({
-                'latitude': latitude.toString(),
-                'longitude': longitude.toString(),
-              }),
-            );
+        Uri.parse(apiEndpoint),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: body,
+      );
 
-      debugPrint('Location Update Response: ${response.body}');
-      debugPrint('Location Update Response: ${latitude.toString()}');
-      debugPrint('Location Update Response: ${longitude.toString()}');
+      debugPrint('📡 Status: ${response.statusCode}');
+      debugPrint('📄 Raw Response: ${response.body}');
+      debugPrint('📍 Lat: $latitude, Lng: $longitude');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        debugPrint('Location updated successfully');
-        final responseData = json.decode(response.body);
-        debugPrint('Message: ${responseData['message']}');
+        final decoded = json.decode(response.body);
+
+        if (decoded is Map<String, dynamic>) {
+          debugPrint('✅ Message: ${decoded['message']}');
+        } else if (decoded is List && decoded.isNotEmpty) {
+          debugPrint('✅ Message: ${decoded.first['message']}');
+        } else {
+          debugPrint('✅ Location updated (no message field)');
+        }
       } else {
-        debugPrint('Failed to update location: ${response.statusCode}');
-        debugPrint('Error: ${response.body}');
+        debugPrint('❌ Failed to update location');
+        debugPrint('❌ Status: ${response.statusCode}');
+        debugPrint('❌ Body: ${response.body}');
       }
-    } catch (e) {
-      debugPrint('Error updating location: $e');
+    } catch (e, stackTrace) {
+      debugPrint('🔥 Error updating location: $e');
+      debugPrint('🔥 StackTrace: $stackTrace');
     }
   }
 

@@ -278,10 +278,14 @@ class _SettingScreenState extends State<SettingScreen>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TermsandConditions(type: "terms", roles: [""]),
+        builder: (context) => TermsandConditions(
+          type: documentType,            // ✅ USE PARAMETER
+          roles: const ['user'],          // ✅ VALID ROLE
+        ),
       ),
     );
   }
+
 
   void _shareApp() {
     Share.share(
@@ -926,7 +930,7 @@ class _SettingScreenState extends State<SettingScreen>
             'Are you sure you want to logout?',
             style: TextStyle(
               fontSize: 14.sp,
-              color: ColorConstant.black.withAlpha(07),
+              color: ColorConstant.black,
             ),
           ),
           actions: [

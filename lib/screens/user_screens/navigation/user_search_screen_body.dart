@@ -223,7 +223,7 @@ class _UserSearchScreenBodyState extends State<UserSearchScreenBody> {
         'Email not verified or mobile missing, showing update profile dialog',
       );
 
-      await UpdateProfileDialog.show(context);
+      // await UpdateProfileDialog.show(context);
 
       // After dialog closes, check again if both are now verified
       final updatedPrefs = await SharedPreferences.getInstance();

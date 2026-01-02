@@ -78,7 +78,7 @@ class RatingAPI {
       // Make API request
       final response = await http
           .post(
-            Uri.parse('$base_url/bid/api/user/rating/create'),
+            Uri.parse('https://api.call4help.in/bid/api/user/rating/create'),
             headers: {
               'Content-Type': 'application/json',
               'Authorization': 'Bearer $token',

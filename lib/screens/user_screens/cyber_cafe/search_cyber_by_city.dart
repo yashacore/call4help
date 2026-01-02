@@ -1,5 +1,6 @@
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/search_cyber_provider.dart';
+import 'package:first_flutter/screens/user_screens/cyber_cafe/time_slot_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -102,7 +103,19 @@ class _SearchCyberCafeScreenState extends State<SearchCyberCafeScreen> {
                       itemCount: provider.cafes.length,
                       itemBuilder: (context, index) {
                         final cafe = provider.cafes[index];
-                        return _CafeCard(cafe: cafe);
+                        return GestureDetector(
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => FullDaySlotScreen(
+                                  cyberCafeId: cafe['id'],
+                                  date: DateTime.now().toIso8601String().split('T').first,
+                                ),
+                              ),
+                            );
+                          },
+                            child: _CafeCard(cafe: cafe));
                       },
                     ),
                   ),
@@ -114,47 +127,66 @@ class _SearchCyberCafeScreenState extends State<SearchCyberCafeScreen> {
 }
 
 class _CafeCard extends StatelessWidget {
-  final Map<String, String> cafe;
+  final Map<String, dynamic> cafe;
+  final VoidCallback? onTap;
 
-  const _CafeCard({required this.cafe});
+  const _CafeCard({required this.cafe, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8),
-        ],
-      ),
-      child: Row(
-        children: [
-          const CircleAvatar(radius: 26, child: Icon(Icons.computer)),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  cafe['name'] ?? 'Cyber Cafe',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  cafe['address'] ?? 'No address available',
-                  style: const TextStyle(color: Colors.grey),
-                ),
-              ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
             ),
-          ),
-          const Icon(Icons.arrow_forward_ios, size: 16),
-        ],
+          ],
+        ),
+        child: Row(
+          children: [
+            const CircleAvatar(
+              radius: 26,
+              child: Icon(Icons.computer),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    cafe['shop_name'] ?? 'Cyber Cafe',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    cafe['address'] ?? 'No address available',
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    "Available PCs: ${cafe['available_computers']}",
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.green,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 16),
+          ],
+        ),
       ),
     );
   }

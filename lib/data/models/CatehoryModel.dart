@@ -40,11 +40,10 @@ class CategoryResponse {
   CategoryResponse({required this.categories});
 
   factory CategoryResponse.fromJson(Map<String, dynamic> json) {
-    var categoriesList = json['categories'] as List<dynamic>?;
-    List<Category> categories = categoriesList != null
-        ? categoriesList.map((cat) => Category.fromJson(cat)).toList()
-        : [];
+    final List list = json['data'] ?? json['categories'] ?? [];
 
-    return CategoryResponse(categories: categories);
+    return CategoryResponse(
+      categories: list.map((e) => Category.fromJson(e)).toList(),
+    );
   }
 }

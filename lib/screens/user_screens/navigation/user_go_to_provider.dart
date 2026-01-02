@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -59,6 +60,67 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
     }
   }
 
+
+  Future<void> updateProviderFcmToken() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final authToken = prefs.getString('provider_auth_token');
+      final FirebaseMessaging _firebaseMessaging =
+          FirebaseMessaging.instance;
+      final fcmToken = await _firebaseMessaging.getToken();
+
+
+      if (authToken == null || authToken.isEmpty) {
+        throw Exception('User auth token not found');
+      }
+
+      final url =
+      Uri.parse('https://api.call4help.in/cyber/api/fcm/user/token');
+
+      final body = {
+        "token": fcmToken,
+        "device_type": "android",
+      };
+
+      debugPrint('📤 FCM TOKEN API URL: $url');
+      debugPrint('📤 Request Body: ${jsonEncode(body)}');
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+        body: jsonEncode(body),
+      );
+
+      debugPrint('📡 Status Code: ${response.statusCode}');
+      debugPrint('📄 Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decoded = jsonDecode(response.body);
+
+        if (decoded is Map<String, dynamic>) {
+          debugPrint('✅Provider FCM Token updated: ${decoded['message']}');
+        } else {
+          debugPrint('✅Provider FCM Token updated successfully');
+        }
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthorized. Please login again.');
+      } else {
+        throw Exception(
+          'Failed to update FCM token (${response.statusCode})',
+        );
+      }
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error updating FCM token: $e');
+      debugPrint('❌ StackTrace: $stackTrace');
+    }
+  }
+
+
+
+
   Future<void> _switchToProviderMode() async {
     setState(() {
       _isLoading = true;
@@ -70,13 +132,9 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
 
       if (authToken == null || authToken.isEmpty) {
         _showErrorDialog('Authentication token not found. Please login again.');
-        setState(() {
-          _isLoading = false;
-        });
         return;
       }
 
-      // Make API call to get provider token
       final response = await http.post(
         Uri.parse('$base_url/api/provider/switch'),
         headers: {
@@ -85,70 +143,53 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
         },
       );
 
-      debugPrint('Auth token: $authToken');
       debugPrint('Response status: ${response.statusCode}');
+      debugPrint('Response body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseData = json.decode(response.body);
 
-        // Extract provider token
         final providerToken = responseData['providertoken'];
         final providerId = responseData['provider']?['id'];
-        final isRegistered = responseData['provider']?['isregistered'] ?? false;
+        final isRegistered =
+            responseData['provider']?['isregistered'] ?? false;
 
-        debugPrint('Provider token: $providerToken');
-        debugPrint('Provider ID: $providerId');
-        debugPrint('Is registered: $isRegistered');
+        if (providerToken == null || providerToken.isEmpty) {
+          _showErrorDialog('Invalid provider token received.');
+          return;
+        }
 
-        if (providerToken != null && providerToken.isNotEmpty) {
-          await prefs.setString('provider_auth_token', providerToken);
+        /// ✅ SAVE PROVIDER SESSION
+        await prefs.setString('provider_auth_token', providerToken);
+        await prefs.setString('user_role', 'provider');
 
-          // Update user role to provider
-          await prefs.setString('user_role', 'provider');
+        if (providerId != null) {
+          await prefs.setInt('provider_id', providerId);
+        }
 
-          if (providerId != null) {
-            await prefs.setInt('provider_id', providerId);
-          }
+        await prefs.setBool('is_provider_registered', isRegistered);
 
-          // Save provider registration status
-          await prefs.setBool('is_provider_registered', isRegistered);
+        debugPrint('✅ Switched to provider mode');
+        debugPrint('Provider token saved');
 
-          debugPrint('Successfully switched to provider mode');
-          debugPrint('Customer token preserved: ${prefs.getString('auth_token')}');
-          debugPrint(
-            'Provider token saved: ${prefs.getString('provider_auth_token')}',
-          );
-          debugPrint('User role: ${prefs.getString('user_role')}');
+        /// 🔥 SAVE PROVIDER FCM TOKEN (IMPORTANT)
+        await updateProviderFcmToken();
 
-          // Update provider device token if providerId and deviceToken exist
-          if (providerId != null) {
-            final deviceToken = prefs.getString('device_token');
-
-            if (deviceToken != null && deviceToken.isNotEmpty) {
-              debugPrint('Updating provider device token...');
-              await _updateProviderDeviceToken(providerId, deviceToken);
-            } else {
-              debugPrint('Device token not found in SharedPreferences');
-            }
-          }
-
-          // Navigate to provider screen
-          if (mounted) {
-            Navigator.pushNamed(context, "/ProviderCustomBottomNav");
-            context.read<ProviderNavigationProvider>().currentIndex = 0;
-          }
-        } else {
-          _showErrorDialog('Invalid response from server. Please try again.');
+        /// ➜ NAVIGATE
+        if (mounted) {
+          Navigator.pushNamed(context, "/ProviderCustomBottomNav");
+          context.read<ProviderNavigationProvider>().currentIndex = 0;
         }
       } else {
         final errorData = json.decode(response.body);
-        final errorMessage =
-            errorData['message'] ?? 'Failed to switch role. Please try again.';
-        _showErrorDialog(errorMessage);
+        _showErrorDialog(
+          errorData['message'] ?? 'Failed to switch role. Please try again.',
+        );
       }
-    } catch (e) {
-      debugPrint('Error in _switchToProviderMode: $e');
-      _showErrorDialog('An error occurred: ${e.toString()}');
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error switching to provider mode: $e');
+      debugPrint('❌ StackTrace: $stackTrace');
+      _showErrorDialog('An error occurred. Please try again.');
     } finally {
       if (mounted) {
         setState(() {

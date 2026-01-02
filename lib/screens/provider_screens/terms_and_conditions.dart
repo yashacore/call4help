@@ -72,58 +72,34 @@ class LegalDocumentProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final url = '$base_url/api/admin/legal/by-type?type=terms';
+      final url = '$base_url/api/admin/legal/by-type?type=$type';
+
+      debugPrint('🌐 API URL: $url');
 
       final response = await http.get(Uri.parse(url));
 
-      debugPrint(response.body);
-      debugPrint(response.statusCode as String?);
-      debugPrint(type);
-      debugPrint(role);
+      debugPrint('📡 Status Code: ${response.statusCode}');
+      debugPrint('📄 Response Body: ${response.body}');
+
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
-        if (jsonData['success'] == true && jsonData['data'] != null) {
-          // Parse array of documents with null safety
-          final data = jsonData['data'];
-          if (data is List) {
-            _documents = data
-                .map((doc) {
-                  try {
-                    return LegalDocument.fromJson(doc);
-                  } catch (e) {
-                    debugPrint('Error parsing document: $e');
-                    return null;
-                  }
-                })
-                .whereType<LegalDocument>() // Filter out nulls
-                .toList();
-            _error = null;
-            _isDocumentNotAvailable = _documents.isEmpty;
-          } else {
-            _error = 'Invalid data format';
-            _isDocumentNotAvailable = false;
-          }
+
+        if (jsonData['success'] == true && jsonData['data'] is List) {
+          _documents = (jsonData['data'] as List)
+              .map((e) => LegalDocument.fromJson(e))
+              .toList();
+
+          _isDocumentNotAvailable = _documents.isEmpty;
         } else {
-          _error = 'Failed to load document';
-          _isDocumentNotAvailable = false;
+          _error = 'Invalid response format';
         }
       } else if (response.statusCode == 404) {
-        final jsonData = json.decode(response.body);
-        if (jsonData['message'] == 'Document not available') {
-          _isDocumentNotAvailable = true;
-          _error = null;
-        } else {
-          _error = 'Document not found';
-          _isDocumentNotAvailable = true;
-        }
+        _isDocumentNotAvailable = true;
       } else {
         _error = 'Server error: ${response.statusCode}';
-        _isDocumentNotAvailable = false;
       }
     } catch (e) {
       _error = 'Network error: $e';
-      _isDocumentNotAvailable = false;
-      debugPrint('Fetch document error: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -175,7 +151,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
     switch (widget.type) {
       case 'privacy_policy':
         return 'Privacy Policy';
-      case 'terms':
+                                                                                                                                                                                                                                                                                                      case 'terms':
         return 'Terms of Service';
       case 'code_of_conduct':
         return 'Code of Conduct';
@@ -215,339 +191,175 @@ class _TermsandConditionsState extends State<TermsandConditions> {
             centerTitle: true,
           ),
           body: AnimatedBuilder(
-            animation: _provider,
-            builder: (context, child) {
-              if (_provider.isLoading) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: ColorConstant.call4helpOrange,
-                  ),
-                );
-              }
+          animation: _provider,
+          builder: (context, child) {
+            if (_provider.isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-              // Handle 404 - Document not available
-              if (_provider.isDocumentNotAvailable) {
-                return Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.w),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+            if (_provider.isDocumentNotAvailable) {
+              return _EmptyState(
+                icon: Icons.description_outlined,
+                title: 'No Document Available',
+                subtitle: 'This document is not published yet.',
+              );
+            }
+
+            if (_provider.error != null) {
+              return _EmptyState(
+                icon: Icons.error_outline,
+                title: 'Something went wrong',
+                subtitle: _provider.error!,
+                actionText: 'Retry',
+                onAction: _loadDocument,
+              );
+            }
+
+            if (_provider.documents.isEmpty) {
+              return const _EmptyState(
+                icon: Icons.info_outline,
+                title: 'No Content',
+                subtitle: 'Nothing to show here.',
+              );
+            }
+
+            final document = _provider.documents.first;
+
+            return Column(
+              children: [
+                /// ROLE SELECTOR (STICKY)
+                if (widget.roles.length > 1)
+                  Container(
+                    margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: Row(
                       children: [
-                        Icon(
-                          Icons.description_outlined,
-                          size: 64.sp,
-                          color: ColorConstant.black.withAlpha(04),
-                        ),
-                        SizedBox(height: 16.h),
-                        Text(
-                          'No Document Available',
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold,
-                            color: ColorConstant.black,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          'The requested document is not currently available.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: ColorConstant.black.withAlpha(06),
+                        const Icon(Icons.person_outline, size: 18),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Wrap(
+                            spacing: 8.w,
+                            children: widget.roles.map((role) {
+                              final isSelected = role == _selectedRole;
+                              return ChoiceChip(
+                                label: Text(role.toUpperCase()),
+                                selected: isSelected,
+                                selectedColor: ColorConstant.call4helpOrange,
+                                labelStyle: TextStyle(
+                                  color: isSelected ? Colors.white : Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                onSelected: (_) {
+                                  setState(() => _selectedRole = role);
+                                  _loadDocument();
+                                },
+                              );
+                            }).toList(),
                           ),
                         ),
                       ],
                     ),
                   ),
-                );
-              }
 
-              if (_provider.error != null) {
-                return Center(
-                  child: Padding(
+                /// DOCUMENT CONTENT
+                Expanded(
+                  child: SingleChildScrollView(
                     padding: EdgeInsets.all(16.w),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 64.sp,
-                          color: Colors.red,
-                        ),
-                        SizedBox(height: 16.h),
-                        Text(
-                          'Error loading document',
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold,
-                            color: ColorConstant.black,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          _provider.error!,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: ColorConstant.black.withAlpha(06),
-                          ),
-                        ),
-                        SizedBox(height: 24.h),
-                        ElevatedButton(
-                          onPressed: _loadDocument,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorConstant.call4helpOrange,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 32.w,
-                              vertical: 12.h,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                          ),
-                          child: Text(
-                            'Retry',
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              color: ColorConstant.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              if (_provider.documents.isEmpty) {
-                return Center(
-                  child: Text(
-                    'No document available',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: ColorConstant.black.withAlpha(06),
-                    ),
-                  ),
-                );
-              }
-
-              return Column(
-                children: [
-                  // Role Selector (if multiple roles)
-                  if (widget.roles.length > 1)
-                    Container(
-                      margin: EdgeInsets.all(16.w),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 12.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: ColorConstant.white,
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            'View as:',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: ColorConstant.black,
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: Wrap(
-                              spacing: 8.w,
-                              children: widget.roles.map((role) {
-                                final isSelected = role == _selectedRole;
-                                return ChoiceChip(
-                                  label: Text(
-                                    role.toUpperCase(),
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: isSelected
-                                          ? ColorConstant.white
-                                          : ColorConstant.black,
-                                    ),
-                                  ),
-                                  selected: isSelected,
-                                  selectedColor: ColorConstant.call4helpOrange,
-                                  backgroundColor: ColorConstant.call4helpOrangeFade,
-                                  onSelected: (selected) {
-                                    if (selected) {
-                                      setState(() {
-                                        _selectedRole = role;
-                                      });
-                                      _loadDocument();
-                                    }
-                                  },
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  // Document List
-                  // Document List
-                  Expanded(
-                    child: ListView.builder(
-                      padding: EdgeInsets.all(16.w),
-                      itemCount: _provider.documents.length,
-                      itemBuilder: (context, index) {
-                        final document = _provider.documents[index];
-
-                        // Additional null checks for document properties
-                        if (document.title.isEmpty &&
-                            document.content.isEmpty) {
-                          return SizedBox.shrink();
-                        }
-
-                        return Container(
-                          margin: EdgeInsets.only(bottom: 16.h),
+                        /// HEADER CARD
+                        Container(
                           padding: EdgeInsets.all(16.w),
                           decoration: BoxDecoration(
-                            color: ColorConstant.white,
-                            borderRadius: BorderRadius.circular(16.r),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(18.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 12,
+                              ),
+                            ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Document Header
-                              if (document.title.isNotEmpty)
-                                Text(
-                                  document.title,
-                                  style: TextStyle(
-                                    fontSize: 22.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstant.black,
-                                  ),
+                              Text(
+                                document.title,
+                                style: TextStyle(
+                                  fontSize: 22.sp,
+                                  fontWeight: FontWeight.bold,
                                 ),
+                              ),
                               SizedBox(height: 8.h),
                               Row(
                                 children: [
-                                  Icon(
-                                    Icons.info_outline,
-                                    size: 14.sp,
-                                    color: ColorConstant.black.withAlpha(06),
+                                  _MetaChip(
+                                    icon: Icons.update,
+                                    label: 'v${document.version}',
                                   ),
-                                  SizedBox(width: 4.w),
-                                  Text(
-                                    'Version ${document.version}',
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      color: ColorConstant.black.withAlpha(
-                                        06,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 16.w),
-                                  Icon(
-                                    Icons.calendar_today,
-                                    size: 14.sp,
-                                    color: ColorConstant.black.withAlpha(06),
-                                  ),
-                                  SizedBox(width: 4.w),
-                                  Text(
-                                    'Updated: ${_formatDate(document.updatedAt)}',
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      color: ColorConstant.black.withAlpha(
-                                        06,
-                                      ),
-                                    ),
+                                  SizedBox(width: 8.w),
+                                  _MetaChip(
+                                    icon: Icons.calendar_today,
+                                    label:
+                                    'Updated ${_formatDate(document.updatedAt)}',
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 16.h),
-                              Divider(
-                                color: ColorConstant.black.withAlpha(01),
-                              ),
-                              SizedBox(height: 16.h),
-
-                              // HTML Content with null check
-                              if (document.content.isNotEmpty)
-                                Html(
-                                  data: document.content,
-                                  style: {
-                                    "body": Style(
-                                      fontSize: FontSize(14.sp),
-                                      lineHeight: LineHeight(1.6),
-                                      color: ColorConstant.black,
-                                    ),
-                                    "h1": Style(
-                                      fontSize: FontSize(20.sp),
-                                      fontWeight: FontWeight.bold,
-                                      color: ColorConstant.black,
-                                      margin: Margins.only(
-                                        top: 16.h,
-                                        bottom: 8.h,
-                                      ),
-                                    ),
-                                    "h2": Style(
-                                      fontSize: FontSize(18.sp),
-                                      fontWeight: FontWeight.bold,
-                                      color: ColorConstant.black,
-                                      margin: Margins.only(
-                                        top: 14.h,
-                                        bottom: 6.h,
-                                      ),
-                                    ),
-                                    "h3": Style(
-                                      fontSize: FontSize(16.sp),
-                                      fontWeight: FontWeight.w600,
-                                      color: ColorConstant.black,
-                                      margin: Margins.only(
-                                        top: 12.h,
-                                        bottom: 4.h,
-                                      ),
-                                    ),
-                                    "p": Style(
-                                      fontSize: FontSize(14.sp),
-                                      color: ColorConstant.black,
-                                      margin: Margins.only(bottom: 12.h),
-                                    ),
-                                    "ul": Style(
-                                      margin: Margins.only(
-                                        left: 16.w,
-                                        bottom: 12.h,
-                                      ),
-                                    ),
-                                    "ol": Style(
-                                      margin: Margins.only(
-                                        left: 16.w,
-                                        bottom: 12.h,
-                                      ),
-                                    ),
-                                    "li": Style(
-                                      fontSize: FontSize(14.sp),
-                                      color: ColorConstant.black,
-                                      margin: Margins.only(bottom: 6.h),
-                                    ),
-                                  },
-                                )
-                              else
-                                Text(
-                                  'No content available',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    color: ColorConstant.black.withAlpha(06),
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                ),
                             ],
                           ),
-                        );
-                      },
+                        ),
+
+                        SizedBox(height: 16.h),
+
+                        /// CONTENT CARD
+                        Container(
+                          padding: EdgeInsets.all(18.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(18.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 12,
+                              ),
+                            ],
+                          ),
+                          child: Html(
+                            data: document.content,
+                            style: {
+                              "body": Style(
+                                fontSize: FontSize(15.sp),
+                                lineHeight: LineHeight(1.7),
+                                color: ColorConstant.black,
+                              ),
+                              "h1": Style(fontSize: FontSize(22.sp)),
+                              "h2": Style(fontSize: FontSize(20.sp)),
+                              "p": Style(margin: Margins.only(bottom: 12.h)),
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              );
-            },
-          ),
+                ),
+              ],
+            );
+          },
+        ),
+
         );
       },
     );
@@ -561,5 +373,84 @@ class _TermsandConditionsState extends State<TermsandConditions> {
   void dispose() {
     _provider.dispose();
     super.dispose();
+  }
+
+
+}
+
+class _MetaChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _MetaChip({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: ColorConstant.call4helpOrange.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20.r),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: ColorConstant.call4helpOrange),
+          SizedBox(width: 4.w),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w600,
+              color: ColorConstant.call4helpOrange,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String? actionText;
+  final VoidCallback? onAction;
+
+  const _EmptyState({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    this.actionText,
+    this.onAction,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(24.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 64, color: Colors.grey),
+            SizedBox(height: 16.h),
+            Text(title,
+                style:
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 8.h),
+            Text(subtitle, textAlign: TextAlign.center),
+            if (actionText != null && onAction != null) ...[
+              SizedBox(height: 20.h),
+              ElevatedButton(
+                onPressed: onAction,
+                child: Text(actionText!),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 }

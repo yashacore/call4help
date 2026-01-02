@@ -109,7 +109,7 @@ class BookingDetailsScreen extends StatelessWidget {
           Colors.blue,
               () async {
             await provider.completeBooking(
-              orderId: booking.id,
+              orderId: booking.orderId,
               notes: "Service completed successfully",
             );
 

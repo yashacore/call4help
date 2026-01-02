@@ -4,6 +4,7 @@ import 'package:first_flutter/config/constants/colorConstant/color_constant.dart
 import 'package:first_flutter/providers/register_cafe_provider.dart';
 import 'package:first_flutter/widgets/button_large.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class CyberCafeRegisterScreen extends StatefulWidget {
@@ -185,47 +186,82 @@ class _CyberCafeRegisterScreenState
         return Padding(
           padding: const EdgeInsets.all(12),
           child: ButtonLarge(
+            label: "Register Cafe",
             onTap: provider.isLoading
                 ? null
                 : () async {
               if (!_formKey.currentState!.validate()) return;
 
+              try {
+                // 📍 Get live location
+                final position = await _getCurrentLocation();
 
+                final success = await provider.registerCafe(
+                  shopName: shopNameCtrl.text,
+                  ownerName: ownerNameCtrl.text,
+                  phone: phoneCtrl.text,
+                  email: emailCtrl.text,
+                  city: cityCtrl.text,
+                  state: stateCtrl.text,
+                  pincode: pincodeCtrl.text,
+                  addressLine1: address1Ctrl.text,
+                  addressLine2: address2Ctrl.text,
+                  latitude: position.latitude.toString(),
+                  longitude: position.longitude.toString(),
+                  totalComputers:
+                  int.parse(totalComputerCtrl.text),
+                  openingTime: openingCtrl.text,
+                  closingTime: closingCtrl.text,
+                  gstNumber: gstCtrl.text,
+                );
 
-              final success = await provider.registerCafe(
-                shopName: shopNameCtrl.text,
-                ownerName: ownerNameCtrl.text,
-                phone: phoneCtrl.text,
-                email: emailCtrl.text,
-                city: cityCtrl.text,
-                state: stateCtrl.text,
-                pincode: pincodeCtrl.text,
-                addressLine1: address1Ctrl.text,
-                addressLine2: address2Ctrl.text,
-                latitude: "22.7196",
-                longitude: "75.8577",
-                totalComputers:
-                int.parse(totalComputerCtrl.text),
-                openingTime: openingCtrl.text,
-                closingTime: closingCtrl.text,
-                gstNumber: gstCtrl.text,
-              );
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(success
-                      ? "✅ Cafe registered"
-                      : "❌ Failed"),
-                  backgroundColor:
-                  success ? Colors.green : Colors.red,
-                ),
-              );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(success
+                        ? "✅ Cafe registered successfully"
+                        : "❌ Registration failed"),
+                    backgroundColor:
+                    success ? Colors.green : Colors.red,
+                  ),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("📍 Location error: $e"),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             },
-
-            label:"Register Cafe"
           ),
         );
       },
     );
   }
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw Exception("Location services are disabled");
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        throw Exception("Location permission denied");
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      throw Exception("Location permission permanently denied");
+    }
+
+    return await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+  }
+
 }
