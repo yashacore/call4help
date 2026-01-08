@@ -452,8 +452,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                   border: Border.all(
                     color:
                         _selectedLatitude == null || _selectedLongitude == null
-                        ? Colors.red.withOpacity(0.5)
-                        : ColorConstant.call4helpOrange.withOpacity(0.3),
+                        ? Colors.red.withValues(alpha:0.5)
+                        : ColorConstant.call4helpOrange.withValues(alpha:0.3),
                     width: 1,
                   ),
                 ),
@@ -662,7 +662,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ColorConstant.call4helpOrange,
                     disabledBackgroundColor: ColorConstant.call4helpOrange
-                        .withOpacity(0.6),
+                        .withValues(alpha:0.6),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),

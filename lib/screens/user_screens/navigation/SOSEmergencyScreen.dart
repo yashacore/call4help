@@ -683,7 +683,7 @@ class _SOSEmergencyScreenState extends State<SOSEmergencyScreen>
           borderRadius: BorderRadius.circular(20.r),
           boxShadow: [
             BoxShadow(
-              color: gradient.colors.first.withOpacity(0.3),
+              color: gradient.colors.first.withValues(alpha:0.3),
               blurRadius: 20,
               offset: Offset(0, 8),
               spreadRadius: 0,
@@ -701,7 +701,7 @@ class _SOSEmergencyScreenState extends State<SOSEmergencyScreen>
                     width: 56.w,
                     height: 56.w,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha:0.2),
                       borderRadius: BorderRadius.circular(16.r),
                     ),
                     child: Icon(icon, size: 30.sp, color: Colors.white),
@@ -725,7 +725,7 @@ class _SOSEmergencyScreenState extends State<SOSEmergencyScreen>
                           style: GoogleFonts.inter(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha:0.9),
                           ),
                         ),
                       ],
@@ -739,7 +739,7 @@ class _SOSEmergencyScreenState extends State<SOSEmergencyScreen>
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
-                  color: Colors.white.withOpacity(0.95),
+                  color: Colors.white.withValues(alpha:0.95),
                   height: 1.4,
                 ),
               ),

@@ -29,16 +29,12 @@ class RegisterCafeProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    print("======================================");
-    print("🚀 STARTING CAFE REGISTRATION");
-    print("======================================");
 
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('provider_auth_token');
 
       if (token == null || token.isEmpty) {
-        print("❌ Auth token missing");
         return false;
       }
 
@@ -46,7 +42,6 @@ class RegisterCafeProvider extends ChangeNotifier {
         "https://api.call4help.in/cyber/api/cyber/provider/cafe/register",
       );
 
-      print("🌐 API URL: $uri");
 
       final request = http.MultipartRequest("POST", uri);
       request.headers["Authorization"] = "Bearer $token";
@@ -71,7 +66,6 @@ class RegisterCafeProvider extends ChangeNotifier {
 
       request.fields.addAll(fields);
 
-      print("🧾 REQUEST FIELDS:");
       fields.forEach((k, v) => print("   $k : $v"));
 
       // print("📎 Attaching shop image: $shopImagePath");
@@ -93,23 +87,17 @@ class RegisterCafeProvider extends ChangeNotifier {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      print("📡 STATUS: ${response.statusCode}");
-      print("📦 BODY: ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = json.decode(response.body);
         if (data['success'] == true) {
-          print("✅ Cafe registered successfully");
           return true;
         }
       }
     } catch (e, stack) {
-      print("🔥 ERROR: $e");
-      print(stack);
     } finally {
       isLoading = false;
       notifyListeners();
-      print("🛑 REGISTRATION END");
     }
 
     return false;
@@ -156,9 +144,6 @@ class RegisterCafeProvider extends ChangeNotifier {
         "https://api.call4help.in/cyber/api/cyber/provider/cafe/$cafeId",
       );
 
-      print("======================================");
-      print("🟦 UPDATE CAFE");
-      print("🌐 URL: $uri");
 
       final request = http.MultipartRequest("PATCH", uri);
 
@@ -187,13 +172,11 @@ class RegisterCafeProvider extends ChangeNotifier {
 
       request.fields.addAll(fields);
 
-      print("🧾 FIELDS:");
       fields.forEach((k, v) => print("   $k : $v"));
 
       /// 🖼 SHOP IMAGES (MULTIPLE)
       if (shopImages != null) {
         for (final file in shopImages) {
-          print("📎 SHOP IMAGE: ${file.path}");
           request.files.add(
             await http.MultipartFile.fromPath(
               "shop_images",
@@ -206,7 +189,6 @@ class RegisterCafeProvider extends ChangeNotifier {
       /// 📄 DOCUMENTS (MULTIPLE)
       if (documents != null) {
         for (final file in documents) {
-          print("📎 DOCUMENT: ${file.path}");
           request.files.add(
             await http.MultipartFile.fromPath(
               "documents",
@@ -216,13 +198,10 @@ class RegisterCafeProvider extends ChangeNotifier {
         }
       }
 
-      print("📤 SENDING UPDATE REQUEST...");
 
       final streamed = await request.send();
       final response = await http.Response.fromStream(streamed);
 
-      print("📡 STATUS: ${response.statusCode}");
-      print("📦 BODY: ${response.body}");
 
       if (response.statusCode == 200) {
         return true;
@@ -231,15 +210,11 @@ class RegisterCafeProvider extends ChangeNotifier {
       error = "Failed to update cafe";
       return false;
     } catch (e, stack) {
-      print("🔥 UPDATE CAFE ERROR: $e");
-      print(stack);
       error = e.toString();
       return false;
     } finally {
       isLoading = false;
       notifyListeners();
-      print("🛑 UPDATE CAFE FLOW ENDED");
-      print("======================================");
     }
   }
 }

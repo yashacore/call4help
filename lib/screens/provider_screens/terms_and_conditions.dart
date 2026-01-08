@@ -239,7 +239,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                       borderRadius: BorderRadius.circular(14.r),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: Colors.black.withValues(alpha:0.04),
                           blurRadius: 10,
                         ),
                       ],
@@ -288,7 +288,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                             borderRadius: BorderRadius.circular(18.r),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
+                                color: Colors.black.withValues(alpha:0.05),
                                 blurRadius: 12,
                               ),
                             ],
@@ -332,7 +332,7 @@ class _TermsandConditionsState extends State<TermsandConditions> {
                             borderRadius: BorderRadius.circular(18.r),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.04),
+                                color: Colors.black.withValues(alpha:0.04),
                                 blurRadius: 12,
                               ),
                             ],
@@ -389,7 +389,7 @@ class _MetaChip extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: ColorConstant.call4helpOrange.withOpacity(0.1),
+        color: ColorConstant.call4helpOrange.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(

@@ -1,7 +1,6 @@
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/data/models/pending_list_booking.dart';
 import 'package:first_flutter/providers/booking_status_provider.dart';
-import 'package:first_flutter/screens/provider_screens/cyber_cafe/booking_list.dart';
 import 'package:first_flutter/screens/provider_screens/cyber_cafe/cyber_landing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -164,7 +163,7 @@ class BookingDetailsScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha:0.06),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -174,8 +173,8 @@ class BookingDetailsScreen extends StatelessWidget {
         children: [
           CircleAvatar(
             backgroundColor: highlight
-                ? Colors.green.withOpacity(0.1)
-                : Colors.blue.withOpacity(0.1),
+                ? Colors.green.withValues(alpha:0.1)
+                : Colors.blue.withValues(alpha:0.1),
             child: Icon(icon, color: highlight ? Colors.green : Colors.blue),
           ),
           const SizedBox(width: 14),

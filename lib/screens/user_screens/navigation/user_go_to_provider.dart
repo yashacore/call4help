@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import '../../../config/baseControllers/APis.dart';
 import '../../../providers/provider_navigation_provider.dart';
 
@@ -22,45 +21,6 @@ class UserGoToProvider extends StatefulWidget {
 class _UserGoToProviderState extends State<UserGoToProvider> {
   bool _isLoading = false;
 
-  Future<void> _updateProviderDeviceToken(
-    int providerId,
-    String deviceToken,
-  ) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final providerAuthToken = prefs.getString('provider_auth_token');
-
-      if (providerAuthToken == null || providerAuthToken.isEmpty) {
-        debugPrint('Provider auth token not found');
-        return;
-      }
-
-      final response = await http.post(
-        Uri.parse('$base_url/api/auth/provider-device-token'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $providerAuthToken',
-        },
-        body: json.encode({
-          'providerId': providerId.toString(),
-          'deviceToken': deviceToken,
-        }),
-      );
-
-      debugPrint('Device token update response status: ${response.statusCode}');
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final responseData = json.decode(response.body);
-        debugPrint('Device token update message: ${responseData['message']}');
-      } else {
-        debugPrint('Failed to update device token: ${response.body}');
-      }
-    } catch (e) {
-      debugPrint('Error updating provider device token: $e');
-    }
-  }
-
-
   Future<void> updateProviderFcmToken() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -75,7 +35,7 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
       }
 
       final url =
-      Uri.parse('https://api.call4help.in/cyber/api/fcm/user/token');
+      Uri.parse('https://api.call4help.in/cyber/api/fcm/provider/token');
 
       final body = {
         "token": fcmToken,
@@ -117,9 +77,6 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
       debugPrint('❌ StackTrace: $stackTrace');
     }
   }
-
-
-
 
   Future<void> _switchToProviderMode() async {
     setState(() {
@@ -282,7 +239,7 @@ class _UserGoToProviderState extends State<UserGoToProvider> {
         ),
         if (_isLoading)
           Container(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha:0.3),
             child: const Center(child: CircularProgressIndicator()),
           ),
       ],

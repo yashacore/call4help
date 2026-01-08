@@ -246,7 +246,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha:0.05),
               blurRadius: 10,
               offset: Offset(0, 4),
             ),
@@ -284,7 +284,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                   child: Icon(
                                     Icons.room_service_outlined,
                                     size: 48,
-                                    color: ColorConstant.call4helpOrange.withOpacity(
+                                    color: ColorConstant.call4helpOrange.withValues(alpha:
                                       0.3,
                                     ),
                                   ),
@@ -293,7 +293,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                   child: Icon(
                                     Icons.room_service_outlined,
                                     size: 48,
-                                    color: ColorConstant.call4helpOrange.withOpacity(
+                                    color: ColorConstant.call4helpOrange.withValues(alpha:
                                       0.3,
                                     ),
                                   ),
@@ -302,7 +302,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                             : Icon(
                                 Icons.room_service_outlined,
                                 size: 48,
-                                color: ColorConstant.call4helpOrange.withOpacity(
+                                color: ColorConstant.call4helpOrange.withValues(alpha:
                                   0.3,
                                 ),
                               ),
@@ -401,7 +401,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                         Container(
                           padding: EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: ColorConstant.call4helpOrange.withOpacity(0.1),
+                            color: ColorConstant.call4helpOrange.withValues(alpha:0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(

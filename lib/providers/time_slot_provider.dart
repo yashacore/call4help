@@ -9,7 +9,6 @@ enum SlotUIStatus {
   available,
   full,
   locked,
-  notCreated,
 }
 
 /// ================= UI SLOT MODEL =================
@@ -17,13 +16,13 @@ class SlotUIModel {
   final String startTime;
   final String endTime;
   final SlotUIStatus status;
-  final TimeSlot? apiSlot;
+  final TimeSlot apiSlot;
 
   SlotUIModel({
     required this.startTime,
     required this.endTime,
     required this.status,
-    this.apiSlot,
+    required this.apiSlot,
   });
 }
 
@@ -37,22 +36,20 @@ class SlotProvider extends ChangeNotifier {
   Future<void> fetchFullDaySlots({
     required String cyberCafeId,
     required String date,
-    int startHour = 9,
-    int endHour = 18,
   }) async {
     debugPrint("🚀 ===== fetchFullDaySlots START =====");
     debugPrint("🏪 Cyber Cafe ID: $cyberCafeId");
     debugPrint("📅 Date: $date");
-    debugPrint("⏰ Time Range: $startHour:00 - $endHour:00");
 
     isLoading = true;
+    slots.clear();
     notifyListeners();
 
     try {
-      /// 🔑 Token
+      /// 🔑 TOKEN
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('auth_token');
-      debugPrint("🔑 Token exists: ${token != null}");
+      debugPrint("🔑 Token exists: ${token != null && token.isNotEmpty}");
 
       /// 🌐 API URL
       final url =
@@ -74,77 +71,43 @@ class SlotProvider extends ChangeNotifier {
       debugPrint("📦 Raw Response: ${response.body}");
 
       final decoded = jsonDecode(response.body);
-      final List<dynamic> data = decoded['data'] ?? [];
 
+      if (decoded['success'] != true) {
+        debugPrint("❌ API returned success=false");
+        return;
+      }
+
+      final List<dynamic> data = decoded['data'] ?? [];
       debugPrint("📊 API Slots Count: ${data.length}");
 
-      /// 🔄 Parse API slots
-      final List<TimeSlot> apiSlots =
-      data.map((e) => TimeSlot.fromJson(e)).toList();
+      /// 🔁 MAP API → UI (1:1)
+      slots = data.map<SlotUIModel>((item) {
+        final slot = TimeSlot.fromJson(item);
 
-      for (final s in apiSlots) {
-        debugPrint(
-          "🕒 API Slot → ${s.startTime}-${s.endTime} | "
-              "Seats: ${s.availableSeats}/${s.availableSeats} | "
-              "Locked: ${s.isLocked}",
-        );
-      }
-
-      /// 🗂 Map slots by time
-      final Map<String, TimeSlot> slotMap = {
-        for (var s in apiSlots)
-          "${s.startTime}-${s.endTime}": s
-      };
-
-      final List<SlotUIModel> result = [];
-
-      /// ⏱️ Generate 30-minute slots
-      for (int h = startHour; h < endHour; h++) {
-        for (int m = 0; m < 60; m += 30) {
-          final start =
-              "${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:00";
-          final endMinute = m + 30;
-          final end =
-              "${h.toString().padLeft(2, '0')}:${endMinute.toString().padLeft(2, '0')}:00";
-
-          final key = "$start-$end";
-
-          if (slotMap.containsKey(key)) {
-            final slot = slotMap[key]!;
-
-            final status = slot.isLocked
-                ? SlotUIStatus.locked
-                : slot.availableSeats == 0
-                ? SlotUIStatus.full
-                : SlotUIStatus.available;
-
-            debugPrint("✅ MATCH → $key | Status: $status");
-
-            result.add(
-              SlotUIModel(
-                startTime: start,
-                endTime: end,
-                apiSlot: slot,
-                status: status,
-              ),
-            );
-          } else {
-            debugPrint("❌ NO SLOT → $key");
-
-            result.add(
-              SlotUIModel(
-                startTime: start,
-                endTime: end,
-                status: SlotUIStatus.notCreated,
-              ),
-            );
-          }
+        final SlotUIStatus status;
+        if (slot.isLocked) {
+          status = SlotUIStatus.locked;
+        } else if (slot.availableSeats <= 0) {
+          status = SlotUIStatus.full;
+        } else {
+          status = SlotUIStatus.available;
         }
-      }
 
-      debugPrint("📊 Final UI Slots Count: ${result.length}");
-      slots = result;
+        debugPrint(
+          "🕒 Slot ${slot.startTime}-${slot.endTime} | "
+              "Seats: ${slot.availableSeats}/${slot.availableSeats} | "
+              "Locked: ${slot.isLocked} | Status: $status",
+        );
 
+        return SlotUIModel(
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          status: status,
+          apiSlot: slot,
+        );
+      }).toList();
+
+      debugPrint("✅ Final UI Slots Count: ${slots.length}");
     } catch (e, stack) {
       debugPrint("🔥 ERROR in fetchFullDaySlots");
       debugPrint("❗ Error: $e");
@@ -162,4 +125,6 @@ class SlotProvider extends ChangeNotifier {
     debugPrint("🎯 Selected Slot ID: $slotId");
     notifyListeners();
   }
+
+
 }

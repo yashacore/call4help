@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/baseControllers/APis.dart' show base_url;
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
@@ -1753,7 +1752,7 @@ class ProviderConfirmServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              SvgPicture.asset("assets/icons/call4help_task-complete.svg"),
+              SvgPicture.asset("assets/icons/moyo_task-complete.svg"),
               Text(
                 "Task Complete",
                 textAlign: TextAlign.center,

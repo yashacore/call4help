@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:first_flutter/config/baseControllers/APis.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
-import 'package:first_flutter/screens/provider_screens/vendor_notification_screen.dart';
+import 'package:first_flutter/providers/user_profile_provider.dart';
+import 'package:first_flutter/screens/provider_screens/navigation/NotificationListScreen.dart';
+import 'package:first_flutter/screens/provider_screens/setting_screen.dart';
 import 'package:first_flutter/screens/user_screens/UserMyRating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,11 +15,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 
-import '../screens/provider_screens/setting_screen.dart';
+import '../config/baseControllers/APis.dart';
 import '../screens/provider_screens/navigation/NotificationProvider.dart';
 import '../screens/provider_screens/navigation/UserNotificationProvider.dart';
 import '../screens/provider_screens/navigation/UserNotificationListScreen.dart';
-import '../providers/user_profile_provider.dart';
 
 class UserAppbar extends StatefulWidget implements PreferredSizeWidget {
   final String? type;
@@ -57,7 +57,6 @@ class _UserAppbarState extends State<UserAppbar> {
     super.dispose();
   }
 
-  /// Fetch notifications for both provider and user
   Future<void> _fetchNotifications() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -80,7 +79,7 @@ class _UserAppbarState extends State<UserAppbar> {
         }
       }
     } catch (e) {
-      debugPrint('Error fetching notifications: $e');
+      print('Error fetching notifications: $e');
     }
   }
 
@@ -88,13 +87,14 @@ class _UserAppbarState extends State<UserAppbar> {
   Future<void> _checkBlockStatus() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+
       final token = widget.type == "provider"
           ? prefs.getString('provider_auth_token')
           : prefs.getString('auth_token');
 
       if (token == null || token.isEmpty) return;
 
-      String apiEndpoint = widget.type == "provider"
+      final apiEndpoint = widget.type == "provider"
           ? '$base_url/api/provider/profile'
           : '$base_url/api/auth/profile';
 
@@ -106,35 +106,57 @@ class _UserAppbarState extends State<UserAppbar> {
         },
       );
 
+      debugPrint('📡 Status: ${response.statusCode}');
+      debugPrint('📦 Body: ${response.body}');
+
       if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        final profile = responseData['profile'];
+        final dynamic responseData = json.decode(response.body);
 
-        bool isBlocked = false;
-
-        // Check user blocked status
-        if (profile['is_blocked'] == true) {
-          isBlocked = true;
+        /// ✅ Response is a LIST
+        if (responseData is! List || responseData.isEmpty) {
+          debugPrint('❌ Invalid profile response');
+          return;
         }
 
-        // Check provider blocked status if provider type
-        if (widget.type == 'provider' &&
-            profile['provider'] != null &&
-            profile['provider']['is_blocked'] == true) {
-          isBlocked = true;
-        }
+        final Map<String, dynamic> profileData = responseData.first;
 
-        if (isBlocked) {
-          // User is blocked, logout and show dialog
+        final bool isUserBlocked =
+            profileData['is_blocked'] == true || profileData['isactive'] == false;
+
+        if (isUserBlocked) {
+          debugPrint('⛔ User is blocked');
           await _handleBlockedUser();
+          return;
+        }
+
+        /// Provider block check (only if provider object exists)
+        if (widget.type == 'provider' &&
+            profileData.containsKey('provider') &&
+            profileData['provider'] is Map &&
+            profileData['provider']['is_blocked'] == true) {
+          debugPrint('⛔ Provider is blocked');
+          await _handleBlockedUser();
+          return;
         }
       }
-    } catch (e) {
-      debugPrint('Error checking block status: $e');
+
+      else if (response.statusCode == 403 && context.mounted) {
+        await _handleBlockedUser();
+
+        if (context.mounted) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/login',
+                (route) => false,
+          );
+        }
+      }
+    } catch (e, stackTrace) {
+      debugPrint('🔥 Error checking block status: $e');
+      debugPrint('📌 StackTrace: $stackTrace');
     }
   }
 
-  /// Handle blocked user - logout and redirect
   Future<void> _handleBlockedUser() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -191,7 +213,6 @@ class _UserAppbarState extends State<UserAppbar> {
     }
   }
 
-  /// Start continuous location tracking
   void _startLocationTracking() {
     const LocationSettings locationSettings = LocationSettings(
       accuracy: LocationAccuracy.high,
@@ -200,7 +221,7 @@ class _UserAppbarState extends State<UserAppbar> {
 
     _positionStreamSubscription =
         Geolocator.getPositionStream(locationSettings: locationSettings).listen(
-          (Position position) {
+              (Position position) {
             if (_lastPosition == null ||
                 _hasLocationChanged(_lastPosition!, position)) {
               _lastPosition = position;
@@ -242,7 +263,7 @@ class _UserAppbarState extends State<UserAppbar> {
         currentAddress = completeAddress;
       });
     } catch (e) {
-      debugPrint('Error getting address: $e');
+      print('Error getting address: $e');
     }
   }
 
@@ -257,14 +278,9 @@ class _UserAppbarState extends State<UserAppbar> {
           ? prefs.getString('provider_auth_token')
           : prefs.getString('auth_token');
 
-      final apiEndpoint = widget.type == "provider"
+      String apiEndpoint = widget.type == "provider"
           ? '$base_url/api/provider/update-location'
           : '$base_url/api/auth/update-location';
-
-      final body = jsonEncode({
-        'latitude': latitude.toString(),
-        'longitude': longitude.toString(),
-      });
 
       final response = widget.type == "provider"
           ? await http.put(
@@ -273,7 +289,10 @@ class _UserAppbarState extends State<UserAppbar> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: body,
+        body: json.encode({
+          'latitude': latitude.toString(),
+          'longitude': longitude.toString(),
+        }),
       )
           : await http.post(
         Uri.parse(apiEndpoint),
@@ -281,31 +300,26 @@ class _UserAppbarState extends State<UserAppbar> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: body,
+        body: json.encode({
+          'latitude': latitude.toString(),
+          'longitude': longitude.toString(),
+        }),
       );
 
-      debugPrint('📡 Status: ${response.statusCode}');
-      debugPrint('📄 Raw Response: ${response.body}');
-      debugPrint('📍 Lat: $latitude, Lng: $longitude');
+      print('Location Update Response: ${response.body}');
+      print('Location Update Response: ${latitude.toString()}');
+      print('Location Update Response: ${longitude.toString()}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final decoded = json.decode(response.body);
-
-        if (decoded is Map<String, dynamic>) {
-          debugPrint('✅ Message: ${decoded['message']}');
-        } else if (decoded is List && decoded.isNotEmpty) {
-          debugPrint('✅ Message: ${decoded.first['message']}');
-        } else {
-          debugPrint('✅ Location updated (no message field)');
-        }
+        print('Location updated successfully');
+        final responseData = json.decode(response.body);
+        print('Message: ${responseData['message']}');
       } else {
-        debugPrint('❌ Failed to update location');
-        debugPrint('❌ Status: ${response.statusCode}');
-        debugPrint('❌ Body: ${response.body}');
+        print('Failed to update location: ${response.statusCode}');
+        print('Error: ${response.body}');
       }
-    } catch (e, stackTrace) {
-      debugPrint('🔥 Error updating location: $e');
-      debugPrint('🔥 StackTrace: $stackTrace');
+    } catch (e) {
+      print('Error updating location: $e');
     }
   }
 
@@ -375,7 +389,7 @@ class _UserAppbarState extends State<UserAppbar> {
     return AppBar(
       foregroundColor: Colors.white,
       automaticallyImplyLeading: false,
-      backgroundColor: ColorConstant.call4helpOrange,
+      backgroundColor: ColorConstant.appColor,
       title: Consumer<UserProfileProvider>(
         builder: (context, profileProvider, child) {
           return Row(
@@ -398,21 +412,21 @@ class _UserAppbarState extends State<UserAppbar> {
                   width: 36,
                   child: profileProvider.isLoading
                       ? CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        )
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  )
                       : CachedNetworkImage(
-                          imageUrl: profileProvider.profileImage.isNotEmpty
-                              ? profileProvider.profileImage
-                              : "https://picsum.photos/200/200",
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Image.asset(
-                            'assets/images/moyo_service_placeholder.png',
-                          ),
-                          errorWidget: (context, url, error) => Image.asset(
-                            'assets/images/moyo_service_placeholder.png',
-                          ),
-                        ),
+                    imageUrl: profileProvider.profileImage.isNotEmpty
+                        ? profileProvider.profileImage
+                        : "https://picsum.photos/200/200",
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Image.asset(
+                      'assets/images/moyo_service_placeholder.png',
+                    ),
+                    errorWidget: (context, url, error) => Image.asset(
+                      'assets/images/moyo_service_placeholder.png',
+                    ),
+                  ),
                 ),
               ),
               Flexible(
@@ -424,12 +438,12 @@ class _UserAppbarState extends State<UserAppbar> {
                       'Welcome, ${profileProvider.fullName}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.inter(
+                      style: GoogleFonts.roboto(
                         textStyle: Theme.of(context).textTheme.titleSmall
                             ?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: ColorConstant.white,
-                            ),
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstant.white,
+                        ),
                       ),
                     ),
                     Row(
@@ -443,12 +457,12 @@ class _UserAppbarState extends State<UserAppbar> {
                             currentAddress,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.inter(
+                            style: GoogleFonts.roboto(
                               textStyle: Theme.of(context).textTheme.labelMedium
                                   ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    color: ColorConstant.white,
-                                  ),
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstant.white,
+                              ),
                             ),
                           ),
                         ),
@@ -484,7 +498,7 @@ class _UserAppbarState extends State<UserAppbar> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => VendorNotificationScreen(),
+                          builder: (context) => NotificationListScreen(),
                         ),
                       );
                     },
@@ -503,19 +517,16 @@ class _UserAppbarState extends State<UserAppbar> {
                           color: Colors.red,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: ColorConstant.call4helpOrange,
+                            color: ColorConstant.appColor,
                             width: 2,
                           ),
                         ),
-                        constraints: BoxConstraints(
-                          minWidth: 18,
-                          minHeight: 18,
-                        ),
+                        constraints: BoxConstraints(minWidth: 6, minHeight: 6),
                         child: Center(
                           child: Text(
                             unreadCount > 99 ? '99+' : '$unreadCount',
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
+                            style: GoogleFonts.roboto(
+                              fontSize: 8,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -554,24 +565,21 @@ class _UserAppbarState extends State<UserAppbar> {
                       right: 8,
                       top: 8,
                       child: Container(
-                        padding: EdgeInsets.all(4),
+                        padding: EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           color: Colors.red,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: ColorConstant.call4helpOrange,
+                            color: ColorConstant.appColor,
                             width: 2,
                           ),
                         ),
-                        constraints: BoxConstraints(
-                          minWidth: 18,
-                          minHeight: 18,
-                        ),
+                        constraints: BoxConstraints(minWidth: 6, minHeight: 6),
                         child: Center(
                           child: Text(
                             unreadCount > 99 ? '99+' : '$unreadCount',
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
+                            style: GoogleFonts.roboto(
+                              fontSize: 8,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -586,10 +594,12 @@ class _UserAppbarState extends State<UserAppbar> {
           ),
         IconButton(
           onPressed: () {
+            print(widget.type);
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SettingScreen(roles: [?widget.type]),
+                builder: (context) =>
+                    SettingScreen(roles: [widget.type!], type: widget.type),
               ),
             );
           },

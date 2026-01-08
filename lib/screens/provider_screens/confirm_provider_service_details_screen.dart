@@ -18,7 +18,6 @@ import '../../widgets/ProviderConfirmServiceDetails.dart';
 import '../user_screens/WidgetProviders/EndWorkOTPDialog.dart';
 import '../user_screens/WidgetProviders/OTPDialog.dart';
 import '../../providers/start_work_provider.dart';
-import 'navigation/ServiceTimerScreen.dart';
 
 class ConfirmProviderServiceDetailsScreen extends StatefulWidget {
   final String serviceId;
@@ -346,26 +345,26 @@ class _ConfirmProviderServiceDetailsScreenState
         // Fetch latest service details to get duration
         await _fetchServiceDetails();
 
-        if (_serviceData != null) {
-          // Extract duration information
-          final durationValue = _serviceData!['duration_value'] ?? 1;
-          final durationUnit = _serviceData!['duration_unit'] ?? 'hour';
-
-          // Navigate to Timer Screen
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => ServiceTimerScreen(
-                  serviceId: widget.serviceId,
-                  durationValue: durationValue is int
-                      ? durationValue
-                      : int.tryParse(durationValue.toString()) ?? 1,
-                  durationUnit: durationUnit.toString(),
-                ),
-              ),
-            );
-          }
-        }
+        // if (_serviceData != null) {
+        //   // Extract duration information
+        //   final durationValue = _serviceData!['duration_value'] ?? 1;
+        //   final durationUnit = _serviceData!['duration_unit'] ?? 'hour';
+        //
+        //   // Navigate to Timer Screen
+        //   if (mounted) {
+        //     Navigator.of(context).pushReplacement(
+        //       MaterialPageRoute(
+        //         builder: (context) => ServiceTimerScreen(
+        //           serviceId: widget.serviceId,
+        //           durationValue: durationValue is int
+        //               ? durationValue
+        //               : int.tryParse(durationValue.toString()) ?? 1,
+        //           durationUnit: durationUnit.toString(),
+        //         ),
+        //       ),
+        //     );
+        //   }
+        // }
 
         // Reset provider state
         final startWorkProvider = Provider.of<StartWorkProvider>(
@@ -397,17 +396,17 @@ class _ConfirmProviderServiceDetailsScreenState
     final durationUnit = _serviceData!['duration_unit'] ?? 'hour';
 
     // Navigate to Timer Screen
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => ServiceTimerScreen(
-          serviceId: widget.serviceId,
-          durationValue: durationValue is int
-              ? durationValue
-              : int.tryParse(durationValue.toString()) ?? 1,
-          durationUnit: durationUnit.toString(),
-        ),
-      ),
-    );
+    // Navigator.of(context).pushReplacement(
+    //   MaterialPageRoute(
+    //     builder: (context) => ServiceTimerScreen(
+    //       serviceId: widget.serviceId,
+    //       durationValue: durationValue is int
+    //           ? durationValue
+    //           : int.tryParse(durationValue.toString()) ?? 1,
+    //       durationUnit: durationUnit.toString(),
+    //     ),
+    //   ),
+    // );
   }
 
   bool _isWorkInProgress() {
@@ -425,17 +424,17 @@ class _ConfirmProviderServiceDetailsScreenState
         final durationValue = _serviceData!['duration_value'] ?? 1;
         final durationUnit = _serviceData!['duration_unit'] ?? 'hour';
 
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => ServiceTimerScreen(
-              serviceId: widget.serviceId,
-              durationValue: durationValue is int
-                  ? durationValue
-                  : int.tryParse(durationValue.toString()) ?? 1,
-              durationUnit: durationUnit.toString(),
-            ),
-          ),
-        );
+        // Navigator.of(context).pushReplacement(
+        //   MaterialPageRoute(
+        //     builder: (context) => ServiceTimerScreen(
+        //       serviceId: widget.serviceId,
+        //       durationValue: durationValue is int
+        //           ? durationValue
+        //           : int.tryParse(durationValue.toString()) ?? 1,
+        //       durationUnit: durationUnit.toString(),
+        //     ),
+        //   ),
+        // );
       }
     });
   }
@@ -544,7 +543,7 @@ class _ConfirmProviderServiceDetailsScreenState
         circleId: const CircleId('provider_circle'),
         center: providerLocation,
         radius: 1,
-        fillColor: Colors.orange.withOpacity(0.2),
+        fillColor: Colors.orange.withValues(alpha:0.2),
         strokeColor: Colors.orange,
         strokeWidth: 2,
       ),
@@ -826,7 +825,7 @@ class _ConfirmProviderServiceDetailsScreenState
                               borderRadius: BorderRadius.circular(20.r),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
+                                  color: Colors.black.withValues(alpha:0.1),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
@@ -905,7 +904,7 @@ class _ConfirmProviderServiceDetailsScreenState
                                 Container(
                                   padding: EdgeInsets.all(12.w),
                                   decoration: BoxDecoration(
-                                    color: Colors.green.withOpacity(0.1),
+                                    color: Colors.green.withValues(alpha:0.1),
                                     borderRadius: BorderRadius.circular(12.r),
                                     border: Border.all(
                                       color: Colors.green,

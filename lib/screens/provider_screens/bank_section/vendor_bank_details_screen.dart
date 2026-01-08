@@ -57,7 +57,7 @@ class _ProviderBankDetailsScreenState
                     gradient: LinearGradient(
                       colors: [
                         ColorConstant.appColor,
-                        ColorConstant.appColor.withOpacity(0.85),
+                        ColorConstant.appColor.withValues(alpha:0.85),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(20),
@@ -118,7 +118,7 @@ class _ProviderBankDetailsScreenState
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha:0.06),
             blurRadius: 12,
           ),
         ],
@@ -150,8 +150,8 @@ class _ProviderBankDetailsScreenState
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: verified
-            ? Colors.green.withOpacity(0.15)
-            : Colors.orange.withOpacity(0.15),
+            ? Colors.green.withValues(alpha:0.15)
+            : Colors.orange.withValues(alpha:0.15),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(

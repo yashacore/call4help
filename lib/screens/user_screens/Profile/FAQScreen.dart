@@ -85,7 +85,7 @@ class _FAQScreenState extends State<FAQScreen> {
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),
@@ -160,7 +160,7 @@ class _FAQScreenState extends State<FAQScreen> {
                 boxShadow: isSelected
                     ? [
                   BoxShadow(
-                    color: ColorConstant.call4helpOrange.withOpacity(0.3),
+                    color: ColorConstant.call4helpOrange.withValues(alpha:0.3),
                     blurRadius: 8,
                     offset: Offset(0, 2),
                   ),
@@ -206,7 +206,7 @@ class _FAQScreenState extends State<FAQScreen> {
             borderRadius: BorderRadius.circular(12.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha:0.05),
                 blurRadius: 10,
                 offset: Offset(0, 2),
               ),
@@ -229,7 +229,7 @@ class _FAQScreenState extends State<FAQScreen> {
                         width: 40.w,
                         height: 40.h,
                         decoration: BoxDecoration(
-                          color: ColorConstant.call4helpOrange.withOpacity(0.1),
+                          color: ColorConstant.call4helpOrange.withValues(alpha:0.1),
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Icon(
@@ -300,7 +300,7 @@ class _FAQScreenState extends State<FAQScreen> {
                           padding: EdgeInsets.symmetric(
                               horizontal: 12.w, vertical: 6.h),
                           decoration: BoxDecoration(
-                            color: ColorConstant.call4helpOrange.withOpacity(0.1),
+                            color: ColorConstant.call4helpOrange.withValues(alpha:0.1),
                             borderRadius: BorderRadius.circular(20.r),
                           ),
                           child: Row(

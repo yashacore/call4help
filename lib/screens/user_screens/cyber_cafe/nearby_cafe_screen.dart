@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class NearbyCafesScreen extends StatefulWidget {
-  const NearbyCafesScreen({super.key});
+  final String hourlyRate;
+  final String subcategoryId;
+  const NearbyCafesScreen({super.key, required this.hourlyRate, required this.subcategoryId});
 
   @override
   State<NearbyCafesScreen> createState() => _NearbyCafesScreenState();
@@ -84,13 +86,13 @@ class _NearbyCafesScreenState extends State<NearbyCafesScreen> {
                           MaterialPageRoute(
                             builder: (_) => FullDaySlotScreen(
                               cyberCafeId: cafe.id,
-                              date: DateTime.now()
-                                  .toIso8601String()
-                                  .split('T')
-                                  .first,
+                              date: DateTime.now().toIso8601String().split('T').first,
+                              hourlyRate: widget.hourlyRate,
+                              subcategoryId: widget.subcategoryId,
                             ),
                           ),
                         );
+
                       },
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 14),
@@ -100,7 +102,7 @@ class _NearbyCafesScreenState extends State<NearbyCafesScreen> {
                           borderRadius: BorderRadius.circular(14),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.06),
+                              color: Colors.black.withValues(alpha:0.06),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -132,7 +134,7 @@ class _NearbyCafesScreenState extends State<NearbyCafesScreen> {
                                   ),
                                 ),
                                 Chip(
-                                  backgroundColor: Colors.green.withOpacity(
+                                  backgroundColor: Colors.green.withValues(alpha:
                                     0.15,
                                   ),
                                   label: Text(

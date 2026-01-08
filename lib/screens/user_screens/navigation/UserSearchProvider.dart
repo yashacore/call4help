@@ -30,7 +30,7 @@ class UserSearchProvider extends ChangeNotifier {
 
     try {
       final response = await http.post(
-        Uri.parse('http://api.call4help.in/api/user/search'),
+        Uri.parse('https://api.call4help.in/api/user/search'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'keyword': keyword}),
       );
@@ -67,7 +67,7 @@ class UserSearchProvider extends ChangeNotifier {
         }
       } else {
         _users.clear();
-        _error = 'Failed to search users (Status: ${response.statusCode})';
+        _error = 'Failed to search  (Status: ${response.statusCode})';
       }
     } catch (e) {
       _users.clear();

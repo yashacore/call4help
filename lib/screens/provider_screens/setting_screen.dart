@@ -1,22 +1,26 @@
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/settings_provider.dart';
 import 'package:first_flutter/providers/splash_screen_provider.dart';
+import 'package:first_flutter/screens/provider_screens/contact_form_screen.dart';
+import 'package:first_flutter/screens/provider_screens/terms_and_conditions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart' show PackageInfo;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:app_settings/app_settings.dart';
-
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import '../user_screens/Profile/FAQScreen.dart';
-import 'contact_form_screen.dart';
-import 'terms_and_conditions.dart';
 
 class SettingScreen extends StatefulWidget {
   final String? type;
+
   final List<String>? roles;
 
   const SettingScreen({super.key, this.type, this.roles});
@@ -41,6 +45,8 @@ class _SettingScreenState extends State<SettingScreen>
     _loadAppVersion();
     _loadPreferences();
     _checkPermissions();
+
+    // Load saved radius from provider
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<SettingsProvider>(context, listen: false).loadSavedRadius();
     });
@@ -167,10 +173,10 @@ class _SettingScreenState extends State<SettingScreen>
   }
 
   void _showPermissionDialog(
-    String title,
-    String message,
-    String permissionType,
-  ) {
+      String title,
+      String message,
+      String permissionType,
+      ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -190,7 +196,7 @@ class _SettingScreenState extends State<SettingScreen>
             message,
             style: TextStyle(
               fontSize: 14.sp,
-              color: ColorConstant.black.withAlpha(07),
+              color: ColorConstant.black.withValues(alpha:0.7),
             ),
           ),
           actions: [
@@ -203,7 +209,7 @@ class _SettingScreenState extends State<SettingScreen>
                 'Cancel',
                 style: TextStyle(
                   fontSize: 14.sp,
-                  color: ColorConstant.black.withAlpha(06),
+                  color: ColorConstant.black.withValues(alpha:0.6),
                 ),
               ),
             ),
@@ -213,7 +219,7 @@ class _SettingScreenState extends State<SettingScreen>
                 AppSettings.openAppSettings(type: AppSettingsType.settings);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstant.call4helpOrange,
+                backgroundColor: ColorConstant.appColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),
                 ),
@@ -236,7 +242,7 @@ class _SettingScreenState extends State<SettingScreen>
         appVersion = '${packageInfo.version} (${packageInfo.buildNumber})';
       });
     } catch (e) {
-      debugPrint('Error loading app version: $e');
+      // print('Error loading app version: $e');
     }
   }
 
@@ -248,7 +254,7 @@ class _SettingScreenState extends State<SettingScreen>
         selectedDistanceUnit = prefs.getString('distanceUnit') ?? 'Kilometers';
       });
     } catch (e) {
-      debugPrint('Error loading preferences: $e');
+      // print('Error loading preferences: $e');
     }
   }
 
@@ -263,7 +269,7 @@ class _SettingScreenState extends State<SettingScreen>
         await prefs.setDouble(key, value);
       }
     } catch (e) {
-      debugPrint('Error saving preference: $e');
+      // print('Error saving preference: $e');
     }
   }
 
@@ -286,18 +292,67 @@ class _SettingScreenState extends State<SettingScreen>
     );
   }
 
+  Future<void> _shareApp() async {
+    try {
+      // Get referral code from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final referralCode = prefs.getString('referral_code') ?? '';
 
-  void _shareApp() {
-    Share.share(
-      'Check out this amazing app! Download now: https://play.google.com/store/apps/details?id=com.acore.call4help&pcampaignid=web_share',
-      subject: 'Check out this app!',
-    );
-    _showSnackBar('Sharing app...');
+      // Build share message with referral code
+      String shareMessage = 'Check out this amazing app! ';
+      if (referralCode.isNotEmpty) {
+        shareMessage += 'Use my referral code: $referralCode\n\n';
+      }
+      shareMessage +=
+      'https://play.google.com/store/apps/details?id=com.acore.app.call4help&pcampaignid=web_share';
+
+      // Load the image from assets as bytes
+      final ByteData bytes = await rootBundle.load(
+        'assets/icons/app_icon_radius.png.png',
+      );
+      final Uint8List list = bytes.buffer.asUint8List();
+
+      // Create a temporary file
+      final tempDir = await getTemporaryDirectory();
+      final file = await File('${tempDir.path}/app_logo.png').create();
+      await file.writeAsBytes(list);
+
+      // Share with app logo image using XFile
+      final result = await Share.shareXFiles(
+        [XFile(file.path)],
+        text: shareMessage,
+        subject: 'Check out this app!',
+      );
+
+      if (result.status == ShareResultStatus.success) {
+        _showSnackBar('App shared successfully!');
+      }
+    } catch (e) {
+      // print('Error sharing app with image: $e');
+      // Fallback to text-only share if image sharing fails
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final referralCode = prefs.getString('referral_code') ?? '';
+
+        String shareMessage = 'Check out this amazing app! ';
+        if (referralCode.isNotEmpty) {
+          shareMessage += 'Use my referral code: $referralCode\n\n';
+        }
+        shareMessage +=
+        '';
+
+        await Share.share(shareMessage, subject: 'Check out this app!');
+        _showSnackBar('App shared!');
+      } catch (e) {
+        _showSnackBar('Failed to share app');
+      }
+    }
   }
 
   Future<void> _rateApp() async {
     final url = Uri.parse(
-      'https://play.google.com/store/apps/details?id=com.acore.call4help&pcampaignid=web_share',
+      'https://play.google.com/store/apps/details?id=com.acore.app.call4help&pcampaignid=web_share'
+      // 'https://play.google.com/store/apps/details?id=com.acore.moyo&pcampaignid=web_share',
     );
     try {
       if (await canLaunchUrl(url)) {
@@ -332,6 +387,7 @@ class _SettingScreenState extends State<SettingScreen>
 
   @override
   Widget build(BuildContext context) {
+    // print(widget.type);
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
@@ -396,7 +452,7 @@ class _SettingScreenState extends State<SettingScreen>
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'Notifications',
@@ -412,7 +468,7 @@ class _SettingScreenState extends State<SettingScreen>
                                           style: TextStyle(
                                             fontSize: 14.sp,
                                             color: ColorConstant.black
-                                                .withAlpha(06),
+                                                .withValues(alpha:0.6),
                                           ),
                                         ),
                                       ],
@@ -423,8 +479,8 @@ class _SettingScreenState extends State<SettingScreen>
                                     onChanged: (value) {
                                       _handleNotificationPermission(value);
                                     },
-                                    activeThumbColor: ColorConstant.white,
-                                    activeTrackColor: ColorConstant.call4helpOrange,
+                                    activeColor: ColorConstant.white,
+                                    activeTrackColor: ColorConstant.appColor,
                                   ),
                                 ],
                               ),
@@ -437,7 +493,7 @@ class _SettingScreenState extends State<SettingScreen>
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'Location Services',
@@ -453,7 +509,7 @@ class _SettingScreenState extends State<SettingScreen>
                                           style: TextStyle(
                                             fontSize: 14.sp,
                                             color: ColorConstant.black
-                                                .withAlpha(06),
+                                                .withValues(alpha:0.6),
                                           ),
                                         ),
                                       ],
@@ -464,8 +520,8 @@ class _SettingScreenState extends State<SettingScreen>
                                     onChanged: (value) {
                                       _handleLocationPermission(value);
                                     },
-                                    activeThumbColor: ColorConstant.white,
-                                    activeTrackColor: ColorConstant.call4helpOrange,
+                                    activeColor: ColorConstant.white,
+                                    activeTrackColor: ColorConstant.appColor,
                                   ),
                                 ],
                               ),
@@ -475,145 +531,136 @@ class _SettingScreenState extends State<SettingScreen>
 
                         SizedBox(height: 24.h),
 
-                        // Distance Settings Section
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: Text(
-                            'Distance Settings',
-                            style: TextStyle(
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.bold,
-                              color: ColorConstant.black,
+
+                        if (widget.type?.toLowerCase() != 'user') ...[
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: Text(
+                              'Distance Settings',
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.bold,
+                                color: ColorConstant.black,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 12.h),
+                          SizedBox(height: 12.h),
 
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 16.w),
-                          padding: EdgeInsets.all(16.w),
-                          decoration: BoxDecoration(
-                            color: ColorConstant.white,
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                          child: Column(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      // LEFT TEXT (CONSTRAINED)
-                                      Expanded(
-                                        child: Text(
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 16.w),
+                            padding: EdgeInsets.all(16.w),
+                            decoration: BoxDecoration(
+                              color: ColorConstant.white,
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            child: Column(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
                                           'Maximum Search Distance',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.w600,
                                             color: ColorConstant.black,
                                           ),
                                         ),
-                                      ),
-
-                                      SizedBox(width: 8.w),
-
-                                      // RIGHT VALUE CHIP (FIXED WIDTH BEHAVIOR)
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 12.w,
-                                          vertical: 6.h,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: ColorConstant.call4helpOrange.withAlpha(20),
-                                          borderRadius: BorderRadius.circular(8.r),
-                                        ),
-                                        child: Text(
-                                          '${settingsProvider.maxSearchDistance.toStringAsFixed(1)} '
-                                              '${selectedDistanceUnit == 'Kilometers' ? 'km' : 'miles'}',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.bold,
-                                            color: ColorConstant.call4helpOrange,
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12.w,
+                                            vertical: 6.h,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: ColorConstant.appColor
+                                                .withValues(alpha:0.1),
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            '${settingsProvider.maxSearchDistance.toStringAsFixed(1)} ${selectedDistanceUnit == 'Kilometers' ? 'km' : 'miles'}',
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: ColorConstant.appColor,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  Text(
-                                    'Adjust your work radius to find jobs nearby',
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      overflow: TextOverflow.ellipsis,
-
-                                      color: ColorConstant.black
+                                      ],
                                     ),
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  SliderTheme(
-                                    data: SliderThemeData(
-                                      activeTrackColor:
-                                          ColorConstant.call4helpOrange,
-                                      inactiveTrackColor: ColorConstant
-                                          .call4helpOrange
-                                          .withAlpha(03),
-                                      thumbColor: ColorConstant.call4helpOrange,
-                                      overlayColor: ColorConstant.call4helpOrange
-                                          .withAlpha(02),
-                                      trackHeight: 4.h,
-                                      thumbShape: RoundSliderThumbShape(
-                                        enabledThumbRadius: 12.r,
+                                    SizedBox(height: 8.h),
+                                    Text(
+                                      'Adjust your work radius to find jobs nearby',
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        color: ColorConstant.black.withValues(alpha:
+                                          0.6,
+                                        ),
                                       ),
                                     ),
-                                    child: Slider(
-                                      value: settingsProvider.maxSearchDistance
-                                          .toDouble(),
-                                      // Add .toDouble()
-                                      min: 1.0,
-                                      max: 50.0,
-                                      divisions: 49,
-                                      onChanged: (value) {
-                                        settingsProvider.setMaxSearchDistance(
-                                          value.round(),
-                                        );
-                                      },
-                                      onChangeEnd: (value) async {
-                                        // Call API to update radius
-                                        bool success = await settingsProvider
-                                            .updateWorkRadius(value.round());
-
-                                        if (success) {
-                                          _showSnackBar(
-                                            'Search distance updated successfully',
+                                    SizedBox(height: 8.h),
+                                    SliderTheme(
+                                      data: SliderThemeData(
+                                        activeTrackColor:
+                                        ColorConstant.appColor,
+                                        inactiveTrackColor: ColorConstant
+                                            .appColor
+                                            .withValues(alpha:0.3),
+                                        thumbColor: ColorConstant.appColor,
+                                        overlayColor: ColorConstant.appColor
+                                            .withValues(alpha: 0.2),
+                                        trackHeight: 4.h,
+                                        thumbShape: RoundSliderThumbShape(
+                                          enabledThumbRadius: 12.r,
+                                        ),
+                                      ),
+                                      child: Slider(
+                                        value: settingsProvider.maxSearchDistance
+                                            .toDouble(),
+                                        min: 1.0,
+                                        max: 50.0,
+                                        divisions: 49,
+                                        onChanged: (value) {
+                                          settingsProvider.setMaxSearchDistance(
+                                            value.round(),
                                           );
-                                        } else {
-                                          // Show error if API call failed
-                                          if (settingsProvider.errorMessage !=
-                                              null) {
+                                        },
+                                        onChangeEnd: (value) async {
+                                          bool success = await settingsProvider
+                                              .updateWorkRadius(value.round());
+
+                                          if (success) {
                                             _showSnackBar(
-                                              settingsProvider.errorMessage!,
+                                              'Search distance updated successfully',
                                             );
                                           } else {
-                                            _showSnackBar(
-                                              'Failed to update search distance',
-                                            );
+                                            if (settingsProvider.errorMessage !=
+                                                null) {
+                                              _showSnackBar(
+                                                settingsProvider.errorMessage!,
+                                              );
+                                            } else {
+                                              _showSnackBar(
+                                                'Failed to update search distance',
+                                              );
+                                            }
                                           }
-                                        }
-                                      },
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
 
-                        SizedBox(height: 24.h),
+                          SizedBox(height: 24.h),
+                        ],
 
                         // Legal & About Section
                         Padding(
@@ -653,7 +700,7 @@ class _SettingScreenState extends State<SettingScreen>
                                       content: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text('Version: $appVersion'),
                                           SizedBox(height: 8.h),
@@ -676,7 +723,7 @@ class _SettingScreenState extends State<SettingScreen>
                                   padding: EdgeInsets.symmetric(vertical: 12.h),
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         'App Version',
@@ -693,14 +740,14 @@ class _SettingScreenState extends State<SettingScreen>
                                             style: TextStyle(
                                               fontSize: 14.sp,
                                               color: ColorConstant.black
-                                                  .withAlpha(06),
+                                                  .withValues(alpha:0.6),
                                             ),
                                           ),
                                           SizedBox(width: 4.w),
                                           Icon(
                                             Icons.info_outline,
                                             size: 16.sp,
-                                            color: ColorConstant.call4helpOrange,
+                                            color: ColorConstant.appColor,
                                           ),
                                         ],
                                       ),
@@ -710,7 +757,7 @@ class _SettingScreenState extends State<SettingScreen>
                               ),
 
                               Divider(
-                                color: ColorConstant.black.withAlpha(01),
+                                color: ColorConstant.black.withValues(alpha:0.1),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -720,7 +767,7 @@ class _SettingScreenState extends State<SettingScreen>
                                     _navigateToLegalDocument('privacy_policy'),
                               ),
                               Divider(
-                                color: ColorConstant.black.withAlpha(01),
+                                color: ColorConstant.black.withValues(alpha:0.1),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -729,7 +776,7 @@ class _SettingScreenState extends State<SettingScreen>
                                 onTap: () => _navigateToLegalDocument('terms'),
                               ),
                               Divider(
-                                color: ColorConstant.black.withAlpha(01),
+                                color: ColorConstant.black.withValues(alpha:0.1),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -739,7 +786,7 @@ class _SettingScreenState extends State<SettingScreen>
                                     _navigateToLegalDocument('code_of_conduct'),
                               ),
                               Divider(
-                                color: ColorConstant.black.withAlpha(01),
+                                color: ColorConstant.black.withValues(alpha:0.1),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -755,7 +802,7 @@ class _SettingScreenState extends State<SettingScreen>
                                 },
                               ),
                               Divider(
-                                color: ColorConstant.black.withAlpha(01),
+                                color: ColorConstant.black.withValues(alpha:0.1),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -764,7 +811,7 @@ class _SettingScreenState extends State<SettingScreen>
                                 onTap: _contactSupport,
                               ),
                               Divider(
-                                color: ColorConstant.black.withAlpha(01),
+                                color: ColorConstant.black.withValues(alpha:0.1),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -773,7 +820,7 @@ class _SettingScreenState extends State<SettingScreen>
                                 onTap: _shareApp,
                               ),
                               Divider(
-                                color: ColorConstant.black.withAlpha(01),
+                                color: ColorConstant.black.withValues(alpha:0.1),
                                 height: 1.h,
                               ),
                               _buildLegalTile(
@@ -820,7 +867,7 @@ class _SettingScreenState extends State<SettingScreen>
                                   Container(
                                     padding: EdgeInsets.all(8.w),
                                     decoration: BoxDecoration(
-                                      color: Colors.red.withAlpha(01),
+                                      color: Colors.red.withValues(alpha:0.1),
                                       borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: Icon(
@@ -858,11 +905,11 @@ class _SettingScreenState extends State<SettingScreen>
                   // Loading overlay
                   if (settingsProvider.isLoading)
                     Container(
-                      color: Colors.black.withAlpha(03),
+                      color: Colors.black.withValues(alpha:0.3),
                       child: Center(
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            ColorConstant.call4helpOrange,
+                            ColorConstant.appColor,
                           ),
                         ),
                       ),
@@ -887,7 +934,7 @@ class _SettingScreenState extends State<SettingScreen>
         padding: EdgeInsets.symmetric(vertical: 12.h),
         child: Row(
           children: [
-            Icon(icon, color: ColorConstant.call4helpOrange, size: 20.sp),
+            Icon(icon, color: ColorConstant.appColor, size: 20.sp),
             SizedBox(width: 12.w),
             Expanded(
               child: Text(
@@ -901,7 +948,7 @@ class _SettingScreenState extends State<SettingScreen>
             ),
             Icon(
               Icons.chevron_right,
-              color: ColorConstant.black.withAlpha(04),
+              color: ColorConstant.black.withValues(alpha:0.4),
               size: 20.sp,
             ),
           ],
@@ -930,7 +977,7 @@ class _SettingScreenState extends State<SettingScreen>
             'Are you sure you want to logout?',
             style: TextStyle(
               fontSize: 14.sp,
-              color: ColorConstant.black,
+              color: ColorConstant.black.withValues(alpha:0.7),
             ),
           ),
           actions: [
@@ -942,7 +989,7 @@ class _SettingScreenState extends State<SettingScreen>
                 'Cancel',
                 style: TextStyle(
                   fontSize: 14.sp,
-                  color: ColorConstant.black.withAlpha(06),
+                  color: ColorConstant.black.withValues(alpha:0.6),
                 ),
               ),
             ),
@@ -980,7 +1027,7 @@ class _SettingScreenState extends State<SettingScreen>
       );
       await splashProvider.clearSession();
 
-      debugPrint('User logged out successfully');
+      // print('User logged out successfully');
 
       if (mounted) {
         Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);

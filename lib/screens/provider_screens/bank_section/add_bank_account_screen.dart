@@ -51,7 +51,7 @@ class _ProviderBankScreenState extends State<ProviderBankScreen> {
                     end: Alignment.bottomCenter,
                     colors: [
                       ColorConstant.appColor,
-                      ColorConstant.appColor.withOpacity(0.9),
+                      ColorConstant.appColor.withValues(alpha:0.9),
                     ],
                   ),
                 ),
@@ -73,7 +73,7 @@ class _ProviderBankScreenState extends State<ProviderBankScreen> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: Colors.black.withValues(alpha:0.08),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),
@@ -237,7 +237,7 @@ class _ProviderBankScreenState extends State<ProviderBankScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha:0.08),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(

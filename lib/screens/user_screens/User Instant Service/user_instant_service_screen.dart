@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/data/models/SubcategoryResponse.dart';
 import 'package:first_flutter/widgets/user_only_title_appbar.dart';
@@ -195,7 +194,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                             );
                           }
                           return SizedBox.shrink();
-                        }).toList(),
+                        }),
                       _locationPickerField(context),
 
                       if (selectedSubcategory.billingType.toLowerCase() ==
@@ -319,7 +318,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
 
               if (provider.isCreatingService)
                 Container(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   child: Center(
                     child: Card(
                       child: Padding(
@@ -1057,7 +1056,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   color: Colors.orange.shade50,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: ColorConstant.call4helpOrange.withOpacity(0.3),
+                    color: ColorConstant.call4helpOrange.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Row(
@@ -1196,22 +1195,17 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
         Consumer<UserInstantServiceProvider>(
           builder: (context, provider, child) {
             final currentValue = provider.getFormValue(fieldName ?? '');
-
-            // ✅ FIX: Clean and validate options list
             final cleanOptions =
                 options
                     ?.where((value) => value.trim().isNotEmpty)
                     .map((e) => e.trim())
                     .toList() ??
                 [];
-
-            // ✅ FIX: Only use currentValue if it exists in options
             final validValue = cleanOptions.contains(currentValue)
                 ? currentValue
                 : null;
-
             return DropdownButtonFormField<String>(
-              value: validValue,
+              initialValue: validValue,
               isExpanded: true,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
                 fontSize: 18,
@@ -1444,7 +1438,7 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
                   Expanded(
                     flex: 3,
                     child: DropdownButtonFormField<String>(
-                      value: provider.getFormValue('duration_unit') ?? 'hour',
+                      initialValue: provider.getFormValue('duration_unit') ?? 'hour',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontSize: 18,
                         color: Color(0xFF000000),
@@ -1659,96 +1653,8 @@ class _UserInstantServiceScreenState extends State<UserInstantServiceScreen> {
     );
   }
 
-  Widget _preRequisiteItems(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 6,
-            children: [
-              Expanded(
-                child: Text(
-                  "Equipment service providers are required to obtain",
-                  overflow: TextOverflow.visible,
-                  maxLines: 2,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall!.copyWith(color: ColorConstant.black),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          _buildEquipmentRow(context, ["Apron", "Knife", "Cap"]),
-          SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 6,
-            children: [
-              Expanded(
-                child: Text(
-                  "Equipment provided from our side",
-                  overflow: TextOverflow.visible,
-                  maxLines: 2,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall!.copyWith(color: ColorConstant.black),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          _buildEquipmentRow(context, ["Utensils", "Plates", "Spoons"]),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildEquipmentRow(BuildContext context, List<String> items) {
-    return Row(
-      spacing: 16,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: items
-          .map((item) => _buildEquipmentItem(context, item))
-          .toList(),
-    );
-  }
 
-  Widget _buildEquipmentItem(BuildContext context, String label) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: 6,
-      children: [
-        Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(7)),
-          height: 38,
-          width: 33,
-          child: CachedNetworkImage(
-            imageUrl: "https://picsum.photos/200/200",
-            fit: BoxFit.cover,
-            placeholder: (context, url) =>
-                Image.asset('assets/images/moyo_image_placeholder.png'),
-            errorWidget: (context, url, error) =>
-                Image.asset('assets/images/moyo_image_placeholder.png'),
-          ),
-        ),
-        Text(
-          label,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 2,
-          style: Theme.of(
-            context,
-          ).textTheme.labelSmall!.copyWith(color: ColorConstant.black),
-        ),
-      ],
-    );
-  }
 
   Widget _findServiceproviders(BuildContext context, {VoidCallback? onPress}) {
     return Padding(

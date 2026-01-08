@@ -10,7 +10,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'dart:math' show cos, sqrt, asin;
-import '../provider_screens/navigation/ServiceTimerScreen.dart';
 import 'navigation/user_service_tab_body/ServiceProvider.dart';
 import '../../providers/book_provider_provider.dart';
 
@@ -258,7 +257,7 @@ class _AssignedandCompleteUserServiceDetailsScreenState
         circleId: const CircleId('provider_circle'),
         center: providerLocation,
         radius: 100,
-        fillColor: Colors.orange.withOpacity(0.2),
+        fillColor: Colors.orange.withValues(alpha:0.2),
         strokeColor: Colors.orange,
         strokeWidth: 2,
       ),
@@ -471,24 +470,24 @@ class _AssignedandCompleteUserServiceDetailsScreenState
                           dynamicFields,
                           _serviceData,
                         ),
-                        onSeeWorktime: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ServiceTimerScreen(
-                                serviceId: widget.serviceId,
-                                durationValue:
-                                    _serviceData?['duration_value'] ?? 1,
-                                durationUnit:
-                                    _serviceData?['duration_unit'] ?? 'hours',
-                                categoryName:
-                                    _serviceData?['category'] ?? 'N/A',
-                                subCategoryName:
-                                    _serviceData?['service'] ?? 'N/A',
-                              ),
-                            ),
-                          );
-                        },
+                        // onSeeWorktime: () {
+                        //   Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => ServiceTimerScreen(
+                        //         serviceId: widget.serviceId,
+                        //         durationValue:
+                        //             _serviceData?['duration_value'] ?? 1,
+                        //         durationUnit:
+                        //             _serviceData?['duration_unit'] ?? 'hours',
+                        //         categoryName:
+                        //             _serviceData?['category'] ?? 'N/A',
+                        //         subCategoryName:
+                        //             _serviceData?['service'] ?? 'N/A',
+                        //       ),
+                        //     ),
+                        //   );
+                        // },
                         description:
                             _serviceData?['description'] ??
                             'No description available',
@@ -504,7 +503,7 @@ class _AssignedandCompleteUserServiceDetailsScreenState
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
+                                  color: Colors.black.withValues(alpha:0.1),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),

@@ -49,9 +49,7 @@ class _SearchCyberCafeScreenState extends State<SearchCyberCafeScreen> {
                   icon: const Icon(Icons.search),
                   onPressed: () {
                     FocusScope.of(context).unfocus();
-                    provider.loadStaticCafes(
-                      city: _cityController.text,
-                    );
+                    provider.loadStaticCafes(city: _cityController.text);
                   },
                 ),
               ),
@@ -61,10 +59,7 @@ class _SearchCyberCafeScreenState extends State<SearchCyberCafeScreen> {
 
             /// ⏳ Loading
             if (provider.isLoading)
-              const Expanded(
-                child: Center(child: CircularProgressIndicator()),
-              )
-
+              const Expanded(child: Center(child: CircularProgressIndicator()))
             /// ❌ Error
             else if (provider.error != null)
               Expanded(
@@ -75,50 +70,49 @@ class _SearchCyberCafeScreenState extends State<SearchCyberCafeScreen> {
                   ),
                 ),
               )
-
             /// 🔍 DEFAULT STATE (NO SEARCH YET)
             else if (!provider.hasSearched)
-                const Expanded(
-                  child: Center(
-                    child: Text(
-                      "Search cyber cafe",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
+              const Expanded(
+                child: Center(
+                  child: Text(
+                    "Search cyber cafe",
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
-                )
+                ),
+              )
+            /// 📭 EMPTY RESULT AFTER SEARCH
+            else if (provider.cafes.isEmpty)
+              const Expanded(child: Center(child: Text("No cyber cafes found")))
+            /// 📋 RESULT LIST
+            else
+              Expanded(
+                child: ListView.builder(
+                  itemCount: provider.cafes.length,
+                  itemBuilder: (context, index) {
+                    final cafe = provider.cafes[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => FullDaySlotScreen(
 
-              /// 📭 EMPTY RESULT AFTER SEARCH
-              else if (provider.cafes.isEmpty)
-                  const Expanded(
-                    child: Center(child: Text("No cyber cafes found")),
-                  )
-
-                /// 📋 RESULT LIST
-                else
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: provider.cafes.length,
-                      itemBuilder: (context, index) {
-                        final cafe = provider.cafes[index];
-                        return GestureDetector(
-                          onTap: (){
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => FullDaySlotScreen(
-                                  cyberCafeId: cafe['id'],
-                                  date: DateTime.now().toIso8601String().split('T').first,
-                                ),
-                              ),
-                            );
-                          },
-                            child: _CafeCard(cafe: cafe));
+                              cyberCafeId: cafe['id'],
+                              date: DateTime.now()
+                                  .toIso8601String()
+                                  .split('T')
+                                  .first,
+                              hourlyRate:'' ,
+                              subcategoryId: '',
+                            ),
+                          ),
+                        );
                       },
-                    ),
-                  ),
+                      child: _CafeCard(cafe: cafe),
+                    );
+                  },
+                ),
+              ),
           ],
         ),
       ),
@@ -143,18 +137,12 @@ class _CafeCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-            ),
+            BoxShadow(color: Colors.black.withValues(alpha:0.05), blurRadius: 8),
           ],
         ),
         child: Row(
           children: [
-            const CircleAvatar(
-              radius: 26,
-              child: Icon(Icons.computer),
-            ),
+            const CircleAvatar(radius: 26, child: Icon(Icons.computer)),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

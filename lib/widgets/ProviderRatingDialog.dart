@@ -172,11 +172,11 @@ class ProviderRatingDialog extends StatefulWidget {
   final String? providerName;
 
   const ProviderRatingDialog({
-    Key? key,
+    super.key,
     this.serviceId,
     this.userId,
     this.providerName,
-  }) : super(key: key);
+  });
 
   @override
   State<ProviderRatingDialog> createState() => _ProviderRatingDialogState();

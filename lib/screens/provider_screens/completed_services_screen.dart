@@ -211,7 +211,7 @@ class _CompletedServicesScreenState extends State<CompletedServicesScreen> {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: ColorConstant.black.withOpacity(0.07),
+            color: ColorConstant.black.withValues(alpha:0.07),
             blurRadius: 12,
             offset: Offset(0, 4.h),
           ),
@@ -255,7 +255,7 @@ class _CompletedServicesScreenState extends State<CompletedServicesScreen> {
                         'Completed • ${service['ended_at'] != null ? _formatDate(service['ended_at']) : ''}',
                         style: TextStyle(
                           fontSize: 13.sp,
-                          color: ColorConstant.white.withOpacity(0.9),
+                          color: ColorConstant.white.withValues(alpha:0.9),
                         ),
                       ),
                     ],
@@ -267,7 +267,7 @@ class _CompletedServicesScreenState extends State<CompletedServicesScreen> {
                     vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
-                    color: ColorConstant.white.withOpacity(0.2),
+                    color: ColorConstant.white.withValues(alpha:0.2),
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Text(
@@ -442,7 +442,7 @@ class _CompletedServicesScreenState extends State<CompletedServicesScreen> {
                     ),
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
-                      color: Color(0xFFFFA726).withOpacity(0.3),
+                      color: Color(0xFFFFA726).withValues(alpha:0.3),
                       width: 1.5,
                     ),
                   ),

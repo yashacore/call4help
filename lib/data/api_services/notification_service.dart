@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:first_flutter/screens/provider_screens/provider_service_details_screen.dart';
+import 'package:first_flutter/data/models/pending_list_booking.dart';
+import 'package:first_flutter/providers/booking_status_provider.dart';
+import 'package:first_flutter/screens/provider_screens/cyber_cafe/booking_details_screen.dart';
 import 'package:first_flutter/screens/user_screens/user_custom_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class NotificationService {
   static final FirebaseMessaging _firebaseMessaging =
@@ -257,7 +260,7 @@ class NotificationService {
   }
 
   // Handle Notification Tap with proper navigation
-  static void _handleNotificationTap(String? payload) {
+  static Future<void> _handleNotificationTap(String? payload) async {
     if (payload == null || payload.isEmpty) {
       debugPrint("⚠️ Empty payload received");
       return;
@@ -268,36 +271,56 @@ class NotificationService {
     try {
       final Map<String, dynamic> data = jsonDecode(payload);
 
-      if (data.containsKey("serviceId") && data.containsKey("role")) {
-        String serviceId = data["serviceId"].toString();
-        String role = data["role"].toString();
+      final String? type = data['type']?.toString();
+      final String? orderId = data['order_id']?.toString();
 
-        debugPrint("📍 Role: $role, ServiceId: $serviceId");
+      debugPrint("📍 Type: $type | OrderId: $orderId");
 
-        final context = navigatorKey.currentContext;
+      if (type != 'new_booking' || orderId == null) {
+        debugPrint("⚠️ Not a new booking notification");
+        return;
+      }
 
-        if (context != null) {
-          if (role == "user") {
-            // ✅ User role - Navigate to UserCustomBottomNav with UserService tab
-            _navigateToUserServiceFromNotification(context, serviceId);
-          } else if (role == "provider") {
-            // Provider role
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ProviderServiceDetailsScreen(serviceId: serviceId),
-              ),
-            );
-          }
-        } else {
-          debugPrint("❌ Navigator context not available");
+      final context = navigatorKey.currentContext;
+      if (context == null) {
+        debugPrint("❌ Navigator context not available");
+        return;
+      }
+
+      // 🔥 ACCESS PROVIDER
+      final provider =
+      Provider.of<ProviderSlotsStatusProvider>(context, listen: false);
+
+      // 🔄 LOAD BOOKINGS
+      await provider.fetchAllBookings();
+
+      // 🔍 FIND BOOKING
+      PendingSlotBooking? booking;
+
+      for (final b in provider.bookings) {
+        if (b.orderId == orderId) {
+          booking = b;
+          break;
         }
       }
-    } catch (e) {
-      debugPrint("❌ Error parsing payload: $e");
+      if (booking == null) {
+        debugPrint("❌ Booking not found");
+        return;
+      }
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => BookingDetailsScreen(booking: booking!), // ✅ FIX
+        ),
+      );
+
+    } catch (e, stack) {
+      debugPrint("❌ Notification tap error: $e");
+      debugPrint("📍 Stacktrace: $stack");
     }
   }
+
 
   // ✅ Navigate to UserService tab with serviceId
   static Future<void> _navigateToUserServiceFromNotification(

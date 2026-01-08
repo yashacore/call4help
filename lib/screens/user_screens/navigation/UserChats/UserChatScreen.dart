@@ -346,7 +346,7 @@ class _UserChatScreenState extends State<UserChatScreen>
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 2,
-      shadowColor: Colors.black.withOpacity(0.1),
+      shadowColor: Colors.black.withValues(alpha:0.1),
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Color(0xFF1D1B20)),
         onPressed: () => Navigator.pop(context),
@@ -361,7 +361,7 @@ class _UserChatScreenState extends State<UserChatScreen>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: ColorConstant.call4helpOrange.withOpacity(0.3),
+                    color: ColorConstant.call4helpOrange.withValues(alpha:0.3),
                     width: 2.w,
                   ),
                 ),
@@ -542,7 +542,7 @@ class _UserChatScreenState extends State<UserChatScreen>
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha:0.05),
                     blurRadius: 4,
                     offset: Offset(0, 2),
                   ),
@@ -568,7 +568,7 @@ class _UserChatScreenState extends State<UserChatScreen>
                         style: GoogleFonts.inter(
                           fontSize: 11.sp,
                           color: isSentByMe
-                              ? Colors.white.withOpacity(0.8)
+                              ? Colors.white.withValues(alpha:0.8)
                               : Color(0xFF7A7A7A),
                         ),
                       ),
@@ -579,7 +579,7 @@ class _UserChatScreenState extends State<UserChatScreen>
                           size: 14.sp,
                           color: message.isRead
                               ? Colors.white
-                              : Colors.white.withOpacity(0.8),
+                              : Colors.white.withValues(alpha:0.8),
                         ),
                       ],
                     ],
@@ -606,7 +606,7 @@ class _UserChatScreenState extends State<UserChatScreen>
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, -2),
           ),

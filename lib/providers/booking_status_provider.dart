@@ -13,6 +13,7 @@ class ProviderSlotsStatusProvider extends ChangeNotifier {
 
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
+
     return prefs.getString('provider_auth_token');
   }
 
@@ -25,6 +26,7 @@ class ProviderSlotsStatusProvider extends ChangeNotifier {
 
     try {
       final token = await _getToken();
+      print("Provider Token----$token");
       if (token == null) throw Exception("Token missing");
 
       final response = await http.get(
@@ -73,7 +75,7 @@ class ProviderSlotsStatusProvider extends ChangeNotifier {
 
       print("✅ Token received");
 
-      final url = 'https://api.call4help.in/cyber/provider/slots/bookings';
+      final url = 'https://api.call4help.in/cyber/provider/slots/provider/pending';
       print("🌐 GET URL: $url");
 
       final response = await http.get(
@@ -85,7 +87,7 @@ class ProviderSlotsStatusProvider extends ChangeNotifier {
       );
 
       print("📡 STATUS CODE: ${response.statusCode}");
-      print("📦 RAW RESPONSE: ${response.body}");
+      print("📦 RAW---- RESPONSE: ${response.body}");
 
       final decoded = jsonDecode(response.body);
 

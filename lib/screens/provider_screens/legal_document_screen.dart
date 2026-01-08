@@ -213,7 +213,7 @@ class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
                         Icon(
                           Icons.description_outlined,
                           size: 64.sp,
-                          color: ColorConstant.black.withOpacity(0.4),
+                          color: ColorConstant.black.withValues(alpha:0.4),
                         ),
                         SizedBox(height: 16.h),
                         Text(
@@ -230,7 +230,7 @@ class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: ColorConstant.black.withOpacity(0.6),
+                            color: ColorConstant.black.withValues(alpha:0.6),
                           ),
                         ),
                       ],
@@ -266,7 +266,7 @@ class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: ColorConstant.black.withOpacity(0.6),
+                            color: ColorConstant.black.withValues(alpha:0.6),
                           ),
                         ),
                         SizedBox(height: 24.h),
@@ -302,7 +302,7 @@ class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
                     'No document available',
                     style: TextStyle(
                       fontSize: 16.sp,
-                      color: ColorConstant.black.withOpacity(0.6),
+                      color: ColorConstant.black.withValues(alpha:0.6),
                     ),
                   ),
                 );
@@ -396,35 +396,35 @@ class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
                                 Icon(
                                   Icons.info_outline,
                                   size: 14.sp,
-                                  color: ColorConstant.black.withOpacity(0.6),
+                                  color: ColorConstant.black.withValues(alpha:0.6),
                                 ),
                                 SizedBox(width: 4.w),
                                 Text(
                                   'Version ${_provider.document!.version}',
                                   style: TextStyle(
                                     fontSize: 12.sp,
-                                    color: ColorConstant.black.withOpacity(0.6),
+                                    color: ColorConstant.black.withValues(alpha:0.6),
                                   ),
                                 ),
                                 SizedBox(width: 16.w),
                                 Icon(
                                   Icons.calendar_today,
                                   size: 14.sp,
-                                  color: ColorConstant.black.withOpacity(0.6),
+                                  color: ColorConstant.black.withValues(alpha:0.6),
                                 ),
                                 SizedBox(width: 4.w),
                                 Text(
                                   'Updated: ${_formatDate(_provider.document!.updatedAt)}',
                                   style: TextStyle(
                                     fontSize: 12.sp,
-                                    color: ColorConstant.black.withOpacity(0.6),
+                                    color: ColorConstant.black.withValues(alpha:0.6),
                                   ),
                                 ),
                               ],
                             ),
                             SizedBox(height: 16.h),
                             Divider(
-                              color: ColorConstant.black.withOpacity(0.1),
+                              color: ColorConstant.black.withValues(alpha:0.1),
                             ),
                             SizedBox(height: 16.h),
 

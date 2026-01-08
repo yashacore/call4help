@@ -54,7 +54,7 @@ class ProviderJobOfferingCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),
@@ -97,7 +97,7 @@ class ProviderJobOfferingCard extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: _getStatusColor().withOpacity(0.1),
+                    color: _getStatusColor().withValues(alpha:0.1),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: _getStatusColor(),
@@ -187,7 +187,7 @@ class ProviderJobOfferingCard extends StatelessWidget {
                       value: isChecked,
                       onChanged: onToggle,
                       activeColor: ColorConstant.call4helpGreen,
-                      activeTrackColor: ColorConstant.call4helpGreen.withOpacity(0.5),
+                      activeTrackColor: ColorConstant.call4helpGreen.withValues(alpha:0.5),
                     ),
                   ],
                 ),

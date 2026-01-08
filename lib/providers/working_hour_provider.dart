@@ -89,8 +89,6 @@ class WorkingHoursProvider extends ChangeNotifier {
       final uri = Uri.parse(
         "https://api.call4help.in/cyber/api/cyber/hours/set-working-hours",
       );
-      print("🌐 SET WORKING HOURS URL: $uri");
-      print("🧾 PAYLOAD: ${jsonEncode({"workingHours": workingHours})}");
       final response = await http.post(
         uri,
         headers: {
@@ -99,8 +97,6 @@ class WorkingHoursProvider extends ChangeNotifier {
         },
         body: jsonEncode({"workingHours": workingHours}),
       );
-      print("📡 STATUS: ${response.statusCode}");
-      print("📦 BODY: ${response.body}");
       if (response.statusCode == 200 || response.statusCode == 201) {
         final decoded = json.decode(response.body);
         if (decoded['success'] == true) {
@@ -113,7 +109,6 @@ class WorkingHoursProvider extends ChangeNotifier {
       }
     } catch (e) {
       error = e.toString();
-      print("🔥 ERROR: $e");
     } finally {
       isLoading = false;
       notifyListeners();
@@ -173,12 +168,6 @@ class WorkingHoursProvider extends ChangeNotifier {
         "https://api.call4help.in/cyber/api/cyber/hours/working-hours/$day",
       );
 
-      print("======================================");
-      print("🗑️ START DELETE WORKING DAY");
-      print("======================================");
-      print("🌐 DELETE URL: $uri");
-      print("🔑 TOKEN EXISTS: ${token.isNotEmpty}");
-      print("🧾 REQUEST BODY: { day_of_week: $day }");
 
       final request = http.Request("DELETE", uri);
 
@@ -187,43 +176,29 @@ class WorkingHoursProvider extends ChangeNotifier {
         "Content-Type": "application/json",
       });
 
-      print("📌 HEADERS:");
-      request.headers.forEach((k, v) => print("   $k : $v"));
+      request.headers.forEach((k, v) => debugPrint("   $k : $v"));
 
       // 🔑 Backend requires body even for DELETE
       request.body = jsonEncode({
         "day_of_week": day,
       });
 
-      print("📤 SENDING DELETE REQUEST...");
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      print("======================================");
-      print("📡 DELETE RESPONSE RECEIVED");
-      print("======================================");
-      print("📡 STATUS CODE: ${response.statusCode}");
-      print("📦 RAW BODY: ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 204) {
-        print("✅ WORKING DAY DELETED SUCCESSFULLY");
         return true;
       } else {
-        print("❌ DELETE FAILED");
         error = response.body;
         return false;
       }
     } catch (e, stack) {
-      print("🔥 DELETE EXCEPTION OCCURRED");
-      print("🔥 ERROR: $e");
-      print("🧵 STACK TRACE:\n$stack");
       error = e.toString();
       return false;
     } finally {
       _stopLoading();
-      print("🛑 DELETE FLOW ENDED");
-      print("======================================");
     }
   }
 

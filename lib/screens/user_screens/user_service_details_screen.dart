@@ -225,13 +225,13 @@ class _UserServiceDetailsScreenState extends State<UserServiceDetailsScreen> {
                         margin: const EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
                           color: (connected && isListening)
-                              ? Colors.green.withOpacity(0.1)
-                              : Colors.orange.withOpacity(0.1),
+                              ? Colors.green.withValues(alpha:0.1)
+                              : Colors.orange.withValues(alpha:0.1),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: (connected && isListening)
-                                ? Colors.green.withOpacity(0.3)
-                                : Colors.orange.withOpacity(0.3),
+                                ? Colors.green.withValues(alpha:0.3)
+                                : Colors.orange.withValues(alpha:0.3),
                           ),
                         ),
                         child: Row(

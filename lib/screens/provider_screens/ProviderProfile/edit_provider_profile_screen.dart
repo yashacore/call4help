@@ -345,7 +345,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),
@@ -397,58 +397,6 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
     );
   }
 
-  Widget _buildPANTextField() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextFormField(
-        // controller: _panController,
-        textCapitalization: TextCapitalization.characters,
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(10),
-          FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
-          TextInputFormatter.withFunction((oldValue, newValue) {
-            return TextEditingValue(
-              text: newValue.text.toUpperCase(),
-              selection: newValue.selection,
-            );
-          }),
-        ],
-        validator: (value) {
-          if (value == null || value.trim().isEmpty) {
-            return 'Please enter PAN number';
-          }
-          // PAN format: 5 letters, 4 digits, 1 letter (e.g., ABCDE1234F)
-          RegExp panRegex = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$');
-          if (!panRegex.hasMatch(value.trim())) {
-            return 'Invalid PAN format (e.g., ABCDE1234F)';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          labelText: "PAN Number",
-          hintText: "ABCDE1234F",
-          prefixIcon: Icon(Icons.badge, color: ColorConstant.call4helpOrange),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        ),
-      ),
-    );
-  }
 
   Widget _buildImagePicker({
     required String label,
@@ -466,7 +414,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),
@@ -545,7 +493,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),

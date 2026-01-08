@@ -11,7 +11,6 @@ class VendorBankProvider extends ChangeNotifier {
   bool isSuccess = false;
 
   Future<void> addBankDetails(ProviderBankModel model) async {
-    print('🔄 addBankDetails() called');
 
     isLoading = true;
     error = null;
@@ -19,18 +18,14 @@ class VendorBankProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      print('📦 Getting SharedPreferences...');
       final prefs = await SharedPreferences.getInstance();
 
       final token = prefs.getString('provider_auth_token');
-      print('🔐 Auth Token: $token');
 
       final url =
           'https://api.call4help.in/cyber-service/api/provider/bank';
-      print('🌐 API URL: $url');
 
       final body = jsonEncode(model.toJson());
-      print('📤 Request Body: $body');
 
       final response = await http.post(
         Uri.parse(url),
@@ -41,27 +36,19 @@ class VendorBankProvider extends ChangeNotifier {
         body: body,
       );
 
-      print('📥 Status Code: ${response.statusCode}');
-      print('📥 Raw Response: ${response.body}');
 
       final decoded = jsonDecode(response.body);
-      print('📦 Decoded Response: $decoded');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('✅ Bank details added successfully');
         isSuccess = true;
       } else {
         error = decoded['message'] ?? 'Failed to add bank details';
-        print('❌ API Error: $error');
       }
     } catch (e, stack) {
       error = e.toString();
-      print('🚨 Exception Occurred: $e');
-      print('🧱 Stack Trace: $stack');
     } finally {
       isLoading = false;
       notifyListeners();
-      print('🔚 addBankDetails() finished');
     }
   }
 

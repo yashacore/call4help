@@ -1393,7 +1393,7 @@ class UserServiceDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              SvgPicture.asset("assets/icons/call4help_task-complete.svg"),
+              SvgPicture.asset("assets/icons/moyo_task-complete.svg"),
               Text(
                 "Task Complete",
                 textAlign: TextAlign.center,

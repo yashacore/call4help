@@ -7,21 +7,23 @@ import 'package:provider/provider.dart';
 class FullDaySlotScreen extends StatelessWidget {
   final String cyberCafeId;
   final String date;
+  final String hourlyRate;
+  final String subcategoryId;
 
   const FullDaySlotScreen({
     super.key,
     required this.cyberCafeId,
     required this.date,
+    required this.hourlyRate,
+    required this.subcategoryId,
   });
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => SlotProvider()
-        ..fetchFullDaySlots(
-          cyberCafeId: cyberCafeId,
-          date: date,
-        ),
+      create: (_) =>
+          SlotProvider()
+            ..fetchFullDaySlots(cyberCafeId: cyberCafeId, date: date),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: ColorConstant.call4helpOrange,
@@ -42,8 +44,7 @@ class FullDaySlotScreen extends StatelessWidget {
             return GridView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: provider.slots.length,
-              gridDelegate:
-              const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 12,
                 crossAxisSpacing: 12,
@@ -51,6 +52,7 @@ class FullDaySlotScreen extends StatelessWidget {
               ),
               itemBuilder: (context, index) {
                 final slot = provider.slots[index];
+                final isSelected = provider.selectedSlotId == slot.apiSlot.id;
 
                 Color bg;
                 Color border;
@@ -58,65 +60,87 @@ class FullDaySlotScreen extends StatelessWidget {
 
                 switch (slot.status) {
                   case SlotUIStatus.available:
-                    bg = Colors.white;
-                    border = Colors.green;
-                    label =
-                    "${slot.apiSlot!.availableSeats} seats";
+                    bg = isSelected ? Colors.green.shade50 : Colors.white;
+                    border = isSelected ? Colors.green : Colors.green;
+                    label = "${slot.apiSlot.availableSeats} seats";
                     break;
+
                   case SlotUIStatus.full:
                     bg = Colors.orange.shade100;
                     border = Colors.orange;
                     label = "Full";
                     break;
+
                   case SlotUIStatus.locked:
                     bg = Colors.grey.shade300;
                     border = Colors.grey;
                     label = "Locked";
                     break;
-                  case SlotUIStatus.notCreated:
-                    bg = Colors.red.shade50;
-                    border = Colors.red;
-                    label = "Not Created";
-                    break;
                 }
 
-                final disabled =
-                    slot.status != SlotUIStatus.available;
+                final disabled = slot.status != SlotUIStatus.available;
 
                 return InkWell(
                   onTap: disabled
-                    ? null
-                    : () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => BookSlotScreen(
-                        slotId: slot.apiSlot!.id,
+                      ? null
+                      : () {
+                    // ✅ SELECT SLOT
+                    provider.selectSlot(slot.apiSlot.id);
 
+                    // ✅ NAVIGATE
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BookSlotScreen(
+                          slotId: slot.apiSlot.id,
+                          hourlyRate: hourlyRate,
+                          subcategoryId: subcategoryId,
+                          duration:
+                          "${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)}",
+                        ),
                       ),
-                    ),
-                  );
-                },
-
-                child: Container(
+                    );
+                  },
+                  child: Container(
                     decoration: BoxDecoration(
                       color: bg,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: border),
+                      border: Border.all(
+                        color: border,
+                        width: isSelected ? 2.5 : 1.2, // ⭐ highlight
+                      ),
+                      boxShadow: isSelected
+                          ? [
+                        BoxShadow(
+                          color: Colors.green.withOpacity(0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        )
+                      ]
+                          : [],
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           "${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)}",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: isSelected ? Colors.green : Colors.black,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Text(
                           label,
-                          style: TextStyle(color: border),
+                          style: TextStyle(
+                            color: border,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
                         ),
+                        if (isSelected) ...[
+                          const SizedBox(height: 6),
+                          const Icon(Icons.check_circle, color: Colors.green, size: 18),
+                        ],
                       ],
                     ),
                   ),

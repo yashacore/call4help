@@ -1,6 +1,5 @@
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/user_notification_provider.dart';
-import 'package:first_flutter/screens/user_screens/cyber_cafe/booking_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -107,85 +106,63 @@ class _UserNotificationsScreenState extends State<UserNotificationsScreen> {
               final n = provider.notifications[i];
               final isSelected = _selectedIds.contains(n.id);
 
-              return InkWell(
-                borderRadius: BorderRadius.circular(14),
-                onTap: () {
-                  if (n.orderId.isNotEmpty) {
-                    if (!n.isRead) {
-                      context.read<NotificationProviderUser>().markAsRead(n.id);
-                    }
+              return Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? Colors.blue.withAlpha(12)
+                      : n.isRead
+                      ? Colors.white
+                      : Colors.blue.withAlpha(05),
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(color: Colors.black.withAlpha(06), blurRadius: 8),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: _colorByType(n.type).withAlpha(15),
+                      child: Icon(
+                        _iconByType(n.type),
+                        color: _colorByType(n.type),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            n.title,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            n.message,
+                            style: TextStyle(color: Colors.grey.shade700),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => BookingDetailScreen(orderId: n.orderId),
-                      ),
-                    );
-                  }
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? Colors.blue.withAlpha(12)
-                        : n.isRead
-                        ? Colors.white
-                        : Colors.blue.withAlpha(05),
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(06),
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: _colorByType(n.type).withAlpha(15),
-                        child: Icon(
-                          _iconByType(n.type),
-                          color: _colorByType(n.type),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              n.title,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              n.message,
-                              style: TextStyle(color: Colors.grey.shade700),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      /// ✅ ALWAYS VISIBLE CHECKBOX
-                      Checkbox(
-                        value: isSelected,
-                        onChanged: (value) {
-                          setState(() {
-                            if (value == true) {
-                              _selectedIds.add(n.id);
-                            } else {
-                              _selectedIds.remove(n.id);
-                            }
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+                    /// ✅ ALWAYS VISIBLE CHECKBOX
+                    Checkbox(
+                      value: isSelected,
+                      onChanged: (value) {
+                        setState(() {
+                          if (value == true) {
+                            _selectedIds.add(n.id);
+                          } else {
+                            _selectedIds.remove(n.id);
+                          }
+                        });
+                      },
+                    ),
+                  ],
                 ),
               );
             },

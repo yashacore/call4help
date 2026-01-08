@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../widgets/UpdateProfileDialog.dart';
 import '../../../widgets/user_expansion_tile_list_card.dart';
 import '../User Instant Service/user_instant_service_screen.dart';
 import 'UserSearchProvider.dart';
@@ -88,7 +87,9 @@ class _UserSearchScreenBodyState extends State<UserSearchScreenBody> {
             : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: ColorConstant.call4helpOrange.withAlpha(0)),
+          borderSide: BorderSide(
+            color: ColorConstant.call4helpOrange.withAlpha(0),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),

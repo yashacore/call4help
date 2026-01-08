@@ -182,7 +182,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Container(
                 padding: EdgeInsets.all(20.w),
                 decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
+                  color: Colors.orange.withValues(alpha:0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -287,7 +287,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Container(
                 padding: EdgeInsets.all(20.w),
                 decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
+                  color: Colors.orange.withValues(alpha:0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -373,15 +373,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _handleVerifyEmail() async {
-    final editProvider = context.read<EditProfileProvider>();
-    editProvider.clearEmailError();
+    debugPrint('📧 [VerifyEmail] Flow started');
 
+    final editProvider = context.read<EditProfileProvider>();
+    debugPrint('📧 [VerifyEmail] Provider fetched');
+
+    editProvider.clearEmailError();
+    debugPrint('📧 [VerifyEmail] Cleared previous email errors');
+
+    debugPrint('📧 [VerifyEmail] Sending email OTP...');
     final otpSent = await editProvider.sendEmailOtp();
+    debugPrint('📧 [VerifyEmail] OTP sent result: $otpSent');
 
     if (otpSent && mounted) {
+      debugPrint('📧 [VerifyEmail] Showing email verification dialog');
+
       final verified = await EmailVerificationDialog.show(context);
+      debugPrint('📧 [VerifyEmail] Dialog result (verified): $verified');
 
       if (verified == true && mounted) {
+        debugPrint('✅ [VerifyEmail] Email verified successfully');
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Email verified successfully!'),
@@ -389,8 +401,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             behavior: SnackBarBehavior.floating,
           ),
         );
+      } else {
+        debugPrint('⚠️ [VerifyEmail] Email verification cancelled or failed');
       }
     } else if (editProvider.emailErrorMessage != null && mounted) {
+      debugPrint(
+        '❌ [VerifyEmail] OTP failed. Error: ${editProvider.emailErrorMessage}',
+      );
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(editProvider.emailErrorMessage!),
@@ -398,7 +416,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           behavior: SnackBarBehavior.floating,
         ),
       );
+    } else {
+      debugPrint(
+        '⚠️ [VerifyEmail] OTP not sent or widget not mounted (mounted=$mounted)',
+      );
     }
+
+    debugPrint('📧 [VerifyEmail] Flow ended');
   }
 
   Future<void> _handleVerifyMobile() async {
@@ -523,7 +547,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   editProvider.isEmailOtpVerifying ||
                   editProvider.isMobileOtpVerifying)
                 Container(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha:0.3),
                   child: Center(
                     child: CircularProgressIndicator(
                       color: ColorConstant.call4helpOrange,
@@ -549,7 +573,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100.r),
               border: Border.all(
-                color: ColorConstant.call4helpOrange.withOpacity(0.3),
+                color: ColorConstant.call4helpOrange.withValues(alpha:0.3),
                 width: 2.w,
               ),
             ),
@@ -674,9 +698,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha:0.1),
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.green.withOpacity(0.3)),
+                  border: Border.all(color: Colors.green.withValues(alpha:0.3)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -711,7 +735,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 : null,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha:0.05),
                 blurRadius: 10.r,
                 offset: Offset(0, 2.h),
               ),
@@ -811,13 +835,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
               color: isVerified
-                  ? Colors.green.withOpacity(0.1)
-                  : Colors.orange.withOpacity(0.1),
+                  ? Colors.green.withValues(alpha:0.1)
+                  : Colors.orange.withValues(alpha:0.1),
               borderRadius: BorderRadius.circular(8.r),
               border: Border.all(
                 color: isVerified
-                    ? Colors.green.withOpacity(0.3)
-                    : Colors.orange.withOpacity(0.3),
+                    ? Colors.green.withValues(alpha:0.3)
+                    : Colors.orange.withValues(alpha:0.3),
               ),
             ),
             child: Row(
@@ -874,9 +898,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha:0.1),
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.green.withOpacity(0.3)),
+                  border: Border.all(color: Colors.green.withValues(alpha:0.3)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -911,7 +935,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 : null,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha:0.05),
                 blurRadius: 10.r,
                 offset: Offset(0, 2.h),
               ),
@@ -1015,13 +1039,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
               color: isVerified
-                  ? Colors.green.withOpacity(0.1)
-                  : Colors.orange.withOpacity(0.1),
+                  ? Colors.green.withValues(alpha:0.1)
+                  : Colors.orange.withValues(alpha:0.1),
               borderRadius: BorderRadius.circular(8.r),
               border: Border.all(
                 color: isVerified
-                    ? Colors.green.withOpacity(0.3)
-                    : Colors.orange.withOpacity(0.3),
+                    ? Colors.green.withValues(alpha:0.3)
+                    : Colors.orange.withValues(alpha:0.3),
               ),
             ),
             child: Row(
@@ -1073,7 +1097,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             borderRadius: BorderRadius.circular(12.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha:0.05),
                 blurRadius: 10.r,
                 offset: Offset(0, 2.h),
               ),
@@ -1120,7 +1144,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           color: isSelected
-              ? ColorConstant.call4helpOrange.withOpacity(0.1)
+              ? ColorConstant.call4helpOrange.withValues(alpha:0.1)
               : Colors.white,
           borderRadius: BorderRadius.circular(12.r),
         ),
@@ -1178,7 +1202,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             borderRadius: BorderRadius.circular(12.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha:0.05),
                 blurRadius: 10.r,
                 offset: Offset(0, 2.h),
               ),

@@ -248,7 +248,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
             : null,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 8,
             offset: Offset(0, 2),
           ),
@@ -264,7 +264,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: address.isDefault
-                      ? ColorConstant.call4helpOrange.withOpacity(0.2)
+                      ? ColorConstant.call4helpOrange.withValues(alpha:0.2)
                       : ColorConstant.call4helpOrangeFade,
                   borderRadius: BorderRadius.circular(8),
                 ),

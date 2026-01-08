@@ -46,3 +46,15 @@
 # Optional: Suppress verbose warnings in build output
 -dontwarn kotlinx.coroutines.**
 -dontwarn kotlin.Metadata
+
+
+# Razorpay Proguard Rules
+-keep class com.razorpay.** {*;}
+-dontwarn com.razorpay.**
+-keepattributes *Annotation*
+-keepattributes Signature
+-keepattributes Exceptions
+
+# Razorpay के साथ काम करने वाले अन्य जरूरी क्लासेस
+-keep class com.google.android.gms.wallet.** {*;}
+-keep class com.google.android.gms.auth.** {*;}

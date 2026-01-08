@@ -350,37 +350,58 @@ class EditProfileProvider with ChangeNotifier {
 
   // Send OTP to email for verification
   Future<bool> sendEmailOtp() async {
+    debugPrint('📨 [sendEmailOtp] Method called');
+
     final email = emailController.text.trim();
+    debugPrint('📨 [sendEmailOtp] Email entered: "$email"');
 
     if (_isEmailLocked) {
+      debugPrint('❌ [sendEmailOtp] Email is locked (already verified)');
       _emailErrorMessage = "Email is already verified and cannot be changed";
       notifyListeners();
       return false;
     }
 
-    if (email.isEmpty || !_isValidEmail(email)) {
+    if (email.isEmpty) {
+      debugPrint('❌ [sendEmailOtp] Email is empty');
       _emailErrorMessage = "Please enter a valid email address";
       notifyListeners();
       return false;
     }
 
+    if (!_isValidEmail(email)) {
+      debugPrint('❌ [sendEmailOtp] Invalid email format');
+      _emailErrorMessage = "Please enter a valid email address";
+      notifyListeners();
+      return false;
+    }
+
+    debugPrint('⏳ [sendEmailOtp] Validation passed, starting API call');
     _isEmailOtpLoading = true;
     _emailErrorMessage = null;
     notifyListeners();
 
     try {
+      debugPrint('🔐 [sendEmailOtp] Fetching auth token from SharedPreferences');
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('auth_token');
 
+      debugPrint(
+        '🔐 [sendEmailOtp] Token exists: ${token != null && token.isNotEmpty}',
+      );
+
       if (token == null || token.isEmpty) {
+        debugPrint('❌ [sendEmailOtp] Auth token missing');
         _emailErrorMessage =
-            "Authentication token not found. Please login again.";
+        "Authentication token not found. Please login again.";
         _isEmailOtpLoading = false;
         notifyListeners();
         return false;
       }
 
       final url = Uri.parse('$base_url/api/auth/send-email-otp');
+      debugPrint('🌐 [sendEmailOtp] POST URL: $url');
+      debugPrint('📦 [sendEmailOtp] Request body: { email: $email }');
 
       final response = await http.post(
         url,
@@ -391,16 +412,26 @@ class EditProfileProvider with ChangeNotifier {
         body: jsonEncode({'email': email}),
       );
 
+      debugPrint('📡 [sendEmailOtp] Status code: ${response.statusCode}');
+      debugPrint('📦 [sendEmailOtp] Raw response body: ${response.body}');
+
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
+        debugPrint('📦 [sendEmailOtp] Decoded response: $responseData');
 
         if (responseData['message'] == 'OTP sent to email') {
+          debugPrint('✅ [sendEmailOtp] OTP sent successfully');
+
           _emailOtpSent = true;
           _isEmailOtpLoading = false;
           _emailErrorMessage = null;
           notifyListeners();
           return true;
         } else {
+          debugPrint(
+            '❌ [sendEmailOtp] API returned failure message: ${responseData['message']}',
+          );
+
           _emailErrorMessage =
               responseData['message'] ?? "Unexpected response from server";
           _isEmailOtpLoading = false;
@@ -408,17 +439,26 @@ class EditProfileProvider with ChangeNotifier {
           return false;
         }
       } else {
+        debugPrint('❌ [sendEmailOtp] Non-200 response received');
+
         final errorData = jsonDecode(response.body);
+        debugPrint('📦 [sendEmailOtp] Error response body: $errorData');
+
         _emailErrorMessage = errorData['message'] ?? "Failed to send email OTP";
         _isEmailOtpLoading = false;
         notifyListeners();
         return false;
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('🔥 [sendEmailOtp] Exception occurred: $e');
+      debugPrint('📌 [sendEmailOtp] StackTrace: $stackTrace');
+
       _emailErrorMessage = "Network error. Please check your connection.";
       _isEmailOtpLoading = false;
       notifyListeners();
       return false;
+    } finally {
+      debugPrint('📨 [sendEmailOtp] Method execution completed');
     }
   }
 

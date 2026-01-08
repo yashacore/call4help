@@ -11,8 +11,6 @@ class SlotListProvider extends ChangeNotifier {
   SlotListModel? selectedSlot;
 
   Future<void> fetchSlots(String date) async {
-    print("📡 fetchSlots called");
-    print("📅 Date: $date");
 
     isLoading = true;
     error = null;
@@ -26,8 +24,6 @@ class SlotListProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final authToken = prefs.getString('provider_auth_token');
 
-      print("🌐 GET URL: $url");
-      print("🔐 Provider Auth Token: $authToken");
 
       final response = await http.get(
         url,
@@ -37,31 +33,24 @@ class SlotListProvider extends ChangeNotifier {
         },
       );
 
-      print("📥 Status Code: ${response.statusCode}");
-      print("📥 Raw Response: ${response.body}");
 
       final decoded = jsonDecode(response.body);
-      print("🧾 Decoded Response: $decoded");
 
       if (response.statusCode == 200 && decoded['success'] == true) {
         slots = (decoded['data'] as List)
             .map((e) => SlotListModel.fromJson(e))
             .toList();
 
-        print("✅ Slots Loaded: ${slots.length}");
       } else {
         error = 'Failed to load slots';
-        print("❌ API Error: $error");
       }
     } catch (e) {
       error = e.toString();
-      print("🔥 Exception in fetchSlots: $error");
     }
 
     isLoading = false;
     notifyListeners();
 
-    print("🏁 fetchSlots completed");
   }
 
   void selectSlot(SlotListModel slot) {
@@ -87,9 +76,6 @@ class SlotListProvider extends ChangeNotifier {
         "https://api.call4help.in/cyber/provider/slots/delete/$slotId",
       );
 
-      print("======================================");
-      print("🗑️ DELETE SLOT");
-      print("🌐 URL: $uri");
 
       final response = await http.delete(
         uri,
@@ -98,8 +84,6 @@ class SlotListProvider extends ChangeNotifier {
         },
       );
 
-      print("📡 STATUS: ${response.statusCode}");
-      print("📦 BODY: ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 204) {
         return true;
@@ -109,13 +93,10 @@ class SlotListProvider extends ChangeNotifier {
       return false;
     } catch (e) {
       error = e.toString();
-      print("🔥 DELETE SLOT ERROR: $e");
       return false;
     } finally {
       isLoading = false;
       notifyListeners();
-      print("🛑 DELETE SLOT FLOW ENDED");
-      print("======================================");
     }
   }
 

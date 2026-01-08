@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "63793142080-uvbiu7opb3apki9peptgat67og49kojk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.acore.app.call4help",
+            "certificate_hash": "d2fd8c512670868bf44ff1cd6f814a93f750810c"
+          }
+        },
+        {
           "client_id": "63793142080-v9omg6rvrthjbonkd4tirpt80d01voqo.apps.googleusercontent.com",
           "client_type": 3
         }

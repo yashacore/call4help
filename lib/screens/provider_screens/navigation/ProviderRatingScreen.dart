@@ -119,7 +119,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              ColorConstant.call4helpOrangeFade.withOpacity(0.3),
+              ColorConstant.call4helpOrangeFade.withValues(alpha:0.3),
               ColorConstant.scaffoldGray,
             ],
           ),
@@ -229,7 +229,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
                 borderRadius: BorderRadius.circular(24.r),
                 boxShadow: [
                   BoxShadow(
-                    color: ColorConstant.call4helpOrange.withOpacity(0.3),
+                    color: ColorConstant.call4helpOrange.withValues(alpha:0.3),
                     blurRadius: 20,
                     offset: Offset(0, 10),
                   ),
@@ -242,7 +242,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
-                      color: ColorConstant.white.withOpacity(0.9),
+                      color: ColorConstant.white.withValues(alpha:0.9),
                       letterSpacing: 1,
                     ),
                   ),
@@ -263,7 +263,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
                     'Based on $totalRatings ${totalRatings == 1 ? 'review' : 'reviews'}',
                     style: TextStyle(
                       fontSize: 14.sp,
-                      color: ColorConstant.white.withOpacity(0.85),
+                      color: ColorConstant.white.withValues(alpha:0.85),
                     ),
                   ),
                 ],
@@ -317,14 +317,14 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
                       Icon(
                         Icons.rate_review_outlined,
                         size: 48.sp,
-                        color: ColorConstant.onSurface.withOpacity(0.3),
+                        color: ColorConstant.onSurface.withValues(alpha:0.3),
                       ),
                       SizedBox(height: 12.h),
                       Text(
                         'No reviews yet',
                         style: TextStyle(
                           fontSize: 16.sp,
-                          color: ColorConstant.onSurface.withOpacity(0.6),
+                          color: ColorConstant.onSurface.withValues(alpha:0.6),
                         ),
                       ),
                     ],
@@ -358,7 +358,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -378,7 +378,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
                         : Icons.star_outline_rounded,
                     color: index < stars
                         ? ColorConstant.call4helpOrange
-                        : ColorConstant.onSurface.withOpacity(0.3),
+                        : ColorConstant.onSurface.withValues(alpha:0.3),
                     size: 20.sp,
                   );
                 }),
@@ -388,7 +388,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
                   '${date.day}/${date.month}/${date.year}',
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color: ColorConstant.onSurface.withOpacity(0.5),
+                    color: ColorConstant.onSurface.withValues(alpha:0.5),
                   ),
                 ),
             ],
@@ -426,7 +426,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
         } else {
           return Icon(
             Icons.star_outline_rounded,
-            color: ColorConstant.white.withOpacity(0.5),
+            color: ColorConstant.white.withValues(alpha:0.5),
             size: 32.sp,
           );
         }
@@ -447,7 +447,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha:0.1),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -458,7 +458,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
           Container(
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha:0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: 24.sp),
@@ -477,7 +477,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
             title,
             style: TextStyle(
               fontSize: 12.sp,
-              color: ColorConstant.onSurface.withOpacity(0.6),
+              color: ColorConstant.onSurface.withValues(alpha:0.6),
             ),
             textAlign: TextAlign.center,
           ),
@@ -497,7 +497,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -568,7 +568,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
             borderRadius: BorderRadius.circular(4.r),
             child: LinearProgressIndicator(
               value: percentage,
-              backgroundColor: ColorConstant.call4helpOrangeFade.withOpacity(0.3),
+              backgroundColor: ColorConstant.call4helpOrangeFade.withValues(alpha:0.3),
               valueColor: AlwaysStoppedAnimation<Color>(
                 ColorConstant.call4helpOrange,
               ),
@@ -581,7 +581,7 @@ class _ProviderRatingScreenState extends State<ProviderRatingScreen> {
           '${(percentage * 100).toInt()}% ($count)',
           style: TextStyle(
             fontSize: 12.sp,
-            color: ColorConstant.onSurface.withOpacity(0.6),
+            color: ColorConstant.onSurface.withValues(alpha:0.6),
           ),
         ),
       ],

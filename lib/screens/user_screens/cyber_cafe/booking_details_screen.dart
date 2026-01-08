@@ -129,7 +129,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: _statusColor(b.status).withOpacity(.15),
+                        color: _statusColor(b.status).withValues(alpha:.15),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -158,7 +158,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(.06), blurRadius: 8),
+          BoxShadow(color: Colors.black.withValues(alpha:.06), blurRadius: 8),
         ],
       ),
       child: Column(

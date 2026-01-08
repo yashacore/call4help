@@ -70,7 +70,7 @@ class MyBookingUser extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.06),
+                          color: Colors.black.withValues(alpha:0.06),
                           blurRadius: 8,
                         ),
                       ],
@@ -94,7 +94,7 @@ class MyBookingUser extends StatelessWidget {
                             Chip(
                               label: Text(booking.status.toUpperCase()),
                               backgroundColor:
-                              _statusColor(booking.status).withOpacity(0.15),
+                              _statusColor(booking.status).withValues(alpha:0.15),
                               labelStyle: TextStyle(
                                 color: _statusColor(booking.status),
                               ),

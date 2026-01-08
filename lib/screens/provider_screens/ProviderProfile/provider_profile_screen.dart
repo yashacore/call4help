@@ -149,7 +149,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(100),
         border: Border.all(
-          color: ColorConstant.call4helpOrange.withOpacity(0.3),
+          color: ColorConstant.call4helpOrange.withValues(alpha:0.3),
           width: 2,
         ),
       ),
@@ -367,7 +367,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),
@@ -386,8 +386,8 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: isPositive
-                  ? Colors.green.withOpacity(0.1)
-                  : Colors.orange.withOpacity(0.1),
+                  ? Colors.green.withValues(alpha:0.1)
+                  : Colors.orange.withValues(alpha:0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(

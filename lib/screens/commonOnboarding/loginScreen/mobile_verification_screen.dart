@@ -169,7 +169,7 @@ class __MobileVerificationDialogContentState
                   Container(
                     padding: EdgeInsets.all(20.w),
                     decoration: BoxDecoration(
-                      color: ColorConstant.call4helpOrange.withOpacity(0.1),
+                      color: ColorConstant.call4helpOrange.withValues(alpha:0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -239,7 +239,7 @@ class __MobileVerificationDialogContentState
                         ),
                         elevation: 0,
                         disabledBackgroundColor: ColorConstant.call4helpOrange
-                            .withOpacity(0.6),
+                            .withValues(alpha:0.6),
                       ),
                       child: editProvider.isMobileOtpVerifying
                           ? SizedBox(

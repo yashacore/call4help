@@ -69,7 +69,7 @@ class _OtpScreenState extends State<OtpScreen> {
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha:0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -322,7 +322,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                   vertical: 12.h,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.red.withOpacity(0.2),
+                                  color: Colors.red.withValues(alpha:0.2),
                                   borderRadius: BorderRadius.circular(8.r),
                                   border: Border.all(color: Colors.red),
                                 ),
@@ -414,7 +414,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                     : "Resend in ",
                                 style: AppTextStyle.interRegular.copyWith(
                                   fontSize: 14.sp,
-                                  color: Colors.white.withOpacity(0.8),
+                                  color: Colors.white.withValues(alpha:0.8),
                                 ),
                               ),
                               Text(

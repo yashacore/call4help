@@ -201,41 +201,47 @@ class _LoginScreenState extends State<LoginScreen> {
                                 padding: EdgeInsets.only(top: 15.h),
                                 width: 200.w,
                                 height: 36.h,
-                                child: TextField(
+                                child:TextField(
+                                  controller: _phoneNumberController,
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 10,
+
                                   cursorColor: Colors.white,
+                                  textAlignVertical: TextAlignVertical.center, // ✅ FIX
+
                                   style: AppTextStyle.interMedium.copyWith(
                                     color: Colors.white,
                                     fontSize: 15.sp,
                                   ),
-                                  controller: _phoneNumberController,
-                                  keyboardType: TextInputType.number,
-                                  maxLength: 10,
+
                                   decoration: InputDecoration(
                                     hintText: "Phone Number",
                                     counterText: "",
-                                    hintStyle: AppTextStyle.interMedium
-                                        .copyWith(
-                                          color: Colors.white,
-                                          fontSize: 15.sp,
-                                        ),
+
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 14.h, // ✅ FIX
+                                      horizontal: 12.w,
+                                    ),
+
+                                    hintStyle: AppTextStyle.interMedium.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 15.sp,
+                                    ),
+
                                     fillColor: Colors.black,
+
                                     border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.grey,
-                                      ),
+                                      borderSide: BorderSide(color: Colors.grey),
                                     ),
                                     enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.transparent,
-                                      ),
+                                      borderSide: BorderSide(color: Colors.transparent),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.transparent,
-                                      ),
+                                      borderSide: BorderSide(color: Colors.transparent),
                                     ),
                                   ),
                                 ),
+
                               ),
                             ],
                           ),
@@ -377,7 +383,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.r),
                             ),
-                            disabledBackgroundColor: Colors.grey.withOpacity(
+                            disabledBackgroundColor: Colors.grey.withValues(alpha:
                               0.3,
                             ),
                           ),

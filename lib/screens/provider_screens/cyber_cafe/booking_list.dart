@@ -51,11 +51,15 @@ class _ProviderSlotsDashboardState extends State<ProviderSlotsDashboard>
         title: const Text("Slot Bookings"),
         bottom: TabBar(
           controller: _tabController,
+          labelColor: Colors.white,            // selected tab text color
+          unselectedLabelColor: Colors.grey,   // unselected tab text color
+          indicatorColor: Colors.green,        // underline indicator color (optional)
           tabs: const [
             Tab(text: "Pending"),
             Tab(text: "All Bookings"),
           ],
         ),
+
       ),
       body: Consumer<ProviderSlotsStatusProvider>(
         builder: (context, provider, _) {
@@ -158,8 +162,8 @@ class _ProviderSlotsDashboardState extends State<ProviderSlotsDashboard>
           fontSize: 12,
         ),
       ),
-      backgroundColor: color.withOpacity(0.12),
-      side: BorderSide(color: color.withOpacity(0.3)),
+      backgroundColor: color.withValues(alpha:0.12),
+      side: BorderSide(color: color.withValues(alpha:0.3)),
     );
   }
 
@@ -168,7 +172,7 @@ class _ProviderSlotsDashboardState extends State<ProviderSlotsDashboard>
     borderRadius: BorderRadius.circular(14),
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.06),
+        color: Colors.black.withValues(alpha:0.06),
         blurRadius: 8,
         offset: const Offset(0, 4),
       ),

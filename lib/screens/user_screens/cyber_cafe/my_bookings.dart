@@ -84,7 +84,7 @@ class _UserBookingsScreenState extends State<MyCyberBookings> {
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(.06),
+                        color: Colors.black.withValues(alpha:.06),
                         blurRadius: 8,
                       ),
                     ],
@@ -109,7 +109,7 @@ class _UserBookingsScreenState extends State<MyCyberBookings> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: _statusColor(b.status).withOpacity(.15),
+                              color: _statusColor(b.status).withValues(alpha:.15),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(

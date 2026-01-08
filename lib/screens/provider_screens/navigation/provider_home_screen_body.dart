@@ -73,7 +73,7 @@ class _ProviderHomeScreenBodyState extends State<ProviderHomeScreenBody> {
                             activeTrackColor: ColorConstant.call4helpGreen,
                             inactiveTrackColor: Colors.grey,
                             trackOutlineColor: WidgetStateProperty.all(
-                              Colors.white.withOpacity(0),
+                              Colors.white.withValues(alpha:0),
                             ),
                             value: isOnline,
                             onChanged: availabilityProvider.isLoading

@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:first_flutter/config/constants/colorConstant/color_constant.dart';
 import 'package:first_flutter/providers/register_cafe_provider.dart';
 import 'package:first_flutter/widgets/button_large.dart';
@@ -15,8 +13,7 @@ class CyberCafeRegisterScreen extends StatefulWidget {
       _CyberCafeRegisterScreenState();
 }
 
-class _CyberCafeRegisterScreenState
-    extends State<CyberCafeRegisterScreen> {
+class _CyberCafeRegisterScreenState extends State<CyberCafeRegisterScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final shopNameCtrl = TextEditingController();
@@ -33,7 +30,6 @@ class _CyberCafeRegisterScreenState
   final closingCtrl = TextEditingController();
   final gstCtrl = TextEditingController();
 
-
   Future<void> pickTime(TextEditingController controller) async {
     final time = await showTimePicker(
       context: context,
@@ -41,11 +37,9 @@ class _CyberCafeRegisterScreenState
     );
     if (time != null) {
       controller.text =
-      "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+          "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +55,7 @@ class _CyberCafeRegisterScreenState
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              child: Form(
-                key: _formKey,
-                child: _formCard(),
-              ),
+              child: Form(key: _formKey, child: _formCard()),
             ),
           ),
           _submitButton(),
@@ -84,18 +75,34 @@ class _CyberCafeRegisterScreenState
         children: [
           _input("Shop Name", Icons.store, shopNameCtrl),
           _input("Owner Name", Icons.person, ownerNameCtrl),
-          _input("Phone", Icons.phone, phoneCtrl,
-              keyboard: TextInputType.phone),
-          _input("Email", Icons.email, emailCtrl,
-              keyboard: TextInputType.emailAddress),
+          _input(
+            "Phone",
+            Icons.phone,
+            phoneCtrl,
+            keyboard: TextInputType.phone,
+          ),
+          _input(
+            "Email",
+            Icons.email,
+            emailCtrl,
+            keyboard: TextInputType.emailAddress,
+          ),
           _input("City", Icons.location_city, cityCtrl),
           _input("State", Icons.map, stateCtrl),
-          _input("Pincode", Icons.pin, pincodeCtrl,
-              keyboard: TextInputType.number),
+          _input(
+            "Pincode",
+            Icons.pin,
+            pincodeCtrl,
+            keyboard: TextInputType.number,
+          ),
           _input("Address Line 1", Icons.home, address1Ctrl),
           _input("Address Line 2", Icons.home_work, address2Ctrl),
-          _input("Total Computers", Icons.computer, totalComputerCtrl,
-              keyboard: TextInputType.number),
+          _input(
+            "Total Computers",
+            Icons.computer,
+            totalComputerCtrl,
+            keyboard: TextInputType.number,
+          ),
           _timeInput("Opening Time", openingCtrl),
           _timeInput("Closing Time", closingCtrl),
           _input("GST Number", Icons.receipt_long, gstCtrl),
@@ -106,11 +113,11 @@ class _CyberCafeRegisterScreenState
   }
 
   Widget _input(
-      String label,
-      IconData icon,
-      TextEditingController controller, {
-        TextInputType keyboard = TextInputType.text,
-      }) {
+    String label,
+    IconData icon,
+    TextEditingController controller, {
+    TextInputType keyboard = TextInputType.text,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: TextFormField(
@@ -141,8 +148,10 @@ class _CyberCafeRegisterScreenState
         validator: (v) => v == null || v.isEmpty ? "$label required" : null,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon:
-          const Icon(Icons.access_time, color: ColorConstant.appColor),
+          prefixIcon: const Icon(
+            Icons.access_time,
+            color: ColorConstant.appColor,
+          ),
           filled: true,
           fillColor: ColorConstant.scaffoldGray,
           border: OutlineInputBorder(
@@ -154,31 +163,6 @@ class _CyberCafeRegisterScreenState
     );
   }
 
-  Widget _filePicker(
-      String label, String? path, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: ColorConstant.appColor),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.upload_file, color: ColorConstant.appColor),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                path != null ? File(path).path.split('/').last : label,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _submitButton() {
     return Consumer<RegisterCafeProvider>(
@@ -190,54 +174,55 @@ class _CyberCafeRegisterScreenState
             onTap: provider.isLoading
                 ? null
                 : () async {
-              if (!_formKey.currentState!.validate()) return;
+                    if (!_formKey.currentState!.validate()) return;
 
-              try {
-                // 📍 Get live location
-                final position = await _getCurrentLocation();
+                    try {
+                      // 📍 Get live location
+                      final position = await _getCurrentLocation();
 
-                final success = await provider.registerCafe(
-                  shopName: shopNameCtrl.text,
-                  ownerName: ownerNameCtrl.text,
-                  phone: phoneCtrl.text,
-                  email: emailCtrl.text,
-                  city: cityCtrl.text,
-                  state: stateCtrl.text,
-                  pincode: pincodeCtrl.text,
-                  addressLine1: address1Ctrl.text,
-                  addressLine2: address2Ctrl.text,
-                  latitude: position.latitude.toString(),
-                  longitude: position.longitude.toString(),
-                  totalComputers:
-                  int.parse(totalComputerCtrl.text),
-                  openingTime: openingCtrl.text,
-                  closingTime: closingCtrl.text,
-                  gstNumber: gstCtrl.text,
-                );
+                      final success = await provider.registerCafe(
+                        shopName: shopNameCtrl.text,
+                        ownerName: ownerNameCtrl.text,
+                        phone: phoneCtrl.text,
+                        email: emailCtrl.text,
+                        city: cityCtrl.text,
+                        state: stateCtrl.text,
+                        pincode: pincodeCtrl.text,
+                        addressLine1: address1Ctrl.text,
+                        addressLine2: address2Ctrl.text,
+                        latitude: position.latitude.toString(),
+                        longitude: position.longitude.toString(),
+                        totalComputers: int.parse(totalComputerCtrl.text),
+                        openingTime: openingCtrl.text,
+                        closingTime: closingCtrl.text,
+                        gstNumber: gstCtrl.text,
+                      );
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success
-                        ? "✅ Cafe registered successfully"
-                        : "❌ Registration failed"),
-                    backgroundColor:
-                    success ? Colors.green : Colors.red,
-                  ),
-                );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("📍 Location error: $e"),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-            },
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            success
+                                ? "✅ Cafe registered successfully"
+                                : "❌ Registration failed",
+                          ),
+                          backgroundColor: success ? Colors.green : Colors.red,
+                        ),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("📍 Location error: $e"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
           ),
         );
       },
     );
   }
+
   Future<Position> _getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -263,5 +248,4 @@ class _CyberCafeRegisterScreenState
       desiredAccuracy: LocationAccuracy.high,
     );
   }
-
 }

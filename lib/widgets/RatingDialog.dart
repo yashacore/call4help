@@ -11,11 +11,11 @@ class RatingDialog extends StatefulWidget {
   final String? providerName;
 
   const RatingDialog({
-    Key? key,
+    super.key,
     this.serviceId,
     this.providerId,
     this.providerName,
-  }) : super(key: key);
+  });
 
   @override
   State<RatingDialog> createState() => _RatingDialogState();
@@ -61,11 +61,6 @@ class _RatingDialogState extends State<RatingDialog> {
     });
 
     try {
-      print('🎯 Submitting rating:');
-      print('   Service ID: ${widget.serviceId}');
-      print('   Provider ID: ${widget.providerId}');
-      print('   Rating: $_rating');
-      print('   Reason: $_selectedReason');
 
       final response = await RatingAPI.submitRating(
         serviceId: widget.serviceId!,
@@ -83,7 +78,6 @@ class _RatingDialogState extends State<RatingDialog> {
         _showError(response.message ?? 'Failed to submit rating');
       }
     } catch (e) {
-      print('❌ Dialog error: $e');
       _showError(e.toString().replaceAll('Exception: ', ''));
     } finally {
       if (mounted) {
@@ -387,7 +381,7 @@ class _RatingDialogState extends State<RatingDialog> {
                                     ),
                                   ),
                                 );
-                              }).toList(),
+                              }),
                             ],
                           );
                         },

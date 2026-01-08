@@ -165,7 +165,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                 child: Icon(
                   Icons.room_service_outlined,
                   size: 80,
-                  color: ColorConstant.call4helpOrange.withOpacity(0.3),
+                  color: ColorConstant.call4helpOrange.withValues(alpha:0.3),
                 ),
               ),
             )
@@ -174,7 +174,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
               child: Icon(
                 Icons.room_service_outlined,
                 size: 80,
-                color: ColorConstant.call4helpOrange.withOpacity(0.3),
+                color: ColorConstant.call4helpOrange.withValues(alpha:0.3),
               ),
             ),
           Positioned(
@@ -187,7 +187,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha:0.2),
                     blurRadius: 8,
                     offset: Offset(0, 2),
                   ),
@@ -216,7 +216,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -274,7 +274,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -331,7 +331,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -411,7 +411,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -451,13 +451,13 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: _proofDocument != null
-                    ? Colors.green.withOpacity(0.05)
+                    ? Colors.green.withValues(alpha:0.05)
                     : ColorConstant.scaffoldGray,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: _proofDocument != null
-                      ? Colors.green.withOpacity(0.5)
-                      : ColorConstant.call4helpOrange.withOpacity(0.3),
+                      ? Colors.green.withValues(alpha:0.5)
+                      : ColorConstant.call4helpOrange.withValues(alpha:0.3),
                   width: 2,
                   style: BorderStyle.solid,
                 ),
@@ -468,8 +468,8 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: _proofDocument != null
-                          ? Colors.green.withOpacity(0.1)
-                          : ColorConstant.call4helpOrange.withOpacity(0.1),
+                          ? Colors.green.withValues(alpha:0.1)
+                          : ColorConstant.call4helpOrange.withValues(alpha:0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
@@ -539,7 +539,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -587,9 +587,9 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
   Widget _buildSiteCard(String siteName, String? imageUrl) {
     return Container(
       decoration: BoxDecoration(
-        color: ColorConstant.call4helpOrange.withOpacity(0.05),
+        color: ColorConstant.call4helpOrange.withValues(alpha:0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: ColorConstant.call4helpOrange.withOpacity(0.3)),
+        border: Border.all(color: ColorConstant.call4helpOrange.withValues(alpha:0.3)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -620,13 +620,13 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                       errorWidget: (context, url, error) => Icon(
                         Icons.location_city,
                         size: 30,
-                        color: ColorConstant.call4helpOrange.withOpacity(0.5),
+                        color: ColorConstant.call4helpOrange.withValues(alpha:0.5),
                       ),
                     )
                   : Icon(
                       Icons.location_city,
                       size: 30,
-                      color: ColorConstant.call4helpOrange.withOpacity(0.5),
+                      color: ColorConstant.call4helpOrange.withValues(alpha:0.5),
                     ),
             ),
           ),
@@ -659,7 +659,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha:0.1),
                 blurRadius: 10,
                 offset: Offset(0, -4),
               ),
@@ -763,7 +763,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha:0.1),
                 blurRadius: 20,
                 offset: Offset(0, 10),
               ),
@@ -777,7 +777,7 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha:0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(Icons.check_circle, color: Colors.green, size: 50),
@@ -816,15 +816,15 @@ class _SubcategoryDetailsScreenState extends State<SubcategoryDetailsScreen> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      ColorConstant.call4helpOrange.withOpacity(0.1),
-                      ColorConstant.call4helpOrange.withOpacity(0.05),
+                      ColorConstant.call4helpOrange.withValues(alpha:0.1),
+                      ColorConstant.call4helpOrange.withValues(alpha:0.05),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: ColorConstant.call4helpOrange.withOpacity(0.3),
+                    color: ColorConstant.call4helpOrange.withValues(alpha:0.3),
                     width: 1,
                   ),
                 ),

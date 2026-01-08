@@ -27,171 +27,199 @@ class _UserHomeScreenBodyState extends State<UserHomeScreenBody> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: SingleChildScrollView(
-        child: Column(
-          spacing: 10,
-          children: [
-            Consumer<CarouselProvider>(
-              builder: (context, carouselProvider, child) {
-                if (carouselProvider.isLoading) {
-                  return Container(
-                    height: 160,
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    child: const Center(child: CircularProgressIndicator()),
-                  );
-                }
+      child: Column(
+        spacing: 10,
+        children: [
+          Consumer<CarouselProvider>(
+            builder: (context, carouselProvider, child) {
+              if (carouselProvider.isLoading) {
+                return Container(
+                  height: 160,
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  child: const Center(child: CircularProgressIndicator()),
+                );
+              }
 
-                if (carouselProvider.errorMessage != null) {
-                  return Container(
-                    height: 160,
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.error_outline, color: Colors.red),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Failed to load carousel',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          const SizedBox(height: 8),
-                          TextButton(
-                            onPressed: () {
-                              carouselProvider.fetchCarousels(type: 'user');
-                            },
-                            child: const Text('Retry'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-
-                if (carouselProvider.carousels.isEmpty) {
-                  return Container(
-                    height: 160,
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'No carousel items available',
-                        style: GoogleFonts.inter(color: Colors.grey.shade600),
-                      ),
-                    ),
-                  );
-                }
-
-                final imageLinks = carouselProvider.carousels
-                    .map((carousel) => carousel.imageUrl)
-                    .toList();
-
-                return ImageSlider(imageLinks: imageLinks);
-              },
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Text(
-                "Service Offering",
-                textAlign: TextAlign.start,
-                style: GoogleFonts.inter(
-                  textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: const Color(0xFF000000),
-                    fontWeight: FontWeight.w500,
+              if (carouselProvider.errorMessage != null) {
+                return Container(
+                  height: 160,
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(10),
                   ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error_outline, color: Colors.red),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Failed to load carousel',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        const SizedBox(height: 8),
+                        TextButton(
+                          onPressed: () {
+                            carouselProvider.fetchCarousels(type: 'user');
+                          },
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              if (carouselProvider.carousels.isEmpty) {
+                return Container(
+                  height: 160,
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'No carousel items available',
+                      style: GoogleFonts.inter(color: Colors.grey.shade600),
+                    ),
+                  ),
+                );
+              }
+
+              final imageLinks = carouselProvider.carousels
+                  .map((carousel) => carousel.imageUrl)
+                  .toList();
+
+              return ImageSlider(imageLinks: imageLinks);
+            },
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: Text(
+              "Service Offering",
+              textAlign: TextAlign.start,
+              style: GoogleFonts.inter(
+                textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: const Color(0xFF000000),
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-            Consumer<CategoryProvider>(
-              builder: (context, categoryProvider, child) {
-                if (categoryProvider.isLoading) {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(32.0),
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-
-                if (categoryProvider.errorMessage != null) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          const Icon(
-                            Icons.error_outline,
-                            color: Colors.red,
-                            size: 48,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            categoryProvider.errorMessage ??
-                                'An error occurred',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () {
-                              categoryProvider.fetchCategories();
-                            },
-                            child: const Text('Retry'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-
-                if (categoryProvider.categories.isEmpty) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32.0),
-                      child: Text(
-                        'No categories available',
-                        style: GoogleFonts.inter(
-                          textStyle: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ),
-                    ),
-                  );
-                }
-
-                return SizedBox(
-                  width: double.infinity,
-                  child: Wrap(
-                    alignment: WrapAlignment.start,
-                    spacing: 16,
-                    runSpacing: 16,
-                    children: categoryProvider.categories.map((category) {
-                      return CategoryCard(
-                        category: category,
-                        categoryProvider: categoryProvider,
-                      );
-                    }).toList(),
+          ),
+          Consumer<CategoryProvider>(
+            builder: (context, categoryProvider, child) {
+              if (categoryProvider.isLoading) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(32.0),
+                    child: CircularProgressIndicator(),
                   ),
                 );
-              },
+              }
+
+              if (categoryProvider.errorMessage != null) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 48,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          categoryProvider.errorMessage ??
+                              'An error occurred',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            categoryProvider.fetchCategories();
+                          },
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              if (categoryProvider.categories.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Text(
+                      'No categories available',
+                      style: GoogleFonts.inter(
+                        textStyle: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              return SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  alignment: WrapAlignment.start,
+                  spacing: 16,
+                  runSpacing: 16,
+                  children: categoryProvider.categories.map((category) {
+                    return CategoryCard(
+                      category: category,
+                      categoryProvider: categoryProvider,
+                    );
+                  }).toList(),
+                ),
+              );
+            },
+          ),
+          Spacer(),
+
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.orange.shade50,
+              borderRadius: BorderRadius.circular(12),
             ),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(builder: (context) => NotificationTestScreen()),
-            //     );
-            //   },
-            //   child: Text("Cyber Cafe"),
-            // ),
-          ],
-        ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Why Choose Us?",
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _whyPoint("Verified Professionals"),
+                _whyPoint("Transparent Pricing"),
+                _whyPoint("Quick & Reliable Service"),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+        ],
+      ),
+    );
+  }
+  Widget _whyPoint(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          const Icon(Icons.check_circle, color: Colors.green, size: 18),
+          const SizedBox(width: 8),
+          Text(text, style: GoogleFonts.inter(fontSize: 13)),
+        ],
       ),
     );
   }
